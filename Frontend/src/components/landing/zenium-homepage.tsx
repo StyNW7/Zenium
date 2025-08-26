@@ -5,16 +5,32 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Heart, Brain, Smartphone, Users, TrendingUp, Zap, Shield, Clock, CheckCircle } from "lucide-react"
+import { Heart, Brain, Smartphone, Users, TrendingUp, Zap, Shield, Clock, CheckCircle, Menu, X } from "lucide-react"
 import { SpotlightSection } from "./spotlight-section"
 import { MarqueeSection } from "./marquee-section"
 import { StatsSection } from "./stats-section"
 import { TestimonialSection } from "./testimonial-section"
+import { useNavigate } from "react-router"
+import { useState } from "react"
 
 export function ZeniumHomepage() {
+  const navigate = useNavigate()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const handleGetStarted = () => {
+    navigate("/register")
+  }
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  const closeMenu = () => {
+    setIsMenuOpen(false)
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -25,6 +41,8 @@ export function ZeniumHomepage() {
             <Zap className="h-8 w-8 text-primary" />
             <span className="text-2xl font-bold text-foreground">Zenium</span>
           </div>
+          
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
               Features
@@ -39,8 +57,71 @@ export function ZeniumHomepage() {
               FAQ
             </a>
           </div>
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">Get Started</Button>
+          
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <Button variant="ghost" size="icon" onClick={toggleMenu}>
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
+          
+          <Button 
+            className="hidden md:flex bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={handleGetStarted}
+          >
+            Get Started
+          </Button>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-background border-t border-border"
+          >
+            <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+              <a 
+                href="#features" 
+                className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                onClick={closeMenu}
+              >
+                Features
+              </a>
+              <a 
+                href="#about" 
+                className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                onClick={closeMenu}
+              >
+                About
+              </a>
+              <a 
+                href="#testimonials" 
+                className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                onClick={closeMenu}
+              >
+                Testimonials
+              </a>
+              <a 
+                href="#faq" 
+                className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                onClick={closeMenu}
+              >
+                FAQ
+              </a>
+              <Button 
+                className="bg-primary text-primary-foreground hover:bg-primary/90 w-full mt-4"
+                onClick={() => {
+                  handleGetStarted()
+                  closeMenu()
+                }}
+              >
+                Get Started
+              </Button>
+            </div>
+          </motion.div>
+        )}
       </motion.nav>
 
       {/* Hero Section with Spotlight */}
@@ -406,7 +487,11 @@ export function ZeniumHomepage() {
               mental health starts today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button 
+                size="lg" 
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+                onClick={handleGetStarted}
+              >
                 Start Your Journey
               </Button>
               <Button size="lg" variant="outline">
@@ -434,12 +519,12 @@ export function ZeniumHomepage() {
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-muted-foreground">
                 <li>
-                  <a href="#" className="hover:text-foreground transition-colors">
+                  <a href="#features" className="hover:text-foreground transition-colors">
                     Features
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-foreground transition-colors">
+                  <a href="#about" className="hover:text-foreground transition-colors">
                     Melify Doll
                   </a>
                 </li>
@@ -484,7 +569,7 @@ export function ZeniumHomepage() {
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-muted-foreground">
                 <li>
-                  <a href="#" className="hover:text-foreground transition-colors">
+                  <a href="#about" className="hover:text-foreground transition-colors">
                     About
                   </a>
                 </li>
@@ -507,7 +592,7 @@ export function ZeniumHomepage() {
             </div>
           </div>
           <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 Zenium. All rights reserved. Built with care for mental wellness.</p>
+            <p>&copy; 2025 Zenium. All rights reserved. Built with care for mental wellness.</p>
           </div>
         </div>
       </footer>

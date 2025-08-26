@@ -17,4 +17,8 @@ router.put("/auth/change-password/:id", changePassword);
 //user routes
 router.get("/user/profile", protect, getUserProfile);
 
+import { getCurrentDailyQuote } from "../controllers/dailyQuote.controller.js";
+
+router.get("/daily-quote", getCurrentDailyQuote);
+
 export default router;

@@ -1,8 +1,5 @@
-// Default Import
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 
@@ -21,50 +18,37 @@ import LoadingScreen from "./pages/Utility/LoadingScreen";
 // Pages
 
 import LandingPage from "@/pages/Landing/page";
+import LoginPage from "@/pages/Login/page";
+import RegisterPage from "@/pages/Register/page";
 
 function App() {
-
   const [loading, setLoading] = useState(true);
 
   return (
-
-    // Providers, Router, Scroll to Top Function and Button, and Custom Cursor
-
     <BrowserRouter>
       <ScrollToTopFunction />
       <ScrollToTop />
-      {/* <CustomCursor /> */}
-
+      
       {loading && (
         <LoadingScreen onComplete={() => setLoading(false)} />
       )}
 
       <AnimatePresence mode="wait">
-
         {!loading && (
-
           <Routes>
-
-            
-
             <Route path="/" element={<Layout />}>
-              
-                <Route index element={<LandingPage/>} />
-
-                <Route path="*" element={<NotFoundPage />} />
-
+              <Route index element={<LandingPage/>} />
+              {/* Tambahkan route register di sini */}
+              <Route path="register" element={<RegisterPage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Route>
-
           </Routes>
-
         )}
-
       </AnimatePresence>
 
       <Toaster position="top-center" />
-
     </BrowserRouter>
-
   );
 }
 
