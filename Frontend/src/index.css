@@ -2,50 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
 @layer base {
   :root {
+    /* Updated color tokens for Zenium lightning theme */
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --foreground: 220 13% 18%;
+    --card: 0 0% 95%;
+    --card-foreground: 220 13% 18%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 262.1 83.3% 57.8%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 220 13% 18%;
+    --primary: 43 96% 56%;
+    --primary-foreground: 220 13% 18%;
+    --secondary: 24 95% 53%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 13% 82%;
+    --muted-foreground: 220 13% 18%;
+    --accent: 43 96% 56%;
+    --accent-foreground: 220 13% 18%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 262.1 83.3% 57.8%;
-    --radius: 1rem;
+    --border: 220 13% 82%;
+    --input: 0 0% 100%;
+    --ring: 43 96% 56%;
+    --chart-1: 43 96% 56%;
+    --chart-2: 24 95% 53%;
+    --chart-3: 220 13% 82%;
+    --chart-4: 0 0% 95%;
+    --chart-5: 0 0% 100%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 95%;
+    --sidebar-foreground: 220 13% 18%;
+    --sidebar-primary: 43 96% 56%;
+    --sidebar-primary-foreground: 220 13% 18%;
+    --sidebar-accent: 24 95% 53%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 13% 82%;
+    --sidebar-ring: 43 96% 56%;
   }
-
   .dark {
-    --background: 240 10% 3.9%;
+    /* Updated dark mode tokens for Zenium */
+    --background: 220 13% 9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 220 13% 12%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 220 13% 9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 263.4 70% 50.4%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --primary: 43 96% 56%;
+    --primary-foreground: 220 13% 9%;
+    --secondary: 24 95% 53%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 13% 18%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 43 96% 56%;
+    --accent-foreground: 220 13% 9%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 263.4 70% 50.4%;
+    --border: 220 13% 18%;
+    --input: 220 13% 18%;
+    --ring: 43 96% 56%;
+    --chart-1: 43 96% 56%;
+    --chart-2: 24 95% 53%;
+    --chart-3: 220 13% 82%;
+    --chart-4: 0 0% 95%;
+    --chart-5: 0 0% 100%;
+    --sidebar-background: 220 13% 12%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 43 96% 56%;
+    --sidebar-primary-foreground: 220 13% 9%;
+    --sidebar-accent: 24 95% 53%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 13% 18%;
+    --sidebar-ring: 43 96% 56%;
   }
 }
 
@@ -68,7 +101,7 @@
 
 /* Scrollbar Design */
 
-::-webkit-scrollbar{
+/* ::-webkit-scrollbar{
   width: 10px;
   height: 5px;
 }
@@ -78,6 +111,6 @@
 }
 
 ::-webkit-scrollbar-thumb{
-  background: #9333EA;
+  background: #fde952;
   border-radius: 10px;
-}
+} */

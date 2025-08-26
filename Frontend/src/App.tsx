@@ -13,7 +13,7 @@ import Layout from "@/layouts/root-layout";
 // Utility Pages / Components
 
 import ScrollToTop from "./utility/ScrollToTop";
-import CustomCursor from "./utility/CustomCursor";
+// import CustomCursor from "./utility/CustomCursor";
 import ScrollToTopFunction from "./utility/ScrollToTopFunction";
 import NotFoundPage from "./pages/Utility/NotFound404";
 import LoadingScreen from "./pages/Utility/LoadingScreen";
@@ -33,7 +33,7 @@ function App() {
     <BrowserRouter>
       <ScrollToTopFunction />
       <ScrollToTop />
-      <CustomCursor />
+      {/* <CustomCursor /> */}
 
       {loading && (
         <LoadingScreen onComplete={() => setLoading(false)} />
