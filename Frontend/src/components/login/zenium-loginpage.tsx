@@ -4,6 +4,8 @@ import { useState } from "react"
 import type { ChangeEvent, FormEvent } from "react"
 import { motion } from "framer-motion"
 import axios from "axios"
+import { useAuth } from "@/contexts/authcontext"
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -44,6 +46,9 @@ export function ZeniumLoginPage() {
     }))
   }
 
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -53,12 +58,17 @@ export function ZeniumLoginPage() {
       
       if (response.data.success) {
         toast.success(response.data.message)
-        // Simpan token ke localStorage atau state management
+        // Gunakan fungsi login dari useAuth
         if (response.data.data?.token) {
-          localStorage.setItem('token', response.data.data.token)
+          // Ambil data user dari response (sesuaikan dengan struktur response API)
+          const userData = {
+            email: formData.email,
+            username: response.data.data?.username || '',
+            role: response.data.data?.role || 'user'
+          };
+          login(userData, response.data.data.token);
+          navigate('/main');
         }
-        // Redirect atau navigasi ke halaman dashboard/home
-        console.log('Login successful, token:', response.data.data?.token)
       } else {
         toast.error(response.data.message || 'Login failed')
       }

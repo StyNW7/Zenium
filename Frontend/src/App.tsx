@@ -3,52 +3,135 @@ import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 
-// Layout
+// Context
+import { AuthProvider } from "@/contexts/authcontext";
 
+// Route Components
+import { ProtectedRoute, PublicRoute } from "@/components/protectedroute";
+
+// Layout
 import Layout from "@/layouts/root-layout";
 
 // Utility Pages / Components
-
 import ScrollToTop from "./utility/ScrollToTop";
-// import CustomCursor from "./utility/CustomCursor";
 import ScrollToTopFunction from "./utility/ScrollToTopFunction";
 import NotFoundPage from "./pages/Utility/NotFound404";
 import LoadingScreen from "./pages/Utility/LoadingScreen";
 
 // Pages
-
 import LandingPage from "@/pages/Landing/page";
 import LoginPage from "@/pages/Login/page";
 import RegisterPage from "@/pages/Register/page";
+import UserPage from "@/pages/User/page";
+import RecommendationSystemPage from "@/pages/Recommendation-System/page";
+import JournalingPage from "@/pages/Journaling/page";
+import QuotePage from "./pages/Daily-Quote/page";
+import MapPage from "@/pages/Map-System/page";
+import MainPage from "@/pages/Main/page";
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  const [appLoading, setAppLoading] = useState(true);
 
   return (
-    <BrowserRouter>
-      <ScrollToTopFunction />
-      <ScrollToTop />
-      
-      {loading && (
-        <LoadingScreen onComplete={() => setLoading(false)} />
-      )}
-
-      <AnimatePresence mode="wait">
-        {!loading && (
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<LandingPage/>} />
-              {/* Tambahkan route register di sini */}
-              <Route path="register" element={<RegisterPage />} />
-              <Route path="login" element={<LoginPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Route>
-          </Routes>
+    <AuthProvider>
+      <BrowserRouter>
+        <ScrollToTopFunction />
+        <ScrollToTop />
+        
+        {appLoading && (
+          <LoadingScreen onComplete={() => setAppLoading(false)} />
         )}
-      </AnimatePresence>
 
-      <Toaster position="top-center" />
-    </BrowserRouter>
+        <AnimatePresence mode="wait">
+          {!appLoading && (
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                {/* Public Routes - hanya bisa diakses jika belum login */}
+                <Route 
+                  index 
+                  element={
+                    <PublicRoute>
+                      <LandingPage />
+                    </PublicRoute>
+                  } 
+                />
+                <Route 
+                  path="register" 
+                  element={
+                    <PublicRoute>
+                      <RegisterPage />
+                    </PublicRoute>
+                  } 
+                />
+                <Route 
+                  path="login" 
+                  element={
+                    <PublicRoute>
+                      <LoginPage />
+                    </PublicRoute>
+                  } 
+                />
+
+                {/* Protected Routes - hanya bisa diakses setelah login */}
+                <Route 
+                  path="main" 
+                  element={
+                    <ProtectedRoute>
+                      <MainPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="user" 
+                  element={
+                    <ProtectedRoute>
+                      <UserPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="recommendation-system" 
+                  element={
+                    <ProtectedRoute>
+                      <RecommendationSystemPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="journaling" 
+                  element={
+                    <ProtectedRoute>
+                      <JournalingPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="quote" 
+                  element={
+                    <ProtectedRoute>
+                      <QuotePage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="map" 
+                  element={
+                    <ProtectedRoute>
+                      <MapPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* 404 Page */}
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+            </Routes>
+          )}
+        </AnimatePresence>
+
+        <Toaster position="top-center" />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

@@ -4,6 +4,8 @@ import { useState } from "react"
 import type { ChangeEvent, FormEvent } from "react"
 import { motion } from "framer-motion"
 import axios from "axios"
+import { useAuth } from "@/contexts/authcontext"
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
 import { API_BASE_URL, API_ENDPOINTS } from "@/config/api"
 import { Button } from "@/components/ui/button"
@@ -111,6 +113,9 @@ export function ZeniumRegisterPage() {
     return Object.keys(newErrors).length === 0
   }
 
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     
@@ -130,16 +135,31 @@ export function ZeniumRegisterPage() {
       })
 
       if (response.data.success) {
-        toast.success(response.data.message || "Registration successful! You can now login.")
-        // Reset form
-        setFormData({
-          username: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-          role: 'user'
-        })
-        // Optionally redirect to login page
+        toast.success(response.data.message || "Registration successful!")
+        
+        // Auto login setelah registrasi berhasil
+        try {
+          const loginResponse = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
+            email: formData.email,
+            password: formData.password
+          });
+          
+          if (loginResponse.data.success && loginResponse.data.data?.token) {
+            const userData = {
+              username: formData.username,
+              email: formData.email,
+              role: formData.role
+            };
+            login(userData, loginResponse.data.data.token);
+            navigate('/main');
+          } else {
+            // Jika auto login gagal, redirect ke halaman login
+            navigate('/login');
+          }
+        } catch (loginError) {
+          console.error('Auto login error:', loginError);
+          navigate('/login');
+        }
       } else {
         setErrors({ general: response.data.message || "Registration failed" })
         toast.error(response.data.message || "Registration failed")
