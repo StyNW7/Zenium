@@ -28,6 +28,7 @@ import JournalingPage from "@/pages/Journaling/page";
 import QuotePage from "./pages/Daily-Quote/page";
 import MapPage from "@/pages/Map-System/page";
 import MainPage from "@/pages/Main/page";
+import ForgotPasswordPage from "./pages/Forgot-Password/page";
 
 function App() {
   const [appLoading, setAppLoading] = useState(true);
@@ -71,6 +72,14 @@ function App() {
                     </PublicRoute>
                   } 
                 />
+                 <Route 
+                  path="forgot-password" 
+                  element={
+                    <PublicRoute>
+                      <ForgotPasswordPage />
+                    </PublicRoute>
+                  } 
+                />
 
                 {/* Protected Routes - hanya bisa diakses setelah login */}
                 <Route 
@@ -98,7 +107,7 @@ function App() {
                   } 
                 />
                 <Route 
-                  path="journaling" 
+                  path="journal" 
                   element={
                     <ProtectedRoute>
                       <JournalingPage />

@@ -1,5 +1,7 @@
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { sendEmail } from "../utils/email.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -118,5 +120,72 @@ export const changePassword = async (req, res) => {
       success: false,
       message: "Server error during password change"
     });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({ success: true, message: "If that email exists, a reset link has been sent" });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = Date.now() + 1000 * 60 * 15; // 15 minutes
+
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = new Date(expires);
+    await user.save();
+
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const resetLink = `${frontendUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+
+    await sendEmail({
+      to: email,
+      subject: "Zenium - Reset Password",
+      text: `Click this link to reset your password: ${resetLink}`,
+      html: `<p>Hi ${user.username || "there"},</p>
+             <p>We received a request to reset your password.</p>
+             <p><a href="${resetLink}">Click here to reset your password</a></p>
+             <p>This link will expire in 15 minutes.</p>`
+    });
+
+    return res.status(200).json({ success: true, message: "If that email exists, a reset link has been sent" });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return res.status(500).json({ success: false, message: "Server error during forgot password" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, token, newPassword } = req.body;
+    if (!email || !token || !newPassword) {
+      return res.status(400).json({ success: false, message: "email, token, and newPassword are required" });
+    }
+
+    const user = await User.findOne({ email, resetPasswordToken: token });
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid reset token" });
+    }
+
+    if (!user.resetPasswordExpires || user.resetPasswordExpires.getTime() < Date.now()) {
+      return res.status(400).json({ success: false, message: "Reset token has expired" });
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    return res.status(200).json({ success: true, message: "Password has been reset successfully" });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    return res.status(500).json({ success: false, message: "Server error during reset password" });
   }
 };

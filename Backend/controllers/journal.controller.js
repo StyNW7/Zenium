@@ -1,6 +1,5 @@
 import Journal from "../models/journal.model.js";
 
-// Get all journals for a user
 export const getUserJournals = async (req, res) => {
   try {
     const userId = req.user.id;

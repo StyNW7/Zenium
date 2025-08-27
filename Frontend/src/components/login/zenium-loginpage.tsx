@@ -26,9 +26,16 @@ interface LoginResponse {
   message: string
   data?: {
     token: string
+    username?: string
+    role?: 'user'
   }
 }
 
+interface ValidationErrors {
+  email?: string
+  password?: string
+  general?: string
+}
 
 export function ZeniumLoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -37,6 +44,7 @@ export function ZeniumLoginPage() {
     email: '',
     password: ''
   })
+  const [errors, setErrors] = useState<ValidationErrors>({})
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -44,6 +52,34 @@ export function ZeniumLoginPage() {
       ...prev,
       [name]: value
     }))
+    // Clear error when user starts typing
+    if (errors[name as keyof ValidationErrors]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }))
+    }
+  }
+
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {}
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required"
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address"
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required"
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   const navigate = useNavigate();
@@ -51,16 +87,22 @@ export function ZeniumLoginPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    
+    if (!validateForm()) {
+      return
+    }
+
     setIsLoading(true)
+    setErrors({})
 
     try {
       const response = await axios.post<LoginResponse>(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, formData)
       
       if (response.data.success) {
         toast.success(response.data.message)
-        // Gunakan fungsi login dari useAuth
+        // Use login function from useAuth
         if (response.data.data?.token) {
-          // Ambil data user dari response (sesuaikan dengan struktur response API)
+          // Get user data from response (adjust according to API response structure)
           const userData = {
             email: formData.email,
             username: response.data.data?.username || '',
@@ -70,13 +112,16 @@ export function ZeniumLoginPage() {
           navigate('/main');
         }
       } else {
+        setErrors({ general: response.data.message || 'Login failed' })
         toast.error(response.data.message || 'Login failed')
       }
     } catch (error: any) {
       console.error('Login error:', error)
       if (error.response?.data?.message) {
+        setErrors({ general: error.response.data.message })
         toast.error(error.response.data.message)
       } else {
+        setErrors({ general: 'Login failed. Please try again.' })
         toast.error('Login failed. Please try again.')
       }
     } finally {
@@ -85,8 +130,8 @@ export function ZeniumLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/5 to-primary/10 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 via-transparent to-primary/10 pointer-events-none" />
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-amber-900/20 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-amber-300/5 pointer-events-none" />
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -100,28 +145,34 @@ export function ZeniumLoginPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex items-center justify-center space-x-2 mb-4"
           >
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-              <Heart className="h-7 w-7 text-primary-foreground" />
+            <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30">
+              <Heart className="h-7 w-7 text-black" />
             </div>
-            <span className="text-3xl font-bold text-foreground">Zenium</span>
+            <span className="text-3xl font-bold text-amber-400">Zenium</span>
           </motion.div>
-          <Badge className="mb-4 bg-secondary/10 text-secondary border-secondary/20">Welcome Back</Badge>
-          <h1 className="text-2xl font-bold mb-2">Sign In to Your Account</h1>
-          <p className="text-muted-foreground">Continue your wellness journey with Melify</p>
+          <Badge className="mb-4 bg-amber-500/10 text-amber-400 border-amber-500/30">Welcome Back</Badge>
+          <h1 className="text-2xl font-bold mb-2 text-white">Sign In to Your Account</h1>
+          <p className="text-amber-200/70">Continue your wellness journey with Melify</p>
         </div>
 
         {/* Login Card */}
-        <Card className="backdrop-blur-sm bg-card/50 border-border/50 shadow-xl">
+        <Card className="backdrop-blur-sm bg-gray-900/80 border-amber-500/30 shadow-xl shadow-amber-500/10">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-center">Welcome Back</CardTitle>
+            <CardTitle className="text-center text-amber-400">Welcome Back</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {errors.general && (
+                <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-md text-red-400 text-sm">
+                  {errors.general}
+                </div>
+              )}
+
               {/* Email Field */}
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-amber-200">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-amber-400/70" />
                   <Input
                     id="email"
                     name="email"
@@ -129,22 +180,23 @@ export function ZeniumLoginPage() {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="pl-10"
+                    className="pl-10 bg-gray-800/50 border-amber-500/30 text-white placeholder:text-amber-200/40 focus:border-amber-500"
                     required
                   />
                 </div>
+                {errors.email && <p className="text-red-400 text-sm">{errors.email}</p>}
               </div>
 
               {/* Password Field */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <a href="#" className="text-sm text-primary hover:underline">
+                  <Label htmlFor="password" className="text-amber-200">Password</Label>
+                  <a href="#" className="text-sm text-amber-400 hover:underline">
                     Forgot password?
                   </a>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-amber-400/70" />
                   <Input
                     id="password"
                     name="password"
@@ -152,24 +204,25 @@ export function ZeniumLoginPage() {
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="pl-10 pr-10"
+                    className="pl-10 pr-10 bg-gray-800/50 border-amber-500/30 text-white placeholder:text-amber-200/40 focus:border-amber-500"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-3 text-amber-400/70 hover:text-amber-400"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
+                {errors.password && <p className="text-red-400 text-sm">{errors.password}</p>}
               </div>
 
               {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 group disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-amber-500 text-black hover:bg-amber-400 group font-bold transition-all duration-300 shadow-lg shadow-amber-500/30 hover:shadow-amber-400/40 disabled:opacity-50 disabled:cursor-not-allowed"
                 size="lg"
               >
                 {isLoading ? "Signing In..." : "Sign In"}
@@ -180,39 +233,22 @@ export function ZeniumLoginPage() {
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <Separator />
+                  <Separator className="bg-amber-500/30" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                  <span className="bg-gray-900 px-2 text-amber-400/70">Don't have an account?</span>
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <Button variant="outline" size="sm">
-                  <svg className="h-4 w-4" viewBox="0 0 24 24">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                  </svg>
-                  Google
-                </Button>
-                <Button variant="outline" size="sm">
-                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-                  </svg>
-                  Twitter
-                </Button>
-              </div>
-            </div>
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-muted-foreground">
-                Don't have an account?{" "}
-                <a href="#" className="font-medium text-primary hover:underline">
-                  Sign up
+              <div className="mt-4 text-center">
+                <a 
+                  href="/register" 
+                  className="text-amber-400 hover:underline text-sm inline-flex items-center"
+                >
+                  Create new account
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
-              </p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -224,7 +260,7 @@ export function ZeniumLoginPage() {
           transition={{ delay: 0.3 }}
           className="mt-6 text-center"
         >
-          <a href="#" className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center">
+          <a href="/" className="text-sm text-amber-400/70 hover:text-amber-400 inline-flex items-center">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
           </a>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   User, 
   Settings, 
@@ -14,14 +15,11 @@ import {
   TrendingUp,
 } from 'lucide-react';
 
-import { useNavigate } from 'react-router';
-
 export function ZeniumMainPage() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-    
   const navigate = useNavigate();
-
+    
   const navigationItems = [
     {
       id: 'daily-quote',
@@ -48,7 +46,7 @@ export function ZeniumMainPage() {
       bgColor: 'from-yellow-600/10 to-yellow-400/10'
     },
     {
-      id: 'journaling',
+      id: 'journal',
       title: 'Digital Journaling',
       description: 'Express your thoughts and track your emotional journey',
       icon: BookOpen,
@@ -58,10 +56,25 @@ export function ZeniumMainPage() {
   ];
 
   const handleNavigation = (itemId: string) => {
-    if (itemId === 'user-setting') {
-      navigate('/user');
-    } else {
-      navigate(`/${itemId}`);
+    // Perbaikan routing untuk konsistensi
+    switch (itemId) {
+      case 'user':
+        navigate('/user');
+        break;
+      case 'recommendation-system':
+        navigate('/recommendation-system');
+        break;
+      case 'journal':
+        navigate('/journal');
+        break;
+      case 'daily-quote':
+        navigate('/quote');
+        break;
+      case 'map-system':
+        navigate('/map');
+        break;
+      default:
+        console.warn(`Unknown navigation item: ${itemId}`);
     }
     setShowMobileMenu(false);
   };
@@ -152,7 +165,7 @@ export function ZeniumMainPage() {
                       </div>
                       <button 
                         onClick={() => {
-                          handleNavigation('user');
+                          handleNavigation('user-setting');
                           setShowUserMenu(false);
                         }}
                         className="flex items-center space-x-3 w-full px-4 py-3 text-sm text-gray-300 hover:text-yellow-400 hover:bg-gradient-to-r hover:from-yellow-500/10 hover:to-yellow-600/10 transition-all duration-300"
@@ -188,7 +201,7 @@ export function ZeniumMainPage() {
 
         {/* Mobile Navigation */}
         {showMobileMenu && (
-          <div className="md:hidden bg-gray-900/95 backdrop-blur-md border-t border-yellow-500/20">
+          <div className="md:hidden bg-black backdrop-blur-md border-t border-yellow-500/20">
             <div className="container mx-auto px-4 py-4 space-y-2">
               {navigationItems.map((item) => (
                 <button
@@ -277,7 +290,7 @@ export function ZeniumMainPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {navigationItems.map((item, index) => (
+            {navigationItems.map((item) => (
               <div
                 key={item.id}
                 className="group cursor-pointer transform hover:scale-105 transition-all duration-500"
@@ -334,7 +347,7 @@ export function ZeniumMainPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900/50 backdrop-blur-sm border-t border-yellow-500/20 py-12 px-4 relative z-10">
+      <footer className="bg-black backdrop-blur-sm border-t border-yellow-500/20 py-12 px-4 relative z-10">
         <div className="container mx-auto">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-3 mb-4">
@@ -350,7 +363,7 @@ export function ZeniumMainPage() {
             </p>
           </div>
           <div className="text-center text-gray-500 text-sm border-t border-yellow-500/10 pt-8">
-            <p>&copy; 2025 Zenium. Built with ❤️ for mental wellness.</p>
+            <p>&copy; 2025 Zenium. Built for mental wellness.</p>
           </div>
         </div>
       </footer>

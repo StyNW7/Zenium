@@ -1,10 +1,10 @@
 class QwenService {
   constructor() {
-    this.apiKey = process.env.OPENROUTER_API_KEY || "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";
+    this.apiKey = process.env.OPENROUTER_API_KEY;
     this.baseUrl = "https://openrouter.ai/api/v1/chat/completions";
     this.model = "qwen/qwen2.5-vl-32b-instruct:free";
-    this.siteUrl = process.env.SITE_URL || "http://localhost:3000";
-    this.siteName = process.env.SITE_NAME || "Mental Wellness App";
+    this.siteUrl = "http://localhost:3000";
+    this.siteName = "Zenium";
   }
 
   async makeRequest(messages) {

@@ -21,7 +21,6 @@ interface RegisterFormData {
   email: string
   password: string
   confirmPassword: string
-  role: string
 }
 
 interface ValidationErrors {
@@ -29,7 +28,6 @@ interface ValidationErrors {
   email?: string
   password?: string
   confirmPassword?: string
-  role?: string
   general?: string
 }
 
@@ -39,7 +37,6 @@ interface RegisterResponse {
   data?: {
     username: string
     email: string
-    role: string
   }
 }
 
@@ -51,8 +48,7 @@ export function ZeniumRegisterPage() {
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    role: 'user'
+    confirmPassword: ''
   })
   const [errors, setErrors] = useState<ValidationErrors>({})
 
@@ -104,11 +100,6 @@ export function ZeniumRegisterPage() {
       newErrors.confirmPassword = "Passwords do not match"
     }
 
-    // Role validation
-    if (!formData.role) {
-      newErrors.role = "Please select a role"
-    }
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -130,8 +121,7 @@ export function ZeniumRegisterPage() {
       const response = await axios.post<RegisterResponse>(`${API_BASE_URL}${API_ENDPOINTS.AUTH.REGISTER}`, {
         username: formData.username,
         email: formData.email,
-        password: formData.password,
-        role: formData.role
+        password: formData.password
       })
 
       if (response.data.success) {
@@ -147,8 +137,7 @@ export function ZeniumRegisterPage() {
           if (loginResponse.data.success && loginResponse.data.data?.token) {
             const userData = {
               username: formData.username,
-              email: formData.email,
-              role: formData.role
+              email: formData.email
             };
             login(userData, loginResponse.data.data.token);
             navigate('/main');
@@ -229,7 +218,7 @@ export function ZeniumRegisterPage() {
             <span className="text-3xl font-bold text-amber-400">Zenium</span>
           </motion.div>
           <Badge className="mb-4 bg-amber-500/10 text-amber-400 border-amber-500/30">Create Account</Badge>
-          <h1 className="text-2xl font-bold mb-2 text-white">Join Our Community</h1>
+          <h1 className="text-2xl font-bold mb-2 text-white">Join Our Platform</h1>
           <p className="text-amber-200/70">Start your wellness journey with Melify</p>
         </div>
 
@@ -282,25 +271,6 @@ export function ZeniumRegisterPage() {
                   />
                 </div>
                 {errors.email && <p className="text-red-400 text-sm">{errors.email}</p>}
-              </div>
-
-              {/* Role Field */}
-              <div className="space-y-2">
-                <Label htmlFor="role" className="text-amber-200">Role</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-amber-400/70" />
-                  <Input
-                    id="role"
-                    name="role"
-                    type="text"
-                    placeholder="Enter your role (user, admin, therapist)"
-                    value={formData.role}
-                    onChange={handleInputChange}
-                    className="pl-10 bg-gray-800/50 border-amber-500/30 text-white placeholder:text-amber-200/40 focus:border-amber-500"
-                    required
-                  />
-                </div>
-                {errors.role && <p className="text-red-400 text-sm">{errors.role}</p>}
               </div>
 
               {/* Password Field */}

@@ -102,40 +102,27 @@ export function ZeniumJournalingPage() {
   // Fungsi untuk membuat entri baru
   const createEntry = async () => {
     if (!newEntry.title || !newEntry.content) return;
-    
+
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
+      // Dalam implementasi nyata, ini akan memanggil API backend
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().split('T')[0];
       
-      const journalData = {
-        title: newEntry.title,
-        content: newEntry.content,
-        mood: newEntry.mood,
-        moodRating: 5, // Default rating
-        tags: newEntry.tags,
-        privacy: 'private'
+      const createdEntry: JournalEntry = {
+        id: Date.now().toString(),
+        date: formattedDate,
+        title: newEntry.title || '',
+        content: newEntry.content || '',
+        mood: newEntry.mood as 'happy' | 'neutral' | 'sad',
+        weather: newEntry.weather as 'sunny' | 'cloudy' | 'rainy' | 'night',
+        tags: newEntry.tags || [],
+        createdAt: currentDate.toISOString(),
+        updatedAt: currentDate.toISOString(),
       };
-      
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/journals`,
-        journalData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      
-      if (response.data && response.data.success) {
-        // Refresh journal entries
-        fetchJournalEntries();
-        setIsCreating(false);
-        resetForm();
-      }
+
+      setEntries([createdEntry, ...entries]);
+      resetForm();
+      setIsCreating(false);
     } catch (error) {
       console.error('Error creating journal entry:', error);
     }
@@ -144,40 +131,23 @@ export function ZeniumJournalingPage() {
   // Fungsi untuk mengupdate entri
   const updateEntry = async () => {
     if (!currentEntry || !currentEntry.title || !currentEntry.content) return;
-    
+
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-      
-      const journalData = {
-        title: currentEntry.title,
-        content: currentEntry.content,
-        mood: currentEntry.mood,
-        moodRating: 5, // Default rating
-        tags: currentEntry.tags,
-        privacy: 'private'
-      };
-      
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/journals/${currentEntry.id}`,
-        journalData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+      // Dalam implementasi nyata, ini akan memanggil API backend
+      const updatedEntries = entries.map(entry => {
+        if (entry.id === currentEntry.id) {
+          return {
+            ...currentEntry,
+            updatedAt: new Date().toISOString(),
+          };
         }
-      );
-      
-      if (response.data && response.data.success) {
-        // Refresh journal entries
-        fetchJournalEntries();
-        setIsEditing(false);
-        setCurrentEntry(null);
-      }
+        return entry;
+      });
+
+      setEntries(updatedEntries);
+      resetForm();
+      setIsEditing(false);
+      setCurrentEntry(null);
     } catch (error) {
       console.error('Error updating journal entry:', error);
     }
@@ -185,30 +155,12 @@ export function ZeniumJournalingPage() {
 
   // Fungsi untuk menghapus entri
   const deleteEntry = async (id: string) => {
-    if (window.confirm('Apakah Anda yakin ingin menghapus jurnal ini?')) {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          navigate('/login');
-          return;
-        }
-        
-        const response = await axios.delete(
-          `${import.meta.env.VITE_API_BASE_URL}/journals/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        
-        if (response.data && response.data.success) {
-          // Refresh journal entries
-          fetchJournalEntries();
-        }
-      } catch (error) {
-        console.error('Error deleting journal entry:', error);
-      }
+    try {
+      // Dalam implementasi nyata, ini akan memanggil API backend
+      const updatedEntries = entries.filter(entry => entry.id !== id);
+      setEntries(updatedEntries);
+    } catch (error) {
+      console.error('Error deleting journal entry:', error);
     }
   };
 

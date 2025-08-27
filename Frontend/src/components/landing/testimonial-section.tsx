@@ -12,7 +12,7 @@ export function TestimonialSection() {
       content:
         "Zenium and Melify have been game-changers in my wellness journey. The AI companion feels so natural and supportive.",
       rating: 5,
-    },
+    }, 
     {
       name: "Dr. Michael Rodriguez",
       role: "Clinical Psychologist",

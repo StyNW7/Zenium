@@ -1,6 +1,5 @@
 import DailyQuote from "../models/dailyQuote.model.js";
-import QwenService from "../services/qwen.js";
-import { Op } from "sequelize";
+import QwenService from "../utils/qwen.js";
 
 export const getCurrentDailyQuote = async (req, res) => {
   try {
@@ -22,38 +21,32 @@ export const getCurrentDailyQuote = async (req, res) => {
 export const getDailyQuote = async (req, res) => {
   try {
     const { forceNew = false } = req.query;
-    const userId = req.user?.id; // From auth middleware
+    const userId = req.user?.userId; // From auth middleware
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
 
-    // Cek jika sudah ada quote hari ini untuk user
+    // Check if quote already exists for today
     let existingQuote = null;
     
     if (userId) {
       // For authenticated users, check personal quote
       existingQuote = await DailyQuote.findOne({
-        where: {
-          userId: userId,
-          generatedAt: {
-            [Op.gte]: startOfDay,
-            [Op.lt]: endOfDay
-          }
-        },
-        order: [['generatedAt', 'DESC']]
-      });
+        userId: userId,
+        generatedAt: {
+          $gte: startOfDay,
+          $lt: endOfDay
+        }
+      }).sort({ generatedAt: -1 });
     } else {
       // For anonymous users, get global daily quote
       existingQuote = await DailyQuote.findOne({
-        where: {
-          userId: null, // Global quote
-          generatedAt: {
-            [Op.gte]: startOfDay,
-            [Op.lt]: endOfDay
-          }
-        },
-        order: [['generatedAt', 'DESC']]
-      });
+        userId: null, // Global quote
+        generatedAt: {
+          $gte: startOfDay,
+          $lt: endOfDay
+        }
+      }).sort({ generatedAt: -1 });
     }
 
     // Return existing quote if found and not forcing new
@@ -65,19 +58,22 @@ export const getDailyQuote = async (req, res) => {
       });
     }
 
-    // Generate new quote using OpenRouter service
+    // Generate new quote using Qwen service
     const newQuoteData = await QwenService.generateDailyQuote();
     
     // Save to database
-    const quoteRecord = await DailyQuote.create({
+    const quoteRecord = new DailyQuote({
       userId: userId || null, // null for anonymous users (global quote)
       quote: newQuoteData.quote,
       explanation: newQuoteData.explanation,
       author: newQuoteData.author,
       isAiGenerated: true,
       generatedAt: new Date(),
-      category: "motivation" // default category
+      category: "motivation", // default category
+      isFavorite: false
     });
+
+    await quoteRecord.save();
 
     res.status(201).json({
       success: true,
@@ -109,25 +105,26 @@ export const getDailyQuote = async (req, res) => {
 
 export const getUserDailyQuotes = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { page = 1, limit = 10 } = req.query;
-    const offset = (page - 1) * limit;
+    const skip = (page - 1) * limit;
 
-    const quotes = await DailyQuote.findAndCountAll({
-      where: { userId: userId },
-      order: [['generatedAt', 'DESC']],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
+    const [quotes, totalCount] = await Promise.all([
+      DailyQuote.find({ userId: userId })
+        .sort({ generatedAt: -1 })
+        .limit(parseInt(limit))
+        .skip(skip),
+      DailyQuote.countDocuments({ userId: userId })
+    ]);
 
     res.status(200).json({
       success: true,
       data: {
-        quotes: quotes.rows,
+        quotes: quotes,
         pagination: {
           currentPage: parseInt(page),
-          totalPages: Math.ceil(quotes.count / limit),
-          totalItems: quotes.count,
+          totalPages: Math.ceil(totalCount / limit),
+          totalItems: totalCount,
           itemsPerPage: parseInt(limit)
         }
       },
@@ -147,31 +144,29 @@ export const getUserDailyQuotes = async (req, res) => {
 export const getQuoteByCategory = async (req, res) => {
   try {
     const { category } = req.params;
-    const userId = req.user?.id;
+    const userId = req.user?.userId;
 
     const quote = await DailyQuote.findOne({
-      where: {
-        ...(userId ? { userId: userId } : { userId: null }),
-        category: category
-      },
-      order: [['generatedAt', 'DESC']]
-    });
+      ...(userId ? { userId: userId } : { userId: null }),
+      category: category
+    }).sort({ generatedAt: -1 });
 
     if (!quote) {
       // Generate new quote for this category
-      const prompt = `Generate an inspirational quote specifically for ${category} category. Focus on themes related to ${category} and mental wellness.`;
+      const newQuoteData = await QwenService.generateDailyQuote(category);
       
-      const newQuoteData = await QwenService.generateDailyQuote();
-      
-      const quoteRecord = await DailyQuote.create({
+      const quoteRecord = new DailyQuote({
         userId: userId || null,
         quote: newQuoteData.quote,
         explanation: newQuoteData.explanation,
         author: newQuoteData.author,
         isAiGenerated: true,
         generatedAt: new Date(),
-        category: category
+        category: category,
+        isFavorite: false
       });
+
+      await quoteRecord.save();
 
       return res.status(201).json({
         success: true,
@@ -199,13 +194,11 @@ export const getQuoteByCategory = async (req, res) => {
 export const markQuoteAsFavorite = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const quote = await DailyQuote.findOne({
-      where: {
-        id: id,
-        userId: userId
-      }
+      _id: id,
+      userId: userId
     });
 
     if (!quote) {
@@ -236,28 +229,32 @@ export const markQuoteAsFavorite = async (req, res) => {
 
 export const getFavoriteQuotes = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { page = 1, limit = 10 } = req.query;
-    const offset = (page - 1) * limit;
+    const skip = (page - 1) * limit;
 
-    const favoriteQuotes = await DailyQuote.findAndCountAll({
-      where: {
+    const [favoriteQuotes, totalCount] = await Promise.all([
+      DailyQuote.find({
         userId: userId,
         isFavorite: true
-      },
-      order: [['generatedAt', 'DESC']],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
+      })
+        .sort({ generatedAt: -1 })
+        .limit(parseInt(limit))
+        .skip(skip),
+      DailyQuote.countDocuments({
+        userId: userId,
+        isFavorite: true
+      })
+    ]);
 
     res.status(200).json({
       success: true,
       data: {
-        quotes: favoriteQuotes.rows,
+        quotes: favoriteQuotes,
         pagination: {
           currentPage: parseInt(page),
-          totalPages: Math.ceil(favoriteQuotes.count / limit),
-          totalItems: favoriteQuotes.count,
+          totalPages: Math.ceil(totalCount / limit),
+          totalItems: totalCount,
           itemsPerPage: parseInt(limit)
         }
       },
@@ -277,13 +274,11 @@ export const getFavoriteQuotes = async (req, res) => {
 export const deleteQuote = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const quote = await DailyQuote.findOne({
-      where: {
-        id: id,
-        userId: userId
-      }
+      _id: id,
+      userId: userId
     });
 
     if (!quote) {
@@ -293,7 +288,7 @@ export const deleteQuote = async (req, res) => {
       });
     }
 
-    await quote.destroy();
+    await DailyQuote.findByIdAndDelete(id);
 
     res.status(200).json({
       success: true,
@@ -312,43 +307,59 @@ export const deleteQuote = async (req, res) => {
 
 export const getQuoteStats = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const stats = await DailyQuote.findAll({
-      where: {
-        userId: userId,
-        generatedAt: {
-          [Op.gte]: thirtyDaysAgo
+    // Get overall stats using aggregation
+    const overallStats = await DailyQuote.aggregate([
+      {
+        $match: {
+          userId: userId,
+          generatedAt: { $gte: thirtyDaysAgo }
         }
       },
-      attributes: [
-        [DailyQuote.sequelize.fn('COUNT', DailyQuote.sequelize.col('id')), 'totalQuotes'],
-        [DailyQuote.sequelize.fn('COUNT', DailyQuote.sequelize.literal('CASE WHEN isFavorite = true THEN 1 END')), 'favoriteCount'],
-        [DailyQuote.sequelize.fn('COUNT', DailyQuote.sequelize.literal('CASE WHEN isAiGenerated = true THEN 1 END')), 'aiGeneratedCount']
-      ],
-      group: ['userId']
-    });
+      {
+        $group: {
+          _id: null,
+          totalQuotes: { $sum: 1 },
+          favoriteCount: {
+            $sum: { $cond: [{ $eq: ['$isFavorite', true] }, 1, 0] }
+          },
+          aiGeneratedCount: {
+            $sum: { $cond: [{ $eq: ['$isAiGenerated', true] }, 1, 0] }
+          }
+        }
+      }
+    ]);
 
-    const categoryStats = await DailyQuote.findAll({
-      where: {
-        userId: userId,
-        generatedAt: {
-          [Op.gte]: thirtyDaysAgo
+    // Get category stats using aggregation
+    const categoryStats = await DailyQuote.aggregate([
+      {
+        $match: {
+          userId: userId,
+          generatedAt: { $gte: thirtyDaysAgo }
         }
       },
-      attributes: [
-        'category',
-        [DailyQuote.sequelize.fn('COUNT', DailyQuote.sequelize.col('id')), 'count']
-      ],
-      group: ['category']
-    });
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          category: '$_id',
+          count: 1
+        }
+      }
+    ]);
 
     res.status(200).json({
       success: true,
       data: {
-        overall: stats[0] || { totalQuotes: 0, favoriteCount: 0, aiGeneratedCount: 0 },
+        overall: overallStats[0] || { totalQuotes: 0, favoriteCount: 0, aiGeneratedCount: 0 },
         byCategory: categoryStats
       },
       message: "Quote statistics retrieved successfully"

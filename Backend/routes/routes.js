@@ -3,6 +3,8 @@ import {
   registerUser,
   loginUser,
   changePassword,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/auth.controller.js";
 import { getUserProfile, updateUserProfile, updateUserPassword } from "../controllers/user.controller.js";
 import { getDailyQuote } from "../controllers/dailyQuote.controller.js";
@@ -21,21 +23,16 @@ import {
   deleteLocation,
   seedLocations
 } from "../controllers/location.controller.js";
-import {
-  getAllPsychologists,
-  getPsychologistById,
-  createPsychologist,
-  updatePsychologist,
-  deletePsychologist,
-  seedPsychologists
-} from "../controllers/psychologist.controller.js";
 import { protect } from "../middleware/protect.js";
+import { authenticate } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/auth/register", registerUser);
 router.post("/auth/login", loginUser);
 router.put("/auth/change-password/:id", changePassword);
+router.post("/auth/forgot-password", forgotPassword);
+router.post("/auth/reset-password", resetPassword);
 
 router.get("/user/profile", protect, getUserProfile);
 router.put("/user/profile", protect, updateUserProfile);
@@ -57,13 +54,4 @@ router.post('/locations', protect, createLocation);
 router.put('/locations/:id', protect, updateLocation);
 router.delete('/locations/:id', protect, deleteLocation);
 router.post('/locations/seed', protect, seedLocations);
-
-// Psychologist routes
-router.get('/psychologists', getAllPsychologists);
-router.get('/psychologists/:id', getPsychologistById);
-router.post('/psychologists', protect, createPsychologist);
-router.put('/psychologists/:id', protect, updatePsychologist);
-router.delete('/psychologists/:id', protect, deletePsychologist);
-router.post('/psychologists/seed', protect, seedPsychologists);
-
 export default router;

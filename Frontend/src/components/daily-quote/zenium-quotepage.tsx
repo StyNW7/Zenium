@@ -159,7 +159,7 @@ export function ZeniumQuotePage() {
                     <span className="mx-2">•</span>
                     <div className="flex items-center">
                       <User className="w-3 h-3 mr-1" />
-                      <span>Dibuat khusus untuk {user?.name || 'Anda'}</span>
+                      <span>Dibuat khusus untuk {user?.username || 'Anda'}</span>
                     </div>
                   </div>
                 )}
