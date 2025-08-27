@@ -4,8 +4,15 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Heart, Zap, Sparkles } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 export function SpotlightSection() {
+
+  const navigate = useNavigate()
+  const handleGetStarted = () => {
+    navigate("/register")
+  }
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       {/* Animated background elements */}
@@ -74,10 +81,12 @@ export function SpotlightSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-4">
+            <Button size="lg"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-4"
+              onClick={handleGetStarted}>
               <Zap className="w-5 h-5 mr-2" />
-              Start Your Journey
-            </Button>
+                Start Your Journey
+              </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-4 bg-transparent">
               <Heart className="w-5 h-5 mr-2" />
               Meet Melify
