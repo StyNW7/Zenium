@@ -1,5 +1,5 @@
 import { ZeniumMapPage } from "@/components/map-system/zenium-mappage";
 
-export default function MapSyetemPage() {
+export default function MapSystemPage() {
   return <ZeniumMapPage />
 }

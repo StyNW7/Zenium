@@ -64,7 +64,7 @@ export function ZeniumUserPage() {
       if (response.data && response.data.success) {
         setMessage({ 
           type: 'success', 
-          text: 'Profil berhasil diperbarui!' 
+          text: 'Profile updated successfully!' 
         });
       } else {
         throw new Error('Failed to update profile');
@@ -73,7 +73,7 @@ export function ZeniumUserPage() {
       console.error('Error updating profile:', error);
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.message || 'Gagal memperbarui profil. Silakan coba lagi.' 
+        text: error.response?.data?.message || 'Failed to update profile. Please try again.' 
       });
     } finally {
       setLoading(false);
@@ -86,7 +86,7 @@ export function ZeniumUserPage() {
     if (formData.newPassword !== formData.confirmPassword) {
       setMessage({ 
         type: 'error', 
-        text: 'Konfirmasi password baru tidak cocok.' 
+        text: 'New password confirmation does not match.' 
       });
       return;
     }
@@ -118,7 +118,7 @@ export function ZeniumUserPage() {
       if (response.data && response.data.success) {
         setMessage({ 
           type: 'success', 
-          text: 'Password berhasil diubah!' 
+          text: 'Password changed successfully!' 
         });
         
         // Reset password fields
@@ -135,7 +135,7 @@ export function ZeniumUserPage() {
       console.error('Error changing password:', error);
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.message || 'Gagal mengubah password. Pastikan password saat ini benar.' 
+        text: error.response?.data?.message || 'Failed to change password. Make sure your current password is correct.' 
       });
     } finally {
       setLoading(false);
@@ -160,7 +160,7 @@ export function ZeniumUserPage() {
               <ArrowLeft className="w-5 h-5" />
             </button>
             <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent">
-              Pengaturan Profil
+              Profile Settings
             </h1>
           </div>
         </div>
@@ -174,20 +174,20 @@ export function ZeniumUserPage() {
             className={`px-4 py-2 font-medium ${activeTab === 'profile' ? 'text-yellow-500 border-b-2 border-yellow-500' : 'text-gray-400 hover:text-gray-300'}`}
             onClick={() => setActiveTab('profile')}
           >
-            Profil
+            Profile
           </button>
           <button
             className={`px-4 py-2 font-medium ${activeTab === 'security' ? 'text-yellow-500 border-b-2 border-yellow-500' : 'text-gray-400 hover:text-gray-300'}`}
             onClick={() => setActiveTab('security')}
           >
-            Keamanan
+            Security
           </button>
         </div>
 
         {/* Profile Tab */}
         {activeTab === 'profile' && (
           <div className="bg-gray-900/50 rounded-lg border border-yellow-500/20 p-6">
-            <h2 className="text-lg font-medium text-yellow-400 mb-4">Informasi Profil</h2>
+            <h2 className="text-lg font-medium text-yellow-400 mb-4">Profile Information</h2>
             
             {message.type && (
               <div className={`p-3 mb-4 rounded-md flex items-center ${message.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
@@ -243,12 +243,12 @@ export function ZeniumUserPage() {
                     {loading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Memperbarui...
+                        Updating...
                       </>
                     ) : (
                       <>
                         <Save className="w-4 h-4 mr-2" />
-                        Simpan Perubahan
+                        Save Changes
                       </>
                     )}
                   </button>
@@ -261,7 +261,7 @@ export function ZeniumUserPage() {
         {/* Security Tab */}
         {activeTab === 'security' && (
           <div className="bg-gray-900/50 rounded-lg border border-yellow-500/20 p-6">
-            <h2 className="text-lg font-medium text-yellow-400 mb-4">Ubah Password</h2>
+            <h2 className="text-lg font-medium text-yellow-400 mb-4">Change Password</h2>
             
             {message.type && (
               <div className={`p-3 mb-4 rounded-md flex items-center ${message.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
@@ -273,7 +273,7 @@ export function ZeniumUserPage() {
             <form onSubmit={changePassword}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Password Saat Ini</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Current Password</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Key className="w-5 h-5 text-gray-500" />
@@ -284,14 +284,14 @@ export function ZeniumUserPage() {
                       value={formData.currentPassword}
                       onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white"
-                      placeholder="Password saat ini"
+                      placeholder="Current password"
                       required
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Password Baru</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">New Password</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Key className="w-5 h-5 text-gray-500" />
@@ -302,7 +302,7 @@ export function ZeniumUserPage() {
                       value={formData.newPassword}
                       onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white"
-                      placeholder="Password baru"
+                      placeholder="New password"
                       required
                       minLength={6}
                     />
@@ -310,7 +310,7 @@ export function ZeniumUserPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Konfirmasi Password Baru</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Confirm New Password</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Key className="w-5 h-5 text-gray-500" />
@@ -321,7 +321,7 @@ export function ZeniumUserPage() {
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white"
-                      placeholder="Konfirmasi password baru"
+                      placeholder="Confirm new password"
                       required
                       minLength={6}
                     />
@@ -337,12 +337,12 @@ export function ZeniumUserPage() {
                     {loading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Memperbarui...
+                        Updating...
                       </>
                     ) : (
                       <>
                         <Save className="w-4 h-4 mr-2" />
-                        Ubah Password
+                        Change Password
                       </>
                     )}
                   </button>
@@ -351,8 +351,8 @@ export function ZeniumUserPage() {
             </form>
             
             <div className="mt-8 pt-6 border-t border-gray-800">
-              <h3 className="text-md font-medium text-red-400 mb-2">Keluar dari Akun</h3>
-              <p className="text-sm text-gray-400 mb-4">Anda akan keluar dari akun dan diarahkan ke halaman login.</p>
+              <h3 className="text-md font-medium text-red-400 mb-2">Logout</h3>
+              <p className="text-sm text-gray-400 mb-4">You will be logged out and redirected to the login page.</p>
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-medium rounded-lg transition-colors duration-300"

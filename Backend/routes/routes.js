@@ -21,7 +21,14 @@ import {
   createLocation,
   updateLocation,
   deleteLocation,
-  seedLocations
+  seedLocations,
+  analyzeLocationMentalHealth,
+  batchAnalyzeLocations,
+  getUserAnalysisHistory,
+  getUserMentalHealthInsights,
+  addLocationFeedback,
+  getTopPeacefulLocations,
+  saveUserGeospatialAnalysis
 } from "../controllers/location.controller.js";
 import { protect } from "../middleware/protect.js";
 import { authenticate } from "../middleware/authMiddleware.js";
@@ -54,4 +61,15 @@ router.post('/locations', protect, createLocation);
 router.put('/locations/:id', protect, updateLocation);
 router.delete('/locations/:id', protect, deleteLocation);
 router.post('/locations/seed', protect, seedLocations);
+
+// Mental Health Analysis routes
+router.post('/locations/analyze', protect, analyzeLocationMentalHealth);
+router.post('/locations/batch-analyze', protect, batchAnalyzeLocations);
+router.get('/locations/top-peaceful', getTopPeacefulLocations);
+router.get('/user/analysis-history', protect, getUserAnalysisHistory);
+router.get('/user/mental-health-insights', protect, getUserMentalHealthInsights);
+router.post('/locations/:id/feedback', protect, addLocationFeedback);
+
+// PeaceFinder geospatial analysis save endpoint
+router.post('/analysis/save', protect, saveUserGeospatialAnalysis);
 export default router;

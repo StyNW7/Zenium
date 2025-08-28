@@ -231,11 +231,11 @@ export function ZeniumJournalingPage() {
   const renderMoodIcon = (mood: 'happy' | 'neutral' | 'sad') => {
     switch (mood) {
       case 'happy':
-        return <Smile className="w-5 h-5 text-green-400" />;
+        return <Smile className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />;
       case 'neutral':
-        return <Meh className="w-5 h-5 text-yellow-400" />;
+        return <Meh className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />;
       case 'sad':
-        return <Frown className="w-5 h-5 text-red-400" />;
+        return <Frown className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />;
       default:
         return null;
     }
@@ -245,13 +245,13 @@ export function ZeniumJournalingPage() {
   const renderWeatherIcon = (weather: 'sunny' | 'cloudy' | 'rainy' | 'night') => {
     switch (weather) {
       case 'sunny':
-        return <Sun className="w-5 h-5 text-yellow-400" />;
+        return <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />;
       case 'cloudy':
-        return <Cloud className="w-5 h-5 text-gray-400" />;
+        return <Cloud className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />;
       case 'rainy':
-        return <CloudRain className="w-5 h-5 text-blue-400" />;
+        return <CloudRain className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />;
       case 'night':
-        return <Moon className="w-5 h-5 text-indigo-400" />;
+        return <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400" />;
       default:
         return null;
     }
@@ -259,28 +259,28 @@ export function ZeniumJournalingPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-10 bg-black/80 backdrop-blur-md border-b border-yellow-500/20 px-4 py-4">
+      {/* Header - responsive */}
+      <div className="fixed top-0 left-0 right-0 z-10 bg-black/80 backdrop-blur-md border-b border-yellow-500/20 px-3 sm:px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <button
               onClick={() => navigate('/main')}
-              className="mr-4 p-2 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300"
+              className="mr-2 sm:mr-4 p-2 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300 touch-manipulation"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent">
+            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent">
               Digital Journaling
             </h1>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 sm:space-x-2">
             <button 
               onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
-              className="p-2 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300"
+              className="p-2 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300 touch-manipulation"
               title={sortOrder === 'newest' ? 'Terlama Dulu' : 'Terbaru Dulu'}
             >
-              {sortOrder === 'newest' ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+              {sortOrder === 'newest' ? <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" /> : <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5" />}
             </button>
             <button 
               onClick={() => {
@@ -288,42 +288,42 @@ export function ZeniumJournalingPage() {
                 setIsEditing(false);
                 setCurrentEntry(null);
               }}
-              className="p-2 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300"
+              className="p-2 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300 touch-manipulation"
               title="Buat Jurnal Baru"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="mt-4 relative">
+        {/* Search Bar - responsive */}
+        <div className="mt-3 sm:mt-4 relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="w-5 h-5 text-gray-400" />
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
           </div>
           <input
             type="text"
             placeholder="Cari jurnal..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-900/80 border border-yellow-500/20 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white"
+            className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 bg-gray-900/80 border border-yellow-500/20 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white text-sm sm:text-base"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="pt-28 pb-4 px-4">
+      {/* Main Content - responsive padding */}
+      <div className="pt-24 sm:pt-28 pb-4 px-3 sm:px-4">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="flex flex-col items-center">
-              <div className="w-10 h-10 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-              <p className="mt-4 text-gray-400">Memuat jurnal...</p>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+              <p className="mt-4 text-gray-400 text-sm sm:text-base">Memuat jurnal...</p>
             </div>
           </div>
         ) : isCreating || isEditing ? (
-          <div className="bg-gray-900/50 rounded-lg border border-yellow-500/20 p-4">
+          <div className="bg-gray-900/50 rounded-lg border border-yellow-500/20 p-3 sm:p-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-medium text-yellow-400">
+              <h2 className="text-base sm:text-lg font-medium text-yellow-400">
                 {isEditing ? 'Edit Jurnal' : 'Jurnal Baru'}
               </h2>
               <button 
@@ -333,18 +333,18 @@ export function ZeniumJournalingPage() {
                   setCurrentEntry(null);
                   resetForm();
                 }}
-                className="p-1 rounded-full hover:bg-gray-800 transition-colors duration-300"
+                className="p-1 rounded-full hover:bg-gray-800 transition-colors duration-300 touch-manipulation"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Judul</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-1">Judul</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white text-sm sm:text-base"
                   placeholder="Judul jurnal"
                   value={isEditing ? currentEntry?.title || '' : newEntry.title || ''}
                   onChange={(e) => isEditing 
@@ -355,9 +355,9 @@ export function ZeniumJournalingPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Konten</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-1">Konten</label>
                 <textarea
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white min-h-[200px]"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white min-h-[150px] sm:min-h-[200px] text-sm sm:text-base resize-none"
                   placeholder="Tulis jurnal Anda di sini..."
                   value={isEditing ? currentEntry?.content || '' : newEntry.content || ''}
                   onChange={(e) => isEditing 
@@ -367,89 +367,89 @@ export function ZeniumJournalingPage() {
                 ></textarea>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Mood</label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-2">Mood</label>
                   <div className="flex space-x-2">
                     <button 
-                      className={`p-2 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.mood : newEntry.mood) === 'happy' ? 'bg-green-500/20 border border-green-500/50' : 'bg-gray-800 border border-gray-700'}`}
+                      className={`p-2 sm:p-3 rounded-lg flex items-center justify-center flex-1 sm:flex-none ${(isEditing ? currentEntry?.mood : newEntry.mood) === 'happy' ? 'bg-green-500/20 border border-green-500/50' : 'bg-gray-800 border border-gray-700'} touch-manipulation`}
                       onClick={() => isEditing 
                         ? setCurrentEntry({ ...currentEntry!, mood: 'happy' })
                         : setNewEntry({ ...newEntry, mood: 'happy' })
                       }
                     >
-                      <Smile className="w-6 h-6 text-green-400" />
+                      <Smile className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" />
                     </button>
                     <button 
-                      className={`p-2 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.mood : newEntry.mood) === 'neutral' ? 'bg-yellow-500/20 border border-yellow-500/50' : 'bg-gray-800 border border-gray-700'}`}
+                      className={`p-2 sm:p-3 rounded-lg flex items-center justify-center flex-1 sm:flex-none ${(isEditing ? currentEntry?.mood : newEntry.mood) === 'neutral' ? 'bg-yellow-500/20 border border-yellow-500/50' : 'bg-gray-800 border border-gray-700'} touch-manipulation`}
                       onClick={() => isEditing 
                         ? setCurrentEntry({ ...currentEntry!, mood: 'neutral' })
                         : setNewEntry({ ...newEntry, mood: 'neutral' })
                       }
                     >
-                      <Meh className="w-6 h-6 text-yellow-400" />
+                      <Meh className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
                     </button>
                     <button 
-                      className={`p-2 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.mood : newEntry.mood) === 'sad' ? 'bg-red-500/20 border border-red-500/50' : 'bg-gray-800 border border-gray-700'}`}
+                      className={`p-2 sm:p-3 rounded-lg flex items-center justify-center flex-1 sm:flex-none ${(isEditing ? currentEntry?.mood : newEntry.mood) === 'sad' ? 'bg-red-500/20 border border-red-500/50' : 'bg-gray-800 border border-gray-700'} touch-manipulation`}
                       onClick={() => isEditing 
                         ? setCurrentEntry({ ...currentEntry!, mood: 'sad' })
                         : setNewEntry({ ...newEntry, mood: 'sad' })
                       }
                     >
-                      <Frown className="w-6 h-6 text-red-400" />
+                      <Frown className="w-5 h-5 sm:w-6 sm:h-6 text-red-400" />
                     </button>
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Cuaca</label>
-                  <div className="flex space-x-2">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-2">Cuaca</label>
+                  <div className="grid grid-cols-4 gap-2">
                     <button 
-                      className={`p-2 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.weather : newEntry.weather) === 'sunny' ? 'bg-yellow-500/20 border border-yellow-500/50' : 'bg-gray-800 border border-gray-700'}`}
+                      className={`p-2 sm:p-3 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.weather : newEntry.weather) === 'sunny' ? 'bg-yellow-500/20 border border-yellow-500/50' : 'bg-gray-800 border border-gray-700'} touch-manipulation`}
                       onClick={() => isEditing 
                         ? setCurrentEntry({ ...currentEntry!, weather: 'sunny' })
                         : setNewEntry({ ...newEntry, weather: 'sunny' })
                       }
                     >
-                      <Sun className="w-6 h-6 text-yellow-400" />
+                      <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
                     </button>
                     <button 
-                      className={`p-2 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.weather : newEntry.weather) === 'cloudy' ? 'bg-gray-500/20 border border-gray-500/50' : 'bg-gray-800 border border-gray-700'}`}
+                      className={`p-2 sm:p-3 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.weather : newEntry.weather) === 'cloudy' ? 'bg-gray-500/20 border border-gray-500/50' : 'bg-gray-800 border border-gray-700'} touch-manipulation`}
                       onClick={() => isEditing 
                         ? setCurrentEntry({ ...currentEntry!, weather: 'cloudy' })
                         : setNewEntry({ ...newEntry, weather: 'cloudy' })
                       }
                     >
-                      <Cloud className="w-6 h-6 text-gray-400" />
+                      <Cloud className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
                     </button>
                     <button 
-                      className={`p-2 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.weather : newEntry.weather) === 'rainy' ? 'bg-blue-500/20 border border-blue-500/50' : 'bg-gray-800 border border-gray-700'}`}
+                      className={`p-2 sm:p-3 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.weather : newEntry.weather) === 'rainy' ? 'bg-blue-500/20 border border-blue-500/50' : 'bg-gray-800 border border-gray-700'} touch-manipulation`}
                       onClick={() => isEditing 
                         ? setCurrentEntry({ ...currentEntry!, weather: 'rainy' })
                         : setNewEntry({ ...newEntry, weather: 'rainy' })
                       }
                     >
-                      <CloudRain className="w-6 h-6 text-blue-400" />
+                      <CloudRain className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
                     </button>
                     <button 
-                      className={`p-2 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.weather : newEntry.weather) === 'night' ? 'bg-indigo-500/20 border border-indigo-500/50' : 'bg-gray-800 border border-gray-700'}`}
+                      className={`p-2 sm:p-3 rounded-lg flex items-center justify-center ${(isEditing ? currentEntry?.weather : newEntry.weather) === 'night' ? 'bg-indigo-500/20 border border-indigo-500/50' : 'bg-gray-800 border border-gray-700'} touch-manipulation`}
                       onClick={() => isEditing 
                         ? setCurrentEntry({ ...currentEntry!, weather: 'night' })
                         : setNewEntry({ ...newEntry, weather: 'night' })
                       }
                     >
-                      <Moon className="w-6 h-6 text-indigo-400" />
+                      <Moon className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-400" />
                     </button>
                   </div>
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Tag</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-1">Tag</label>
                 <div className="flex">
                   <input
                     type="text"
-                    className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-yellow-500/50 text-white"
+                    className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-yellow-500/50 text-white text-sm sm:text-base"
                     placeholder="Tambahkan tag"
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
@@ -457,13 +457,14 @@ export function ZeniumJournalingPage() {
                   />
                   <button 
                     onClick={addTag}
-                    className="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-r-lg transition-colors duration-300"
+                    className="px-2 sm:px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-r-lg transition-colors duration-300 text-xs sm:text-sm touch-manipulation"
                   >
-                    Tambah
+                    <span className="hidden sm:inline">Tambah</span>
+                    <span className="sm:hidden">+</span>
                   </button>
                 </div>
                 
-                <div className="flex flex-wrap gap-2 mt-2">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
                   {(isEditing ? currentEntry?.tags : newEntry.tags)?.map((tag, index) => (
                     <div 
                       key={index} 
@@ -472,7 +473,7 @@ export function ZeniumJournalingPage() {
                       <span className="text-xs">{tag}</span>
                       <button 
                         onClick={() => removeTag(tag)}
-                        className="ml-1 p-0.5 rounded-full hover:bg-gray-700"
+                        className="ml-1 p-0.5 rounded-full hover:bg-gray-700 touch-manipulation"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -481,10 +482,10 @@ export function ZeniumJournalingPage() {
                 </div>
               </div>
               
-              <div className="flex justify-end">
+              <div className="flex justify-end pt-2">
                 <button 
                   onClick={isEditing ? updateEntry : createEntry}
-                  className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors duration-300 flex items-center"
+                  className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors duration-300 flex items-center justify-center text-sm sm:text-base touch-manipulation"
                   disabled={!(isEditing ? currentEntry?.title && currentEntry?.content : newEntry.title && newEntry.content)}
                 >
                   <Save className="w-4 h-4 mr-2" />
@@ -494,64 +495,65 @@ export function ZeniumJournalingPage() {
             </div>
           </div>
         ) : filteredEntries.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-center">
-            <Calendar className="w-16 h-16 text-gray-600 mb-4" />
-            <h3 className="text-xl font-medium text-gray-400">Belum ada jurnal</h3>
-            <p className="text-gray-500 mt-2">Mulai tulis jurnal pertama Anda</p>
+          <div className="flex flex-col items-center justify-center h-64 text-center px-4">
+            <Calendar className="w-12 h-12 sm:w-16 sm:h-16 text-gray-600 mb-4" />
+            <h3 className="text-lg sm:text-xl font-medium text-gray-400">Belum ada jurnal</h3>
+            <p className="text-sm sm:text-base text-gray-500 mt-2">Mulai tulis jurnal pertama Anda</p>
             <button 
               onClick={() => setIsCreating(true)}
-              className="mt-4 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors duration-300 flex items-center"
+              className="mt-4 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors duration-300 flex items-center text-sm sm:text-base touch-manipulation"
             >
               <Plus className="w-4 h-4 mr-2" />
               Buat Jurnal Baru
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {filteredEntries.map((entry) => (
               <div 
                 key={entry.id} 
-                className="bg-gray-900/50 rounded-lg overflow-hidden border border-yellow-500/20 hover:border-yellow-500/40 transition-colors duration-300 p-4"
+                className="bg-gray-900/50 rounded-lg overflow-hidden border border-yellow-500/20 hover:border-yellow-500/40 transition-colors duration-300 p-3 sm:p-4"
               >
                 <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-lg font-medium text-white">{entry.title}</h3>
-                    <div className="flex items-center mt-1 text-sm text-gray-400">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      <span>{formatDate(entry.date)}</span>
-                      <div className="mx-2 w-1 h-1 bg-gray-600 rounded-full"></div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-base sm:text-lg font-medium text-white truncate pr-2">{entry.title}</h3>
+                    <div className="flex flex-wrap items-center mt-1 text-xs sm:text-sm text-gray-400 gap-2">
                       <div className="flex items-center">
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                        <span className="truncate">{formatDate(entry.date)}</span>
+                      </div>
+                      <div className="w-1 h-1 bg-gray-600 rounded-full hidden sm:block"></div>
+                      <div className="flex items-center gap-1">
                         {renderMoodIcon(entry.mood)}
-                        <div className="mx-1"></div>
                         {renderWeatherIcon(entry.weather)}
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex space-x-1">
+                  <div className="flex space-x-1 flex-shrink-0 ml-2">
                     <button 
                       onClick={() => startEditing(entry)}
-                      className="p-1.5 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300"
+                      className="p-1.5 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300 touch-manipulation"
                       title="Edit"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                     <button 
                       onClick={() => deleteEntry(entry.id)}
-                      className="p-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 transition-colors duration-300"
+                      className="p-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 transition-colors duration-300 touch-manipulation"
                       title="Hapus"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   </div>
                 </div>
                 
-                <div className="mt-3">
-                  <p className="text-gray-300 whitespace-pre-line">{entry.content}</p>
+                <div className="mt-2 sm:mt-3">
+                  <p className="text-gray-300 whitespace-pre-line text-sm sm:text-base leading-relaxed">{entry.content}</p>
                 </div>
                 
                 {entry.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
                     {entry.tags.map((tag, index) => (
                       <span 
                         key={index} 

@@ -26,7 +26,7 @@ import UserPage from "@/pages/User/page";
 import RecommendationSystemPage from "@/pages/Recommendation-System/page";
 import JournalingPage from "@/pages/Journaling/page";
 import QuotePage from "./pages/Daily-Quote/page";
-import MapPage from "@/pages/Map-System/page";
+import MapSystemPage from "@/pages/Map-System/page";
 import MainPage from "@/pages/Main/page";
 import ForgotPasswordPage from "./pages/Forgot-Password/page";
 
@@ -126,7 +126,7 @@ function App() {
                   path="map" 
                   element={
                     <ProtectedRoute>
-                      <MapPage />
+                      <MapSystemPage />
                     </ProtectedRoute>
                   } 
                 />
