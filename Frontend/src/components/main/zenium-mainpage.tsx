@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   User, 
-  Settings, 
   Quote, 
   Map, 
   BookOpen, 
@@ -14,12 +13,15 @@ import {
   Brain,
   TrendingUp,
 } from 'lucide-react';
+import { useAuth } from '@/contexts/authcontext';
+import Image from '@/assets/logo.png';
 
 export function ZeniumMainPage() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const navigate = useNavigate();
-    
+  const { user } = useAuth();
+
   const navigationItems = [
     {
       id: 'daily-quote',
@@ -117,9 +119,7 @@ export function ZeniumMainPage() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                <Zap className="w-6 h-6 text-black" />
-              </div>
+              <img src={Image} alt="Logo Zenium" className="w-12 h-12" />
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent">
                   Zenium
@@ -157,22 +157,12 @@ export function ZeniumMainPage() {
 
                 {/* User Dropdown */}
                 {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-gray-900/95 backdrop-blur-md rounded-xl shadow-2xl border border-yellow-500/20 z-50">
+                  <div className="absolute right-0 mt-2 w-56 bg-black backdrop-blur-md rounded-xl shadow-2xl border border-yellow-500/20 z-50">
                     <div className="py-2">
                       <div className="px-4 py-3 border-b border-yellow-500/20">
                         <p className="text-sm font-medium text-yellow-400">Welcome back!</p>
-                        <p className="text-xs text-gray-400">user@zenium.com</p>
+                        <p className="text-xs text-gray-400">{user?.username}</p>
                       </div>
-                      <button 
-                        onClick={() => {
-                          handleNavigation('user-setting');
-                          setShowUserMenu(false);
-                        }}
-                        className="flex items-center space-x-3 w-full px-4 py-3 text-sm text-gray-300 hover:text-yellow-400 hover:bg-gradient-to-r hover:from-yellow-500/10 hover:to-yellow-600/10 transition-all duration-300"
-                      >
-                        <Settings className="w-4 h-4" />
-                        <span>User Settings</span>
-                      </button>
                       <button 
                         onClick={() => {
                           handleNavigation('user');
@@ -181,7 +171,7 @@ export function ZeniumMainPage() {
                         className="flex items-center space-x-3 w-full px-4 py-3 text-sm text-gray-300 hover:text-yellow-400 hover:bg-gradient-to-r hover:from-yellow-500/10 hover:to-yellow-600/10 transition-all duration-300"
                       >
                         <User className="w-4 h-4" />
-                        <span>Profile</span>
+                        <span>Profile Setting</span>
                       </button>
                     </div>
                   </div>

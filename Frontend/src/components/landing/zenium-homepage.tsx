@@ -12,6 +12,7 @@ import { StatsSection } from "./stats-section"
 import { TestimonialSection } from "./testimonial-section"
 import { useNavigate } from "react-router"
 import { useState } from "react"
+import Image from '@/assets/logo.png';
 
 export function ZeniumHomepage() {
   const navigate = useNavigate()
@@ -38,7 +39,7 @@ export function ZeniumHomepage() {
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Zap className="h-8 w-8 text-primary" />
+            <img src={Image} alt="Logo Zenium" className="w-12 h-12" />
             <span className="text-2xl font-bold text-foreground">Zenium</span>
           </div>
           
