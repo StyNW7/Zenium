@@ -129,7 +129,7 @@ function App() {
                       <MapPage />
                     </ProtectedRoute>
                   } 
-                />
+                /> 
                 
                 {/* 404 Page */}
                 <Route path="*" element={<NotFoundPage />} />
