@@ -33,8 +33,8 @@ export function ZeniumMainPage() {
     },
     {
       id: 'map-system',
-      title: 'Map System',
-      description: 'Discover mental health resources and support centers near you',
+      title: 'Peace-Finder',
+      description: 'Find peace and analyze peaceful percetage in area',
       icon: Map,
       gradient: 'from-yellow-500 via-yellow-400 to-yellow-600',
       bgColor: 'from-yellow-400/10 to-yellow-500/10'

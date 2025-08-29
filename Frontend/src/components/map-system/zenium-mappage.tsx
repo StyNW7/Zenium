@@ -1,12 +1,75 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Search, Layers, Info, User, Smile, Frown, Loader } from 'lucide-react';
-import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import {
+  ArrowLeft,
+  MapPin,
+  Search,
+  Brain,
+  Save,
+  Loader,
+  History,
+  X,
+  Trash2,
+  Eye,
+  LocateFixed,
+  Menu
+} from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
-// Fix Leaflet icon issue
+// Helpers
+const getAuthToken = (): string | null => {
+  // Ambil dari localStorage dan sanitasi
+  const raw = localStorage.getItem('token') ?? localStorage.getItem('authToken');
+  if (!raw) return null;
+
+  let t = raw.trim();
+
+  // Jika token tersimpan pakai tanda kutip (mis. JSON.stringify token string)
+  if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) {
+    t = t.slice(1, -1);
+  }
+
+  // Jika token sudah mengandung "Bearer " di depan, buang prefix-nya
+  if (t.toLowerCase().startsWith('bearer ')) {
+    t = t.slice(7).trim();
+  }
+
+  return t || null;
+};
+
+const notify = async (
+  icon: 'success' | 'error' | 'warning' | 'info' | 'question',
+  title: string,
+  text?: string
+) => {
+  try {
+    await Swal.fire({ icon, title, text });
+  } catch {
+    alert(`${title}${text ? `\n${text}` : ''}`);
+  }
+};
+
+const confirmDialog = async (title: string, text?: string) => {
+  try {
+    const res = await Swal.fire({
+      icon: 'warning',
+      title,
+      text,
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'Cancel',
+    });
+    return res.isConfirmed;
+  } catch {
+    return confirm(title);
+  }
+};
+
+// Fix Leaflet default icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
@@ -14,573 +77,667 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
 
-interface Location {
-  id: string;
-  name: string;
-  type: string;
+interface AnalysisResult {
+  peacefulnessScore: number;
+  peacefulnessLabel: string;
+  areaDistribution: {
+    greenBlueSpaces: number;
+    buildings: number;
+    roads: number;
+    neutral: number;
+  };
+  aiAnalysis: {
+    description: string;
+    recommendations: string[];
+    healingSpots: Array<{
+      name: string;
+      coordinates: [number, number];
+      reason: string;
+    }>;
+  };
+  location: {
+    coordinates: [number, number];
+  };
   address: string;
-  lat: number;
-  lng: number;
-  rating?: number;
-  moodScore?: number;
-  description?: string;
-  services?: string[];
-  distance?: number;
 }
 
-interface EnvironmentAnalysis {
-  location: string;
-  moodScore: number;
-  factors: {
-    greenery: number;
-    crowding: number;
-    noise: number;
+interface SavedAnalysis {
+  _id: string;
+  peacefulnessScore: number;
+  peacefulnessLabel: string;
+  address: string;
+  location: {
+    coordinates: [number, number];
   };
-  recommendation: string;
+  createdAt: string;
+}
+
+interface Suggestion {
+  display_name: string;
+  lat: string;
+  lon: string;
 }
 
 export function ZeniumMapPage() {
   const navigate = useNavigate();
   const mapRef = useRef<any>(null);
+
+  // Geospatial state
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [mapLayer, setMapLayer] = useState<'street' | 'satellite'>('street');
+  const [pinnedLocation, setPinnedLocation] = useState<[number, number] | null>(null);
+  const [pinnedAddress, setPinnedAddress] = useState('');
+
+  // UI state
   const [loading, setLoading] = useState(true);
-  const [environmentAnalysis, setEnvironmentAnalysis] = useState<EnvironmentAnalysis | null>(null);
-  const [showAnalysisPanel, setShowAnalysisPanel] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isPinModeEnabled, setIsPinModeEnabled] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-  // Default locations for demo purposes
-  const demoLocations: Location[] = [
-    {
-      id: '1',
-      name: 'Klinik Psikolog Sehat Mental',
-      type: 'clinic',
-      address: 'Jl. Sudirman No. 123, Jakarta',
-      lat: -6.2088,
-      lng: 106.8456,
-      rating: 4.5,
-      moodScore: 85,
-      description: 'Klinik psikolog profesional dengan layanan konseling individual dan kelompok',
-      services: ['Konseling Individual', 'Terapi Keluarga', 'Tes Psikologi'],
-      distance: 0.5
-    },
-    {
-      id: '2',
-      name: 'Taman Menteng',
-      type: 'park',
-      address: 'Menteng, Jakarta Pusat',
-      lat: -6.1944,
-      lng: 106.8294,
-      moodScore: 90,
-      description: 'Taman hijau yang cocok untuk relaksasi dan olahraga ringan',
-      services: ['Area Jogging', 'Playground', 'WiFi Gratis'],
-      distance: 1.2
-    },
-    {
-      id: '3',
-      name: 'Cafe Mindful',
-      type: 'cafe',
-      address: 'Jl. Kemang Raya No. 45, Jakarta Selatan',
-      lat: -6.2615,
-      lng: 106.8106,
-      moodScore: 75,
-      description: 'Cafe dengan suasana tenang, cocok untuk refleksi dan journaling',
-      services: ['WiFi', 'Quiet Zone', 'Healthy Menu'],
-      distance: 2.1
-    }
-  ];
+  // Analysis
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [savedAnalyses, setSavedAnalyses] = useState<SavedAnalysis[]>([]);
 
-  // Get user location
+  // Search
+  const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const debounceTimer = useRef<number | null>(null);
+
+  const apiUrl = useMemo(
+    () => import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
+    []
+  );
+
+  // Geolocation
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
         setUserLocation([latitude, longitude]);
-        fetchNearbyLocations(latitude, longitude);
-        analyzeEnvironment(latitude, longitude);
+        setLoading(false);
       },
-      (error) => {
-        console.error('Error getting location:', error);
-        // Default to Jakarta if can't get location
+      async () => {
+        await notify('warning', 'Location disabled', 'Using Jakarta as default.');
         setUserLocation([-6.2088, 106.8456]);
-        fetchNearbyLocations(-6.2088, 106.8456);
-        analyzeEnvironment(-6.2088, 106.8456);
+        setLoading(false);
       }
     );
   }, []);
 
-  // Fetch nearby locations
-  const fetchNearbyLocations = async (lat: number, lng: number) => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        // Use demo data if no token
-        setLocations(demoLocations);
-        setLoading(false);
-        return;
+  // Load history
+  useEffect(() => {
+    (async () => {
+      try {
+        const token = getAuthToken();
+        if (!token) return;
+        const res = await axios.get(`${apiUrl}/analysis`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.data?.success) setSavedAnalyses(res.data.data);
+      } catch {
+        // ignore history load errors
       }
-      
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-      const response = await axios.get(
-        `${apiUrl}/locations`, 
-        {
-          params: {
-            lat,
-            lng,
-            radius: 10,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`
+    })();
+  }, [apiUrl]);
+
+  // Debounced suggestions
+  useEffect(() => {
+    if (debounceTimer.current) window.clearTimeout(debounceTimer.current);
+
+    if (!searchQuery || searchQuery.trim().length < 3) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    debounceTimer.current = window.setTimeout(async () => {
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&q=${encodeURIComponent(
+          searchQuery
+        )}`;
+        const res = await axios.get(url);
+        setSuggestions(res.data || []);
+        setShowSuggestions(true);
+      } catch (e) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 350);
+  }, [searchQuery]);
+
+  const centerMap = (lat: number, lng: number, zoom = 15) => {
+    if (mapRef.current) mapRef.current.setView([lat, lng], zoom);
+  };
+
+  const onSelectSuggestion = (s: Suggestion) => {
+    const lat = parseFloat(s.lat);
+    const lng = parseFloat(s.lon);
+    setPinnedLocation([lat, lng]);
+    setPinnedAddress(s.display_name);
+    centerMap(lat, lng);
+    setShowSuggestions(false);
+  };
+
+  const clearPin = () => {
+    setPinnedLocation(null);
+    setPinnedAddress('');
+    setAnalysisResult(null);
+  };
+
+  const useMyLocation = () => {
+    if (!userLocation) return;
+    const [lat, lng] = userLocation;
+    setPinnedLocation([lat, lng]);
+    setPinnedAddress('Your current location');
+    centerMap(lat, lng);
+  };
+
+  // Reverse geocoding
+  const getAddressFromCoordinates = async (lat: number, lng: number): Promise<string> => {
+    try {
+      const res = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`
+      );
+      return res.data?.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    } catch {
+      return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    }
+  };
+
+  // Analyze
+  const analyzeLocation = async () => {
+    if (!pinnedLocation) return;
+    setIsAnalyzing(true);
+
+    const address =
+      pinnedAddress || (await getAddressFromCoordinates(pinnedLocation[0], pinnedLocation[1]));
+    const payload = {
+      coordinates: [pinnedLocation[1], pinnedLocation[0]] as [number, number], // [lng, lat]
+      address,
+      mapImageUrl: null as string | null,
+    };
+
+    const onSuccess = async (data: AnalysisResult) => {
+      setAnalysisResult(data);
+
+      // Auto-save analysis to DB if user is authenticated
+      try {
+        const token2 = getAuthToken();
+        if (token2) {
+          const saveRes = await axios.post(`${apiUrl}/analysis/save`, data, {
+            headers: { Authorization: `Bearer ${token2}` },
+          });
+          if (saveRes.data?.success && saveRes.data?.data) {
+            setSavedAnalyses((prev) => [saveRes.data.data, ...prev]);
+            await notify(
+              'success',
+              'Analysis complete',
+              `Saved to your history. Peacefulness: ${data.peacefulnessScore}/100 - ${data.peacefulnessLabel}`
+            );
+            return;
           }
         }
-      );
-      
-      if (response.data && response.data.success) {
-        const apiLocations = response.data.data.map((loc: any) => ({
-          id: loc._id,
-          name: loc.name,
-          type: loc.type,
-          address: loc.address,
-          lat: loc.location.coordinates[1],
-          lng: loc.location.coordinates[0],
-          rating: loc.rating,
-          moodScore: loc.moodScore || 75,
-          description: loc.description,
-          services: loc.services,
-          distance: calculateDistance(lat, lng, loc.location.coordinates[1], loc.location.coordinates[0])
-        }));
-        
-        setLocations(apiLocations);
-      } else {
-        setLocations(demoLocations);
+      } catch (err) {
+        // ignore auto-save errors and show default success message
       }
-    } catch (error) {
-      console.error('Error fetching nearby locations:', error);
-      // Use demo data on error
-      setLocations(demoLocations);
+
+      await notify(
+        'success',
+        'Analysis complete',
+        `Peacefulness: ${data.peacefulnessScore}/100 - ${data.peacefulnessLabel}`
+      );
+    };
+
+    try {
+      const token = getAuthToken();
+      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : undefined;
+
+      const res = await axios.post(`${apiUrl}/analysis/analyze`, payload, config);
+      if (res.data?.success) {
+        await onSuccess(res.data.data);
+      } else {
+        await notify('error', 'Failed to analyze', res.data?.message || 'Please try again.');
+      }
+    } catch (e: any) {
+      const status = e?.response?.status;
+      const message = e?.response?.data?.message || e?.message;
+
+      // Jika token invalid/expired dan endpoint mengizinkan anonim,
+      // hapus token dan coba ulang tanpa Authorization sekali.
+      if (status === 401 && /token|jwt|unauthor/i.test(String(message))) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
+        try {
+          const res2 = await axios.post(`${apiUrl}/analysis/analyze`, payload);
+          if (res2.data?.success) {
+            await onSuccess(res2.data.data);
+          } else {
+            await notify('error', 'Failed to analyze', res2.data?.message || 'Please try again.');
+          }
+        } catch (err: any) {
+          await notify(
+            'error',
+            'Failed to analyze',
+            err?.response?.data?.message || 'Please try again.'
+          );
+        }
+      } else {
+        await notify('error', 'Failed to analyze', message || 'Please try again.');
+      }
     } finally {
-      setLoading(false);
+      setIsAnalyzing(false);
     }
   };
-  
-  // Calculate distance between two coordinates
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2); 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    const distance = R * c;
-    return parseFloat(distance.toFixed(1));
-  };
 
-  // Analyze environment
-  const analyzeEnvironment = async (lat: number, lng: number) => {
+  // Save analysis
+  const saveAnalysis = async () => {
+    if (!analysisResult) return;
+    setIsSaving(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       if (!token) {
-        const defaultAnalysis: EnvironmentAnalysis = {
-          location: 'Area sekitar Anda',
-          moodScore: 75,
-          factors: {
-            greenery: 60,
-            crowding: 50,
-            noise: 45,
-          },
-          recommendation: 'Area ini memiliki tingkat kehijauan yang cukup baik dengan kebisingan yang relatif rendah. Cocok untuk aktivitas relaksasi.'
-        };
-        setEnvironmentAnalysis(defaultAnalysis);
+        await notify('warning', 'Login required', 'Please login to save analysis.');
         return;
       }
-      
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-      const response = await axios.get(
-        `${apiUrl}/environment/analyze`, 
-        {
-          params: { lat, lng },
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      
-      if (response.data && response.data.success) {
-        setEnvironmentAnalysis(response.data.data);
+      const res = await axios.post(`${apiUrl}/analysis/save`, analysisResult, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data?.success) {
+        await notify('success', 'Saved', 'Analysis has been added to your history.');
+        // reload history
+        const h = await axios.get(`${apiUrl}/analysis`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (h.data?.success) setSavedAnalyses(h.data.data);
       } else {
-        const defaultAnalysis: EnvironmentAnalysis = {
-          location: 'Area sekitar Anda',
-          moodScore: Math.floor(Math.random() * 40) + 60, // Random 60-100
-          factors: {
-            greenery: Math.floor(Math.random() * 50) + 40,
-            crowding: Math.floor(Math.random() * 60) + 20,
-            noise: Math.floor(Math.random() * 50) + 30,
-          },
-          recommendation: 'Area ini memiliki karakteristik yang mendukung untuk aktivitas relaksasi dan pemulihan mental.'
-        };
-        setEnvironmentAnalysis(defaultAnalysis);
+        await notify('error', 'Failed to save analysis', res.data?.message || 'Please try again.');
       }
-    } catch (error) {
-      console.error('Error analyzing environment:', error);
-      const defaultAnalysis: EnvironmentAnalysis = {
-        location: 'Area sekitar Anda',
-        moodScore: 75,
-        factors: {
-          greenery: 60,
-          crowding: 50,
-          noise: 45,
-        },
-        recommendation: 'Tidak dapat menganalisis lingkungan saat ini. Area tampak cukup kondusif untuk aktivitas relaksasi.'
-      };
-      setEnvironmentAnalysis(defaultAnalysis);
+    } catch (e: any) {
+      await notify('error', 'Failed to save analysis', e?.response?.data?.message || 'Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  // Filter locations based on search
-  const filteredLocations = locations.filter(location =>
-    location.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    location.type.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Get marker icon with different colors based on type
-  const getMarkerIcon = (type: string, moodScore?: number) => {
-    let color = '#3388ff';
-    
-    switch (type) {
-      case 'clinic':
-      case 'counseling':
-      case 'hospital':
-        color = '#FFD700';
-        break;
-      case 'park':
-        color = '#00C853';
-        break;
-      case 'cafe':
-        color = '#9C27B0';
-        break;
-      default:
-        color = '#3388ff';
+  // Delete saved
+  const deleteAnalysis = async (id: string) => {
+    const confirmed = await confirmDialog('Delete this analysis?', 'This action cannot be undone.');
+    if (!confirmed) return;
+    try {
+      const token = getAuthToken();
+      if (!token) return;
+      await axios.delete(`${apiUrl}/analysis/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSavedAnalyses((prev) => prev.filter((a) => a._id !== id));
+      await notify('success', 'Deleted', 'Analysis has been removed.');
+    } catch (e) {
+      await notify('error', 'Failed to delete');
     }
+  };
 
-    return L.divIcon({
-      className: 'custom-marker',
-      html: `<div style="
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background-color: ${color};
-        border: 2px solid white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      ">
-        ${moodScore ? `<span style="color: white; font-size: 10px; font-weight: bold;">${Math.round(moodScore / 10)}</span>` : ''}
-      </div>`,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
+  // Map click to pin
+  const MapClickHandler = () => {
+    useMapEvents({
+      click: async (e) => {
+        if (!isPinModeEnabled) return;
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+        setPinnedLocation([lat, lng]);
+        const address = await getAddressFromCoordinates(lat, lng);
+        setPinnedAddress(address);
+        centerMap(lat, lng);
+      },
     });
+    return null;
   };
 
-  // Get mood color based on score
-  const getMoodColor = (score: number) => {
-    if (score >= 80) return '#00C853';
-    if (score >= 60) return '#FFD600';
+  const getPeacefulnessColor = (score: number) => {
+    if (score >= 75) return '#00C853';
+    if (score >= 50) return '#FFD600';
     return '#FF3D00';
   };
 
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-10 bg-black/80 backdrop-blur-md border-b border-yellow-500/20 px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
+      <header className="sticky top-0 z-20 bg-black/80 backdrop-blur-md border-b border-yellow-500/20">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/main')}
-              className="mr-4 p-2 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300"
+              className="p-2 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20"
+              aria-label="Back"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent">
-              Zenium Map System
+              PeaceFinder
             </h1>
           </div>
-          
-          <div className="flex items-center space-x-2">
-            <button 
-              onClick={() => setShowAnalysisPanel(!showAnalysisPanel)}
-              className={`p-2 rounded-full ${showAnalysisPanel ? 'bg-yellow-500/30' : 'bg-yellow-500/10'} hover:bg-yellow-500/20 transition-colors duration-300`}
-              title="Analisis Lingkungan"
+          <div className="flex items-center gap-2">
+            {/* Desktop actions */}
+            <div className="hidden sm:flex items-center gap-2">
+              <button
+                onClick={() => setIsPinModeEnabled((v) => !v)}
+                className={`px-3 py-2 rounded-lg border ${isPinModeEnabled ? 'border-yellow-500/60 bg-yellow-500/10' : 'border-yellow-500/20 bg-transparent'
+                  }`}
+                title="Toggle Pin Mode"
+              >
+                <MapPin className="w-4 h-4 inline mr-2" /> {isPinModeEnabled ? 'Pinning' : 'Pin Mode'}
+              </button>
+              <button
+                onClick={useMyLocation}
+                className="px-3 py-2 rounded-lg border border-yellow-500/20 hover:bg-yellow-500/10"
+                title="Use My Location"
+              >
+                <LocateFixed className="w-4 h-4 inline mr-2" /> My Location
+              </button>
+              <button
+                onClick={clearPin}
+                className="px-3 py-2 rounded-lg border border-red-500/30 hover:bg-red-500/10"
+                title="Clear Pin"
+              >
+                <X className="w-4 h-4 inline mr-2" /> Clear
+              </button>
+            </div>
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setShowMobileMenu((v) => !v)}
+              className="sm:hidden p-2 rounded-lg border border-yellow-500/20 hover:bg-yellow-500/10"
+              aria-label="Menu"
+              title="Menu"
             >
-              <Info className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={() => setMapLayer(mapLayer === 'street' ? 'satellite' : 'street')}
-              className="p-2 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300"
-              title="Ganti Tampilan Peta"
-            >
-              <Layers className="w-5 h-5" />
+              <Menu className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="mt-4 relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="w-5 h-5 text-gray-400" />
+        {/* Search */}
+        <div className="max-w-7xl mx-auto px-4 pb-4">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="w-5 h-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search for a place, district, or address..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => searchQuery.length >= 3 && setShowSuggestions(true)}
+              className="w-full pl-10 pr-4 py-3 bg-gray-900/80 border border-yellow-500/20 rounded-xl focus:outline-none focus:border-yellow-500/50"
+            />
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute mt-2 w-full bg-gray-950/95 backdrop-blur-md border border-yellow-500/20 rounded-xl shadow-2xl ring-1 ring-yellow-500/10 max-h-60 overflow-auto z-30">
+                {suggestions.map((s, idx) => (
+                  <button
+                    key={`${s.lat}-${s.lon}-${idx}`}
+                    onClick={() => onSelectSuggestion(s)}
+                    className="block w-full text-left px-3 py-2 hover:bg-yellow-500/10"
+                  >
+                    <div className="text-sm text-white truncate">{s.display_name}</div>
+                    <div className="text-xs text-gray-400">{parseFloat(s.lat).toFixed(5)}, {parseFloat(s.lon).toFixed(5)}</div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-          <input
-            type="text"
-            placeholder="Cari lokasi atau jenis tempat..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-900/80 border border-yellow-500/20 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
         </div>
-      </div>
-
-      {/* Map Container */}
-      <div className="pt-28 pb-4 px-4 h-screen">
-        {loading ? (
-          <div className="flex items-center justify-center h-full bg-gray-900/50 rounded-xl border border-yellow-500/20">
-            <div className="flex flex-col items-center">
-              <Loader className="w-10 h-10 text-yellow-500 animate-spin" />
-              <p className="mt-4 text-gray-400">Memuat peta dan lokasi...</p>
+        {/* Quick Actions under search */}
+        <div className="max-w-7xl mx-auto px-4 pb-2 -mt-2 flex flex-col sm:flex-row gap-2">
+          <button
+            onClick={analyzeLocation}
+            disabled={!pinnedLocation || isAnalyzing}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/20 rounded-xl disabled:opacity-50"
+            title={!pinnedLocation ? 'Pin a location first' : 'Analyze the selected location'}
+          >
+            {isAnalyzing ? <Loader className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
+            <span>{isAnalyzing ? 'Analyzing...' : 'Analyze'}</span>
+          </button>
+          <button
+            onClick={saveAnalysis}
+            disabled={!analysisResult || isSaving}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600/20 hover:bg-green-600/30 border border-green-500/20 rounded-xl disabled:opacity-50"
+            title={!analysisResult ? 'Run analysis first' : 'Save the latest analysis'}
+          >
+            {isSaving ? <Loader className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            <span>{isSaving ? 'Saving...' : 'Save Analysis'}</span>
+          </button>
+        </div>
+        {/* Mobile menu panel - removed duplicate analyze/save buttons */}
+        {showMobileMenu && (
+          <div className="sm:hidden max-w-7xl mx-auto px-4 pb-4">
+            <div className="p-3 bg-black/70 border border-yellow-500/20 rounded-lg backdrop-blur-md grid grid-cols-2 gap-2">
+              <button
+                onClick={() => { setIsPinModeEnabled((v) => !v); setShowMobileMenu(false); }}
+                className={`px-3 py-2 rounded-lg border ${isPinModeEnabled ? 'border-yellow-500/60 bg-yellow-500/10' : 'border-yellow-500/20 bg-transparent'
+                  }`}
+              >
+                <MapPin className="w-4 h-4 inline mr-2" /> {isPinModeEnabled ? 'Pinning' : 'Pin Mode'}
+              </button>
+              <button
+                onClick={() => { useMyLocation(); setShowMobileMenu(false); }}
+                className="px-3 py-2 rounded-lg border border-yellow-500/20 hover:bg-yellow-500/10"
+              >
+                <LocateFixed className="w-4 h-4 inline mr-2" /> My Location
+              </button>
+              <button
+                onClick={() => { clearPin(); setShowMobileMenu(false); }}
+                className="col-span-2 px-3 py-2 rounded-lg border border-red-500/30 hover:bg-red-500/10"
+              >
+                <X className="w-4 h-4 inline mr-2" /> Clear Pin
+              </button>
             </div>
           </div>
-        ) : (
-          <div className="h-full relative rounded-xl overflow-hidden border border-yellow-500/20">
-            {userLocation && (
-              <MapContainer
-                ref={mapRef}
-                center={userLocation}
-                zoom={14}
-                style={{ height: '100%', width: '100%' }}
-              >
-                <TileLayer
-                  url={mapLayer === 'street' 
-                    ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                    : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                  }
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                
-                {/* User Location Marker */}
-                <Marker 
-                  position={userLocation}
-                  icon={L.divIcon({
-                    className: 'custom-marker',
-                    html: `<div style="
-                      width: 24px;
-                      height: 24px;
-                      border-radius: 50%;
-                      background-color: #1E88E5;
-                      border: 3px solid white;
-                      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-                    "></div>`,
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12],
-                  })}
-                >
-                  <Popup>
-                    <div className="text-center">
-                      <p className="font-medium text-gray-900">Lokasi Anda</p>
-                    </div>
-                  </Popup>
-                </Marker>
-
-                {/* Mood Heatmap Circle */}
-                {environmentAnalysis && (
-                  <Circle
-                    center={userLocation}
-                    radius={500}
-                    pathOptions={{
-                      fillColor: getMoodColor(environmentAnalysis.moodScore),
-                      fillOpacity: 0.2,
-                      color: getMoodColor(environmentAnalysis.moodScore),
-                      weight: 1,
-                    }}
-                  />
-                )}
-
-                {/* Location Markers */}
-                {filteredLocations.map((location) => (
-                  <Marker
-                    key={location.id}
-                    position={[location.lat, location.lng]}
-                    icon={getMarkerIcon(location.type, location.moodScore)}
-                    eventHandlers={{
-                      click: () => setSelectedLocation(location),
-                    }}
-                  >
-                    <Popup>
-                      <div className="text-center">
-                        <p className="font-medium text-gray-900">{location.name}</p>
-                        <p className="text-sm text-gray-600">{location.address}</p>
-                        {location.distance && (
-                          <p className="text-xs text-gray-500 mt-1">{location.distance} km dari lokasi Anda</p>
-                        )}
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
-            )}
-
-            {/* Environment Analysis Panel */}
-            {showAnalysisPanel && environmentAnalysis && (
-              <div className="absolute top-4 right-4 w-80 bg-black/90 backdrop-blur-md rounded-lg border border-yellow-500/30 p-4 shadow-xl">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-lg font-medium text-yellow-400">Analisis Lingkungan</h3>
-                  <button 
-                    onClick={() => setShowAnalysisPanel(false)}
-                    className="p-1 rounded-full hover:bg-gray-800 transition-colors duration-300"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                  </button>
-                </div>
-                
-                <div className="mb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-400">Mood Score</span>
-                    <div className="flex items-center">
-                      {environmentAnalysis.moodScore >= 70 ? (
-                        <Smile className="w-4 h-4 text-green-400 mr-1" />
-                      ) : (
-                        <Frown className="w-4 h-4 text-yellow-400 mr-1" />
-                      )}
-                      <span 
-                        className={`font-medium ${environmentAnalysis.moodScore >= 80 ? 'text-green-400' : environmentAnalysis.moodScore >= 60 ? 'text-yellow-400' : 'text-red-400'}`}
-                      >
-                        {environmentAnalysis.moodScore}/100
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div>
-                      <div className="flex justify-between text-xs text-gray-400 mb-1">
-                        <span>Kehijauan</span>
-                        <span>{environmentAnalysis.factors.greenery}%</span>
-                      </div>
-                      <div className="w-full bg-gray-700 rounded-full h-1.5">
-                        <div 
-                          className="bg-green-500 h-1.5 rounded-full" 
-                          style={{ width: `${environmentAnalysis.factors.greenery}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <div className="flex justify-between text-xs text-gray-400 mb-1">
-                        <span>Keramaian</span>
-                        <span>{environmentAnalysis.factors.crowding}%</span>
-                      </div>
-                      <div className="w-full bg-gray-700 rounded-full h-1.5">
-                        <div 
-                          className="bg-yellow-500 h-1.5 rounded-full" 
-                          style={{ width: `${environmentAnalysis.factors.crowding}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <div className="flex justify-between text-xs text-gray-400 mb-1">
-                        <span>Kebisingan</span>
-                        <span>{environmentAnalysis.factors.noise}%</span>
-                      </div>
-                      <div className="w-full bg-gray-700 rounded-full h-1.5">
-                        <div 
-                          className="bg-red-500 h-1.5 rounded-full" 
-                          style={{ width: `${environmentAnalysis.factors.noise}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="text-sm text-gray-300 leading-relaxed">
-                  <p>{environmentAnalysis.recommendation}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Selected Location Detail */}
-            {selectedLocation && (
-              <div className="absolute bottom-4 left-4 right-4 bg-black/90 backdrop-blur-md rounded-lg border border-yellow-500/30 p-4 shadow-xl">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-lg font-medium text-yellow-400">{selectedLocation.name}</h3>
-                    <p className="text-sm text-gray-400">{selectedLocation.address}</p>
-                  </div>
-                  <button 
-                    onClick={() => setSelectedLocation(null)}
-                    className="p-1 rounded-full hover:bg-gray-800 transition-colors duration-300"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                  </button>
-                </div>
-                
-                <div className="mt-3 flex items-center">
-                  <div className="flex items-center mr-4">
-                    <MapPin className="w-4 h-4 text-yellow-500 mr-1" />
-                    <span className="text-sm text-gray-300">{selectedLocation.type.charAt(0).toUpperCase() + selectedLocation.type.slice(1)}</span>
-                  </div>
-                  {selectedLocation.distance && (
-                    <div className="flex items-center">
-                      <User className="w-4 h-4 text-yellow-500 mr-1" />
-                      <span className="text-sm text-gray-300">{selectedLocation.distance} km</span>
-                    </div>
-                  )}
-                  {selectedLocation.moodScore && (
-                    <div className="flex items-center ml-4">
-                      {selectedLocation.moodScore >= 70 ? (
-                        <Smile className="w-4 h-4 text-green-400 mr-1" />
-                      ) : (
-                        <Frown className="w-4 h-4 text-yellow-400 mr-1" />
-                      )}
-                      <span 
-                        className={`text-sm ${selectedLocation.moodScore >= 80 ? 'text-green-400' : selectedLocation.moodScore >= 60 ? 'text-yellow-400' : 'text-red-400'}`}
-                      >
-                        Mood Score: {selectedLocation.moodScore}/100
-                      </span>
-                    </div>
-                  )}
-                </div>
-                
-                {selectedLocation.description && (
-                  <p className="mt-3 text-sm text-gray-300">{selectedLocation.description}</p>
-                )}
-                
-                {selectedLocation.services && selectedLocation.services.length > 0 && (
-                  <div className="mt-3">
-                    <p className="text-sm font-medium text-gray-300 mb-1">Layanan:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedLocation.services.map((service, index) => (
-                        <span 
-                          key={index} 
-                          className="text-xs bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded-full"
-                        >
-                          {service}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                <div className="mt-4 flex justify-end">
-                  <button className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors duration-300">
-                    Petunjuk Arah
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
         )}
-      </div>
+      </header>
+
+      {/* Map & Actions */}
+      <main className="max-w-7xl mx-auto px-4 py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div className="lg:col-span-12">
+            <div className="relative rounded-2xl overflow-hidden border border-yellow-500/20 bg-gray-950 min-h-[300px] sm:min-h-[360px] shadow-lg">
+              {loading ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader className="w-10 h-10 text-yellow-500 animate-spin" />
+                </div>
+              ) : (
+                userLocation && (
+                  <MapContainer
+                    ref={mapRef}
+                    center={userLocation}
+                    zoom={14}
+                    className="w-full h-[58vh] sm:h-[62vh] lg:h-[68vh]"
+                  >
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+
+                    {/* User marker */}
+                    <Marker
+                      position={userLocation}
+                      icon={L.divIcon({
+                        className: 'custom-marker',
+                        html: `<div style="width: 20px; height: 20px; border-radius: 50%; background-color: #1E88E5; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>`,
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10],
+                      })}
+                    >
+                      <Popup>Your Location</Popup>
+                    </Marker>
+
+                    {/* Pin marker */}
+                    {pinnedLocation && (
+                      <Marker
+                        position={pinnedLocation}
+                        icon={L.divIcon({
+                          className: 'custom-marker',
+                          html: `<div style="width: 28px; height: 28px; border-radius: 50%; background-color: #FF5722; border: 3px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(0,0,0,0.5);"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg></div>`,
+                          iconSize: [28, 28],
+                          iconAnchor: [14, 14],
+                        })}
+                      >
+                        <Popup>
+                          <div className="text-sm max-w-[220px]">
+                            <div className="font-medium text-gray-900">Selected Location</div>
+                            <div className="text-gray-600 mt-1">{pinnedAddress}</div>
+                          </div>
+                        </Popup>
+                      </Marker>
+                    )}
+
+                    {/* Healing spots markers */}
+                    {analysisResult?.aiAnalysis.healingSpots.map((spot, idx) => (
+                      <Marker
+                        key={idx}
+                        position={[spot.coordinates[1], spot.coordinates[0]]}
+                        icon={L.divIcon({
+                          className: 'custom-marker',
+                          html: `<div style="width: 20px; height: 20px; border-radius: 50%; background-color: #00C853; border: 2px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.3);"><span style=\"color: white; font-size: 10px;\">🌿</span></div>`,
+                          iconSize: [20, 20],
+                          iconAnchor: [10, 10],
+                        })}
+                      >
+                        <Popup>
+                          <div className="text-sm">
+                            <div className="font-medium text-gray-900">{spot.name}</div>
+                            <div className="text-gray-600 mt-1">{spot.reason}</div>
+                          </div>
+                        </Popup>
+                      </Marker>
+                    ))}
+
+                    {/* Click handler for pin */}
+                    <MapClickHandler />
+                  </MapContainer>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Results + History */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
+          {/* Analysis Result */}
+          <section className="lg:col-span-8 bg-gray-900/50 border border-yellow-500/20 rounded-xl p-4">
+            <h2 className="text-lg font-semibold text-yellow-400 mb-3">Analysis</h2>
+            {!analysisResult ? (
+              <p className="text-sm text-gray-400">No analysis yet. Pin a location and click Analyze.</p>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center gap-4">
+                  <div>
+                    <div className="text-4xl font-bold" style={{ color: getPeacefulnessColor(analysisResult.peacefulnessScore) }}>
+                      {analysisResult.peacefulnessScore}
+                    </div>
+                    <div className="text-sm text-gray-400">Peacefulness (0-100)</div>
+                    <div className="mt-2 h-2 w-48 bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${analysisResult.peacefulnessScore}%`,
+                          backgroundColor: getPeacefulnessColor(analysisResult.peacefulnessScore),
+                          transition: 'width 300ms ease'
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="px-3 py-1 rounded-full text-sm border border-yellow-500/30 text-yellow-300">
+                    {analysisResult.peacefulnessLabel}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-300 mb-2">Area Distribution</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                    <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
+                      <div className="text-green-400">🌿 Green/Blue</div>
+                      <div className="text-white font-semibold">{analysisResult.areaDistribution.greenBlueSpaces.toFixed(1)}%</div>
+                    </div>
+                    <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
+                      <div className="text-gray-300">🏢 Buildings</div>
+                      <div className="text-white font-semibold">{analysisResult.areaDistribution.buildings.toFixed(1)}%</div>
+                    </div>
+                    <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
+                      <div className="text-red-400">🛣️ Roads</div>
+                      <div className="text-white font-semibold">{analysisResult.areaDistribution.roads.toFixed(1)}%</div>
+                    </div>
+                    <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
+                      <div className="text-blue-300">⚪ Neutral</div>
+                      <div className="text-white font-semibold">{analysisResult.areaDistribution.neutral.toFixed(1)}%</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-300 mb-2">AI Analysis</h3>
+                  <p className="text-gray-300 text-sm leading-relaxed">{analysisResult.aiAnalysis.description}</p>
+                </div>
+
+                {!!analysisResult.aiAnalysis.recommendations?.length && (
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-300 mb-2">Recommendations</h3>
+                    <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
+                      {analysisResult.aiAnalysis.recommendations.map((r, i) => (
+                        <li key={i}>{r}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+
+          {/* History */}
+          <aside className="lg:col-span-4 bg-gray-900/50 border border-yellow-500/20 rounded-xl p-4 lg:sticky lg:top-20 max-h-[70vh] overflow-auto">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold text-yellow-400">History</h2>
+              <History className="w-4 h-4 text-yellow-400" />
+            </div>
+            {savedAnalyses.length === 0 ? (
+              <p className="text-sm text-gray-400">No saved analyses yet. Save results to build your history.</p>
+            ) : (
+              <div className="space-y-2">
+                {savedAnalyses.map((a) => (
+                  <div key={a._id} className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm text-white truncate">{a.address}</div>
+                        <div className="text-xs text-gray-400 mt-0.5">
+                          {new Date(a.createdAt).toLocaleString()} • {a.peacefulnessScore}/100
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            const [lng, lat] = a.location.coordinates;
+                            setPinnedLocation([lat, lng]);
+                            setPinnedAddress(a.address);
+                            centerMap(lat, lng);
+                          }}
+                          className="p-2 rounded-md bg-blue-600/20 hover:bg-blue-600/30"
+                          title="View on map"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteAnalysis(a._id)}
+                          className="p-2 rounded-md bg-red-600/20 hover:bg-red-600/30"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </aside>
+        </div>
+      </main>
     </div>
   );
 }

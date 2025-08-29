@@ -163,6 +163,42 @@ export const deleteLocation = async (req, res) => {
   }
 };
 
+// Save location analysis
+export const saveLocationAnalysis = async (req, res) => {
+  try {
+    const { locationId, peacefulnessScore, areaDistribution } = req.body;
+    const userId = req.user._id;
+
+    if (!locationId || !peacefulnessScore || !areaDistribution) {
+      return res.status(400).json({ success: false, message: "Please provide all required fields" });
+    }
+
+    const location = await Location.findById(locationId);
+
+    if (!location) {
+      return res.status(404).json({ success: false, message: "Location not found" });
+    }
+
+    // Save the analysis result to the location
+    location.analysis = {
+      userId,
+      peacefulnessScore,
+      areaDistribution,
+      createdAt: Date.now()
+    };
+
+    await location.save();
+
+    res.status(200).json({
+      success: true,
+      data: location
+    });
+  } catch (error) {
+    console.error("Error saving location analysis:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 // Seed initial locations data
 export const seedLocations = async (req, res) => {
   try {

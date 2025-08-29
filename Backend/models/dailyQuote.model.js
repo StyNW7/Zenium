@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
 const dailyQuoteSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null,
+    index: true
+  },
   quote: {
     type: String,
     required: true,
@@ -15,6 +21,27 @@ const dailyQuoteSchema = new mongoose.Schema({
     type: String,
     default: "AI Companion",
     maxlength: 100,
+  },
+  category: {
+    type: String,
+    default: "motivation",
+    index: true
+  },
+  isAiGenerated: {
+    type: Boolean,
+    default: true
+  },
+  isFavorite: {
+    type: Boolean,
+    default: false
+  },
+  moodContext: {
+    type: String,
+    default: ""
+  },
+  activityContext: {
+    type: String,
+    default: ""
   },
   generatedAt: {
     type: Date,
@@ -33,8 +60,9 @@ const dailyQuoteSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Index for efficient querying by date
+// Indices
 dailyQuoteSchema.index({ generatedAt: -1 });
+dailyQuoteSchema.index({ userId: 1, generatedAt: -1 });
 
 const DailyQuote = mongoose.model("DailyQuote", dailyQuoteSchema);
 

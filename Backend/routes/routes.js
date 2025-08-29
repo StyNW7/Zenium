@@ -13,7 +13,11 @@ import {
   getJournalById,
   createJournal,
   updateJournal,
-  deleteJournal
+  deleteJournal,
+  getGuidedQuestions,
+  analyzeJournal,
+  analyzeAndAttachJournal,
+  getJournalSummary
 } from "../controllers/journal.controller.js";
 import {
   getLocations,
@@ -21,10 +25,20 @@ import {
   createLocation,
   updateLocation,
   deleteLocation,
-  seedLocations
+  seedLocations,
+  saveLocationAnalysis
 } from "../controllers/location.controller.js";
+import {
+  analyzeLocation,
+  saveAnalysis,
+  getUserAnalyses,
+  getAnalysisById,
+  deleteAnalysis,
+  getNearbyAnalyses
+} from "../controllers/analysis.controller.js";
 import { protect } from "../middleware/protect.js";
 import { authenticate } from "../middleware/authMiddleware.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -42,6 +56,10 @@ router.get('/daily-quote', protect, getDailyQuote);
 
 // Journal routes
 router.get('/journals', protect, getUserJournals);
+router.get('/journals/guided-questions', protect, getGuidedQuestions);
+router.get('/journals/summary', protect, getJournalSummary);
+router.post('/journals/analyze', protect, analyzeJournal);
+router.post('/journals/:id/analyze-attach', protect, analyzeAndAttachJournal);
 router.get('/journals/:id', protect, getJournalById);
 router.post('/journals', protect, createJournal);
 router.put('/journals/:id', protect, updateJournal);
@@ -54,4 +72,15 @@ router.post('/locations', protect, createLocation);
 router.put('/locations/:id', protect, updateLocation);
 router.delete('/locations/:id', protect, deleteLocation);
 router.post('/locations/seed', protect, seedLocations);
+router.post('/locations/analysis', protect, saveLocationAnalysis);
+
+// Analysis routes (PeaceFinder)
+router.post('/analysis/analyze', analyzeLocation);
+router.post('/analysis/upload', protect, upload.single('mapImage'), analyzeLocation);
+router.post('/analysis/save', protect, saveAnalysis);
+router.get('/analysis', protect, getUserAnalyses);
+router.get('/analysis/nearby', getNearbyAnalyses);
+router.get('/analysis/:id', protect, getAnalysisById);
+router.delete('/analysis/:id', protect, deleteAnalysis);
+
 export default router;

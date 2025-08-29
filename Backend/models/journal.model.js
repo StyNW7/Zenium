@@ -39,7 +39,6 @@ const journalSchema = new mongoose.Schema({
     },
     coordinates: {
       type: [Number],
-      index: "2dsphere",
     },
     address: String,
   },
@@ -59,6 +58,26 @@ const journalSchema = new mongoose.Schema({
     },
     keywords: [String],
     recommendations: [String],
+    summary: { type: String },
+  },
+  guidedQuestions: [{
+    question: { type: String },
+    answer: { type: String }
+  }],
+  voiceTranscript: {
+    type: String,
+    default: ""
+  },
+  mentalHealthClassification: {
+    type: String,
+    enum: ["safe", "needs_attention", "high_risk"],
+    default: "safe",
+    index: true
+  },
+  riskScore: {
+    type: Number,
+    min: 0,
+    max: 1
   },
 }, {
   timestamps: true,

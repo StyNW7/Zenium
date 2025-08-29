@@ -28,11 +28,13 @@ export function ZeniumQuotePage() {
       setError(null);
       if (forceNew) setRefreshing(true);
 
-      // Menggunakan API endpoint dari backend
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/quotes/daily`, {
-        params: { forceNew },
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+      const token = localStorage.getItem('token');
+
+      const response = await axios.get(`${apiUrl}/daily-quote`, {
+        params: { forceNew, mood: '', activity: '' },
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -104,7 +106,7 @@ export function ZeniumQuotePage() {
             {loading ? (
               <div className="flex flex-col items-center justify-center py-12">
                 <div className="w-12 h-12 border-4 border-yellow-500/30 border-t-yellow-500 rounded-full animate-spin" />
-                <p className="mt-4 text-gray-400">Memuat quote harian...</p>
+                <p className="mt-4 text-gray-400">Loading daily quote...</p>
               </div>
             ) : error ? (
               <div className="text-center py-8">
@@ -122,7 +124,7 @@ export function ZeniumQuotePage() {
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex items-center text-sm text-gray-400">
                     <Calendar className="w-4 h-4 mr-2" />
-                    <span>{quote?.generatedAt ? formatDate(quote.generatedAt) : 'Hari Ini'}</span>
+                    <span>{quote?.generatedAt ? formatDate(quote.generatedAt) : 'Today'}</span>
                   </div>
                   <button
                     onClick={handleRefresh}
@@ -154,7 +156,7 @@ export function ZeniumQuotePage() {
                   <div className="mt-6 flex items-center text-xs text-gray-500">
                     <div className="flex items-center mr-2">
                       <Clock className="w-3 h-3 mr-1" />
-                      <span>Diperbarui setiap 24 jam</span>
+                      <span>Updated every 24 hours</span>
                     </div>
                     <span className="mx-2">•</span>
                     <div className="flex items-center">

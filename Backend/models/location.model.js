@@ -60,6 +60,25 @@ const locationSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  analysis: {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false
+    },
+    peacefulnessScore: {
+      type: Number,
+      required: false
+    },
+    areaDistribution: {
+      type: Object,
+      required: false
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
   }
 }, {
   timestamps: true

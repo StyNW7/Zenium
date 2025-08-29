@@ -20,7 +20,7 @@ export const getCurrentDailyQuote = async (req, res) => {
 
 export const getDailyQuote = async (req, res) => {
   try {
-    const { forceNew = false } = req.query;
+    const { forceNew = false, mood = '', activity = '' } = req.query;
     const userId = req.user?.userId; // From auth middleware
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -58,9 +58,31 @@ export const getDailyQuote = async (req, res) => {
       });
     }
 
-    // Generate new quote using Qwen service
-    const newQuoteData = await QwenService.generateDailyQuote();
-    
+    // Generate new quote using Qwen service, contextualized by mood/activity
+    const contextPrompt = mood || activity ? `User context -> mood: ${mood || 'n/a'}, recent activity: ${activity || 'n/a'}. Tailor the motivation to this context.` : '';
+    const messages = [{
+      role: 'user',
+      content: [{
+        type: 'text',
+        text: `Generate an inspirational daily motivation quote for mental wellness and motivation. The quote should be uplifting, positive, and encouraging, considering the user's context if provided. Include:
+1) quote (1-2 sentences)
+2) explanation (1 sentence)
+3) author
+${contextPrompt}
+Return JSON: {"quote":"string","explanation":"string","author":"string"}`
+      }]
+    }];
+    const responseText = await QwenService.makeRequest(messages);
+    let newQuoteData = {};
+    try {
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) newQuoteData = JSON.parse(jsonMatch[0]);
+    } catch {}
+
+    if (!newQuoteData.quote) {
+      newQuoteData = await QwenService.generateDailyQuote();
+    }
+
     // Save to database
     const quoteRecord = new DailyQuote({
       userId: userId || null, // null for anonymous users (global quote)
@@ -70,7 +92,9 @@ export const getDailyQuote = async (req, res) => {
       isAiGenerated: true,
       generatedAt: new Date(),
       category: "motivation", // default category
-      isFavorite: false
+      isFavorite: false,
+      moodContext: String(mood || ''),
+      activityContext: String(activity || '')
     });
 
     await quoteRecord.save();

@@ -191,7 +191,7 @@ export function ZeniumLoginPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password" className="text-amber-200">Password</Label>
-                  <a href="#" className="text-sm text-amber-400 hover:underline">
+                  <a href="/forgot-password" className="text-sm text-amber-400 hover:underline">
                     Forgot password?
                   </a>
                 </div>

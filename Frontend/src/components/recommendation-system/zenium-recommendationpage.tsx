@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, Sparkles, Filter, Brain, Heart, Clock } from 'lucide-react';
+import { ArrowLeft, Search, Sparkles, Filter, Brain, Heart, Clock, AlertTriangle, ShieldCheck } from 'lucide-react';
+import axios from 'axios';
 
 type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
 type Goal = 'calm' | 'productive' | 'happy' | 'grateful' | 'motivated';
@@ -18,8 +19,45 @@ interface Recommendation {
   score: number;
 }
 
+interface JournalSummary {
+  totalEntries: number;
+  avgMoodRating: number | null;
+  latestInsights?: { summary?: string; recommendations?: string[] } | null;
+  latestClassification?: 'safe' | 'needs_attention' | 'high_risk' | null;
+  latestRiskScore?: number | null;
+}
+
+interface DailyQuote {
+  quote: string;
+  author: string;
+  explanation: string;
+  generatedAt: string;
+  isAiGenerated: boolean;
+}
+
 export function ZeniumRecommendationPage() {
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+  const token = localStorage.getItem('token');
+  const [summary, setSummary] = useState<JournalSummary | null>(null);
+  const [dailyQuote, setDailyQuote] = useState<DailyQuote | null>(null);
+
+  useEffect(() => {
+    const fetchSummaryAndQuote = async () => {
+      try {
+        const headers = { Authorization: `Bearer ${token}` };
+        const [s, q] = await Promise.all([
+          axios.get(`${apiUrl}/journals/summary`, { headers }),
+          axios.get(`${apiUrl}/daily-quote`, { headers, params: { forceNew: false } })
+        ]);
+        setSummary(s.data?.data || null);
+        setDailyQuote(q.data?.data || null);
+      } catch (e) {
+        console.error('Failed to load summary/quote', e);
+      }
+    };
+    if (token) fetchSummaryAndQuote();
+  }, []);
 
   const [query, setQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -226,11 +264,43 @@ export function ZeniumRecommendationPage() {
             <div className="p-2 bg-yellow-500/20 rounded-full mr-4">
               <Sparkles className="w-6 h-6 text-yellow-400" />
             </div>
-            <div>
+            <div className="flex-1">
               <h3 className="text-lg font-medium text-yellow-400">Zenium AI Recommendations</h3>
               <p className="text-sm text-gray-300 mt-1">
                 Tailored for you: time <b>{timeOfDay}</b>, goal <b>{goal}</b>, duration about <b>{duration}</b> minutes.
               </p>
+
+              {/* Inline insights from journaling + daily quote */}
+              <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                {summary && (
+                  <div className="p-3 bg-black/30 rounded-lg border border-yellow-500/20">
+                    <div className="text-xs text-gray-400 mb-1">Mental Health Status</div>
+                    <div className="flex items-center gap-2">
+                      {summary.latestClassification === 'high_risk' ? (
+                        <AlertTriangle className="w-4 h-4 text-red-400" />
+                      ) : (
+                        <ShieldCheck className="w-4 h-4 text-green-400" />
+                      )}
+                      <div className="text-sm text-gray-200">
+                        {summary.latestClassification ? summary.latestClassification.replace('_', ' ') : 'unknown'}
+                        {typeof summary.latestRiskScore === 'number' && (
+                          <span className="text-xs text-gray-400 ml-2">Risk: {(summary.latestRiskScore * 100).toFixed(0)}%</span>
+                        )}
+                      </div>
+                    </div>
+                    {summary.latestInsights?.summary && (
+                      <div className="text-xs text-gray-400 mt-2">{summary.latestInsights.summary}</div>
+                    )}
+                  </div>
+                )}
+                {dailyQuote && (
+                  <div className="p-3 bg-black/30 rounded-lg border border-yellow-500/20">
+                    <div className="text-xs text-gray-400 mb-1">AI Motivation</div>
+                    <div className="text-sm text-yellow-200 italic">“{dailyQuote.quote}”</div>
+                    <div className="text-xs text-yellow-500 mt-1">— {dailyQuote.author}</div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
