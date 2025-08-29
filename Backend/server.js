@@ -25,11 +25,17 @@ if (process.env.NODE_ENV === "development") {
     },
     credentials: true,
   };
-} else {
+}
+
+else {
+  // Production - specific allowed origins
   corsOptions = {
+    origin: [
+      "https://zenium-frontend.vercel.app",
+      "https://www.zenium-melify.id"
+    ],
     credentials: true,
   };
-  corsOptions.origin = "https://zenium-frontend.vercel.app", "https://www.zenium-melify.id";
 }
 
 app.use(cors(corsOptions));
