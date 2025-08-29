@@ -13,120 +13,27 @@ const port = process.env.PORT || 3000;
 // Middleware untuk parsing JSON
 app.use(express.json());
 
-// Improved environment detection
-const isProduction = process.env.NODE_ENV === 'production';
-const isVercel = !!process.env.VERCEL;
-const isDevelopment = !isProduction || port == 3000;
+// CORS configuration
 
-// CORS origins configuration
-let allowedOrigins;
+let corsOptions;
 
-if (isProduction && isVercel) {
-  // Production di Vercel - hanya allow production URLs
-  allowedOrigins = [
-    'https://zenium-frontend.vercel.app',
-    process.env.FRONTEND_URL,
-    process.env.CORS_ORIGIN
-  ].filter(Boolean); // Remove undefined values
+if (process.env.NODE_ENV === "development") {
+  corsOptions = {
+    origin: (origin, callback) => {
+      // Jika origin tidak ada (contoh: Postman, curl), izinkan
+      if (!origin) return callback(null, true);
+      return callback(null, true); // Semua origin diizinkan
+    },
+    credentials: true,
+  };
 } else {
-  // Development atau local - allow localhost origins
-  allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:3001',
-    // Include production URL for testing
-    'https://zenium-frontend.vercel.app'
-  ];
+  corsOptions = {
+    credentials: true,
+  };
+  corsOptions.origin = "https://zenium-frontend.vercel.app";
 }
 
-// Debug logging
-console.log('🔧 Server Configuration:');
-console.log('NODE_ENV:', process.env.NODE_ENV || 'undefined');
-console.log('PORT:', port);
-console.log('VERCEL:', process.env.VERCEL || 'false');
-console.log('isProduction:', isProduction);
-console.log('isDevelopment:', isDevelopment);
-console.log('allowedOrigins:', allowedOrigins);
-
-// CORS middleware with detailed logging
-app.use(cors({
-  origin: function (origin, callback) {
-    console.log('🌐 CORS Request from origin:', origin || 'no-origin');
-    
-    // Allow requests with no origin (mobile apps, Postman, server-to-server)
-    if (!origin) {
-      console.log('✅ No origin header - allowing request');
-      return callback(null, true);
-    }
-    
-    // Check if origin is in allowed list
-    if (allowedOrigins.includes(origin)) {
-      console.log('✅ Origin allowed:', origin);
-      return callback(null, true);
-    }
-    
-    // In development, be more permissive for localhost
-    if (isDevelopment && origin.includes('localhost')) {
-      console.log('🔧 Development mode - allowing localhost origin:', origin);
-      return callback(null, true);
-    }
-    
-    // Log blocked requests for debugging
-    console.log('❌ Origin blocked:', origin);
-    console.log('Allowed origins:', allowedOrigins);
-    
-    return callback(new Error(`CORS policy: Origin ${origin} not allowed`));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
-    'X-Requested-With',
-    'Accept',
-    'Origin',
-    'Cache-Control'
-  ],
-  exposedHeaders: ['Authorization'],
-  maxAge: 86400 // Cache preflight for 24 hours
-}));
-
-// Explicit preflight handling without path pattern (compatible with Express 5)
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    console.log('🔄 Preflight OPTIONS request for:', req.path);
-    console.log('Origin:', req.headers.origin);
-
-    const origin = req.headers.origin;
-    if (!origin || allowedOrigins.includes(origin) || (isDevelopment && origin.includes('localhost'))) {
-      res.header('Access-Control-Allow-Origin', origin || '*');
-      res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
-      res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With,Accept,Origin,Cache-Control');
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Max-Age', '86400');
-    }
-    return res.sendStatus(200);
-  }
-  next();
-});
-
-// Health check endpoint
-app.get("/", (req, res) => {
-  res.json({ 
-    success: true,
-    message: "Zenium API is running", 
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    port: port,
-    cors: {
-      allowedOrigins: allowedOrigins,
-      requestOrigin: req.headers.origin
-    }
-  });
-});
+app.use(cors(corsOptions));
 
 // API Routes with error handling
 try {
