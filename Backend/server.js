@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === "development") {
   corsOptions = {
     credentials: true,
   };
-  corsOptions.origin = "https://zenium-frontend.vercel.app";
+  corsOptions.origin = "https://zenium-frontend.vercel.app", "https://www.zenium-melify.id";
 }
 
 app.use(cors(corsOptions));
