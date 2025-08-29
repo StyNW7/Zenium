@@ -9,7 +9,6 @@ import { Heart, Brain, Smartphone, Users, TrendingUp, Zap, Shield, Clock, CheckC
 import { SpotlightSection } from "./spotlight-section"
 import { MarqueeSection } from "./marquee-section"
 import { StatsSection } from "./stats-section"
-import { TestimonialSection } from "./testimonial-section"
 import { useNavigate } from "react-router"
 import { useState } from "react"
 import Image from '@/assets/logo.png';
@@ -31,11 +30,11 @@ export function ZeniumHomepage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black">
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border"
+        className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-border"
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
@@ -80,7 +79,7 @@ export function ZeniumHomepage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-t border-border"
+            className="md:hidden bg-black border-t border-border"
           >
             <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
               <a 
@@ -129,7 +128,7 @@ export function ZeniumHomepage() {
       <SpotlightSection />
 
       {/* About Section */}
-      <section id="about" className="py-20 bg-card">
+      <section id="about" className="py-20 bg-black">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -188,7 +187,7 @@ export function ZeniumHomepage() {
       </section>
 
       {/* Vision & Mission */}
-      <section className="py-20">
+      <section className="py-20 bg-black">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
@@ -234,7 +233,7 @@ export function ZeniumHomepage() {
       </section>
 
       {/* Why Zenium Section */}
-      <section className="py-20 bg-card">
+      <section className="py-20 bg-black">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -295,7 +294,7 @@ export function ZeniumHomepage() {
       </section>
 
       {/* How to Use Zenium */}
-      <section className="py-20">
+      <section className="py-20 bg-black">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -345,7 +344,7 @@ export function ZeniumHomepage() {
       <MarqueeSection />
 
       {/* Features Section */}
-      <section id="features" className="py-20">
+      <section id="features" className="py-20 bg-black">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -420,11 +419,8 @@ export function ZeniumHomepage() {
       {/* Stats Section */}
       <StatsSection />
 
-      {/* Testimonials */}
-      <TestimonialSection />
-
       {/* FAQ Section */}
-      <section id="faq" className="py-20">
+      <section id="faq" className="py-20 bg-black">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -504,7 +500,7 @@ export function ZeniumHomepage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-card border-t border-border">
+      <footer className="py-12 bg-black border-t border-border">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>

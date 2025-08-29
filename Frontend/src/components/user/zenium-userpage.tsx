@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/authcontext';
 import { ArrowLeft, User, Mail, Key, Save, AlertCircle, Check, Loader2 } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from '@/config/api';
 
 export function ZeniumUserPage() {
   const navigate = useNavigate();
@@ -41,14 +42,14 @@ export function ZeniumUserPage() {
     setMessage({ type: '', text: '' });
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
       if (!token) {
         navigate('/login');
         return;
       }
       
       const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/user/profile`,
+        `${API_BASE_URL}/user/profile`,
         {
           username: formData.username,
           email: formData.email
@@ -61,14 +62,11 @@ export function ZeniumUserPage() {
         }
       );
       
-      if (response.data && response.data.success) {
-        setMessage({ 
-          type: 'success', 
-          text: 'Profile updated successfully!' 
-        });
-      } else {
-        throw new Error('Failed to update profile');
-      }
+      // Axios only resolves for 2xx statuses, so if we reach here it's a success
+      setMessage({ 
+        type: 'success', 
+        text: response.data?.message || 'Profile updated successfully!' 
+      });
     } catch (error: any) {
       console.error('Error updating profile:', error);
       setMessage({ 
@@ -95,14 +93,14 @@ export function ZeniumUserPage() {
     setMessage({ type: '', text: '' });
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
       if (!token) {
         navigate('/login');
         return;
       }
       
       const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/user/change-password`,
+        `${API_BASE_URL}/user/change-password`,
         {
           currentPassword: formData.currentPassword,
           newPassword: formData.newPassword
@@ -115,22 +113,19 @@ export function ZeniumUserPage() {
         }
       );
       
-      if (response.data && response.data.success) {
-        setMessage({ 
-          type: 'success', 
-          text: 'Password changed successfully!' 
-        });
-        
-        // Reset password fields
-        setFormData(prev => ({
-          ...prev,
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        }));
-      } else {
-        throw new Error('Failed to change password');
-      }
+      // Axios only resolves for 2xx statuses, so if we reach here it's a success
+      setMessage({ 
+        type: 'success', 
+        text: response.data?.message || 'Password changed successfully!' 
+      });
+      
+      // Reset password fields
+      setFormData(prev => ({
+        ...prev,
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      }));
     } catch (error: any) {
       console.error('Error changing password:', error);
       setMessage({ 
@@ -180,7 +175,7 @@ export function ZeniumUserPage() {
             className={`px-4 py-2 font-medium ${activeTab === 'security' ? 'text-yellow-500 border-b-2 border-yellow-500' : 'text-gray-400 hover:text-gray-300'}`}
             onClick={() => setActiveTab('security')}
           >
-            Security
+            Setting
           </button>
         </div>
 
@@ -210,7 +205,7 @@ export function ZeniumUserPage() {
                       value={formData.username}
                       onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white"
-                      placeholder="Username"
+                      placeholder='Username'
                       required
                     />
                   </div>

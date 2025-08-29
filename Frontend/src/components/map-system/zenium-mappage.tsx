@@ -1,19 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  ArrowLeft,
-  MapPin,
-  Search,
-  Brain,
-  Save,
-  Loader,
-  History,
-  X,
-  Trash2,
-  Eye,
-  LocateFixed,
-  Menu
-} from 'lucide-react';
+import { ArrowLeft, MapPin, Search, Brain, Save, Loader, History, X, Trash2, Eye, LocateFixed, Menu } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -25,19 +12,15 @@ const getAuthToken = (): string | null => {
   // Ambil dari localStorage dan sanitasi
   const raw = localStorage.getItem('token') ?? localStorage.getItem('authToken');
   if (!raw) return null;
-
   let t = raw.trim();
-
   // Jika token tersimpan pakai tanda kutip (mis. JSON.stringify token string)
   if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) {
     t = t.slice(1, -1);
   }
-
   // Jika token sudah mengandung "Bearer " di depan, buang prefix-nya
   if (t.toLowerCase().startsWith('bearer ')) {
     t = t.slice(7).trim();
   }
-
   return t || null;
 };
 
@@ -184,13 +167,11 @@ export function ZeniumMapPage() {
   // Debounced suggestions
   useEffect(() => {
     if (debounceTimer.current) window.clearTimeout(debounceTimer.current);
-
     if (!searchQuery || searchQuery.trim().length < 3) {
       setSuggestions([]);
       setShowSuggestions(false);
       return;
     }
-
     debounceTimer.current = window.setTimeout(async () => {
       try {
         const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&q=${encodeURIComponent(
@@ -249,9 +230,7 @@ export function ZeniumMapPage() {
   const analyzeLocation = async () => {
     if (!pinnedLocation) return;
     setIsAnalyzing(true);
-
-    const address =
-      pinnedAddress || (await getAddressFromCoordinates(pinnedLocation[0], pinnedLocation[1]));
+    const address = pinnedAddress || (await getAddressFromCoordinates(pinnedLocation[0], pinnedLocation[1]));
     const payload = {
       coordinates: [pinnedLocation[1], pinnedLocation[0]] as [number, number], // [lng, lat]
       address,
@@ -260,7 +239,6 @@ export function ZeniumMapPage() {
 
     const onSuccess = async (data: AnalysisResult) => {
       setAnalysisResult(data);
-
       // Auto-save analysis to DB if user is authenticated
       try {
         const token2 = getAuthToken();
@@ -281,7 +259,6 @@ export function ZeniumMapPage() {
       } catch (err) {
         // ignore auto-save errors and show default success message
       }
-
       await notify(
         'success',
         'Analysis complete',
@@ -292,7 +269,6 @@ export function ZeniumMapPage() {
     try {
       const token = getAuthToken();
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : undefined;
-
       const res = await axios.post(`${apiUrl}/analysis/analyze`, payload, config);
       if (res.data?.success) {
         await onSuccess(res.data.data);
@@ -302,7 +278,6 @@ export function ZeniumMapPage() {
     } catch (e: any) {
       const status = e?.response?.status;
       const message = e?.response?.data?.message || e?.message;
-
       // Jika token invalid/expired dan endpoint mengizinkan anonim,
       // hapus token dan coba ulang tanpa Authorization sekali.
       if (status === 401 && /token|jwt|unauthor/i.test(String(message))) {
@@ -421,25 +396,29 @@ export function ZeniumMapPage() {
             <div className="hidden sm:flex items-center gap-2">
               <button
                 onClick={() => setIsPinModeEnabled((v) => !v)}
-                className={`px-3 py-2 rounded-lg border ${isPinModeEnabled ? 'border-yellow-500/60 bg-yellow-500/10' : 'border-yellow-500/20 bg-transparent'
-                  }`}
+                className={`px-3 py-2 rounded-lg border ${
+                  isPinModeEnabled ? 'border-yellow-500/60 bg-yellow-500/10' : 'border-yellow-500/20 bg-transparent'
+                }`}
                 title="Toggle Pin Mode"
               >
-                <MapPin className="w-4 h-4 inline mr-2" /> {isPinModeEnabled ? 'Pinning' : 'Pin Mode'}
+                <MapPin className="w-4 h-4 inline mr-2" />
+                {isPinModeEnabled ? 'Pinning' : 'Pin Mode'}
               </button>
               <button
                 onClick={useMyLocation}
                 className="px-3 py-2 rounded-lg border border-yellow-500/20 hover:bg-yellow-500/10"
                 title="Use My Location"
               >
-                <LocateFixed className="w-4 h-4 inline mr-2" /> My Location
+                <LocateFixed className="w-4 h-4 inline mr-2" />
+                My Location
               </button>
               <button
                 onClick={clearPin}
                 className="px-3 py-2 rounded-lg border border-red-500/30 hover:bg-red-500/10"
                 title="Clear Pin"
               >
-                <X className="w-4 h-4 inline mr-2" /> Clear
+                <X className="w-4 h-4 inline mr-2" />
+                Clear
               </button>
             </div>
             {/* Mobile hamburger */}
@@ -453,7 +432,6 @@ export function ZeniumMapPage() {
             </button>
           </div>
         </div>
-
         {/* Search */}
         <div className="max-w-7xl mx-auto px-4 pb-4">
           <div className="relative">
@@ -477,7 +455,9 @@ export function ZeniumMapPage() {
                     className="block w-full text-left px-3 py-2 hover:bg-yellow-500/10"
                   >
                     <div className="text-sm text-white truncate">{s.display_name}</div>
-                    <div className="text-xs text-gray-400">{parseFloat(s.lat).toFixed(5)}, {parseFloat(s.lon).toFixed(5)}</div>
+                    <div className="text-xs text-gray-400">
+                      {parseFloat(s.lat).toFixed(5)}, {parseFloat(s.lon).toFixed(5)}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -510,32 +490,181 @@ export function ZeniumMapPage() {
           <div className="sm:hidden max-w-7xl mx-auto px-4 pb-4">
             <div className="p-3 bg-black/70 border border-yellow-500/20 rounded-lg backdrop-blur-md grid grid-cols-2 gap-2">
               <button
-                onClick={() => { setIsPinModeEnabled((v) => !v); setShowMobileMenu(false); }}
-                className={`px-3 py-2 rounded-lg border ${isPinModeEnabled ? 'border-yellow-500/60 bg-yellow-500/10' : 'border-yellow-500/20 bg-transparent'
-                  }`}
+                onClick={() => {
+                  setIsPinModeEnabled((v) => !v);
+                  setShowMobileMenu(false);
+                }}
+                className={`px-3 py-2 rounded-lg border ${
+                  isPinModeEnabled ? 'border-yellow-500/60 bg-yellow-500/10' : 'border-yellow-500/20 bg-transparent'
+                }`}
               >
-                <MapPin className="w-4 h-4 inline mr-2" /> {isPinModeEnabled ? 'Pinning' : 'Pin Mode'}
+                <MapPin className="w-4 h-4 inline mr-2" />
+                {isPinModeEnabled ? 'Pinning' : 'Pin Mode'}
               </button>
               <button
-                onClick={() => { useMyLocation(); setShowMobileMenu(false); }}
+                onClick={() => {
+                  useMyLocation();
+                  setShowMobileMenu(false);
+                }}
                 className="px-3 py-2 rounded-lg border border-yellow-500/20 hover:bg-yellow-500/10"
               >
-                <LocateFixed className="w-4 h-4 inline mr-2" /> My Location
+                <LocateFixed className="w-4 h-4 inline mr-2" />
+                My Location
               </button>
               <button
-                onClick={() => { clearPin(); setShowMobileMenu(false); }}
+                onClick={() => {
+                  clearPin();
+                  setShowMobileMenu(false);
+                }}
                 className="col-span-2 px-3 py-2 rounded-lg border border-red-500/30 hover:bg-red-500/10"
               >
-                <X className="w-4 h-4 inline mr-2" /> Clear Pin
+                <X className="w-4 h-4 inline mr-2" />
+                Clear Pin
               </button>
             </div>
           </div>
         )}
       </header>
 
-      {/* Map & Actions */}
+      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Analysis and History Sections */}
+          <div className="lg:col-span-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+              {/* Analysis Result */}
+              <section className="lg:col-span-8 bg-gray-900/50 border border-yellow-500/20 rounded-xl p-4">
+                <h2 className="text-lg font-semibold text-yellow-400 mb-3">Analysis</h2>
+                {!analysisResult ? (
+                  <p className="text-sm text-gray-400">No analysis yet. Pin a location and click Analyze.</p>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap items-center gap-4">
+                      <div>
+                        <div
+                          className="text-4xl font-bold"
+                          style={{ color: getPeacefulnessColor(analysisResult.peacefulnessScore) }}
+                        >
+                          {analysisResult.peacefulnessScore}
+                        </div>
+                        <div className="text-sm text-gray-400">Peacefulness (0-100)</div>
+                        <div className="mt-2 h-2 w-48 bg-gray-800 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${analysisResult.peacefulnessScore}%`,
+                              backgroundColor: getPeacefulnessColor(analysisResult.peacefulnessScore),
+                              transition: 'width 300ms ease',
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="px-3 py-1 rounded-full text-sm border border-yellow-500/30 text-yellow-300">
+                        {analysisResult.peacefulnessLabel}
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-300 mb-2">Area Distribution</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
+                          <div className="text-green-400">🌿 Green/Blue</div>
+                          <div className="text-white font-semibold">
+                            {analysisResult.areaDistribution.greenBlueSpaces.toFixed(1)}%
+                          </div>
+                        </div>
+                        <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
+                          <div className="text-gray-300">🏢 Buildings</div>
+                          <div className="text-white font-semibold">
+                            {analysisResult.areaDistribution.buildings.toFixed(1)}%
+                          </div>
+                        </div>
+                        <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
+                          <div className="text-red-400">🛣️ Roads</div>
+                          <div className="text-white font-semibold">
+                            {analysisResult.areaDistribution.roads.toFixed(1)}%
+                          </div>
+                        </div>
+                        <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
+                          <div className="text-blue-300">⚪ Neutral</div>
+                          <div className="text-white font-semibold">
+                            {analysisResult.areaDistribution.neutral.toFixed(1)}%
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-300 mb-2">AI Analysis</h3>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        {analysisResult.aiAnalysis.description}
+                      </p>
+                    </div>
+                    {!!analysisResult.aiAnalysis.recommendations?.length && (
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-300 mb-2">Recommendations</h3>
+                        <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
+                          {analysisResult.aiAnalysis.recommendations.map((r, i) => (
+                            <li key={i}>{r}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </section>
+              {/* History */}
+              <aside className="lg:col-span-4 bg-gray-900/50 border border-yellow-500/20 rounded-xl p-4 max-h-[70vh] overflow-auto">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-lg font-semibold text-yellow-400">History</h2>
+                  <History className="w-4 h-4 text-yellow-400" />
+                </div>
+                {savedAnalyses.length === 0 ? (
+                  <p className="text-sm text-gray-400">
+                    No saved analyses yet. Save results to build your history.
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {savedAnalyses.map((a) => (
+                      <div
+                        key={a._id}
+                        className="p-3 bg-gray-800/60 rounded-lg border border-gray-700"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm text-white truncate">{a.address}</div>
+                            <div className="text-xs text-gray-400 mt-0.5">
+                              {new Date(a.createdAt).toLocaleString()} • {a.peacefulnessScore}/100
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => {
+                                const [lng, lat] = a.location.coordinates;
+                                setPinnedLocation([lat, lng]);
+                                setPinnedAddress(a.address);
+                                centerMap(lat, lng);
+                              }}
+                              className="p-2 rounded-md bg-blue-600/20 hover:bg-blue-600/30"
+                              title="View on map"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => deleteAnalysis(a._id)}
+                              className="p-2 rounded-md bg-red-600/20 hover:bg-red-600/30"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </aside>
+            </div>
+          </div>
+          {/* Map Section */}
           <div className="lg:col-span-12">
             <div className="relative rounded-2xl overflow-hidden border border-yellow-500/20 bg-gray-950 min-h-[300px] sm:min-h-[360px] shadow-lg">
               {loading ? (
@@ -554,7 +683,6 @@ export function ZeniumMapPage() {
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
-
                     {/* User marker */}
                     <Marker
                       position={userLocation}
@@ -567,14 +695,13 @@ export function ZeniumMapPage() {
                     >
                       <Popup>Your Location</Popup>
                     </Marker>
-
                     {/* Pin marker */}
                     {pinnedLocation && (
                       <Marker
                         position={pinnedLocation}
                         icon={L.divIcon({
                           className: 'custom-marker',
-                          html: `<div style="width: 28px; height: 28px; border-radius: 50%; background-color: #FF5722; border: 3px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(0,0,0,0.5);"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg></div>`,
+                          html: `<div style="width: 28px; height: 28px; border-radius: 50%; background-color: #FF5722; border: 3px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(0,0,0,0.5);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>`,
                           iconSize: [28, 28],
                           iconAnchor: [14, 14],
                         })}
@@ -587,7 +714,6 @@ export function ZeniumMapPage() {
                         </Popup>
                       </Marker>
                     )}
-
                     {/* Healing spots markers */}
                     {analysisResult?.aiAnalysis.healingSpots.map((spot, idx) => (
                       <Marker
@@ -595,7 +721,7 @@ export function ZeniumMapPage() {
                         position={[spot.coordinates[1], spot.coordinates[0]]}
                         icon={L.divIcon({
                           className: 'custom-marker',
-                          html: `<div style="width: 20px; height: 20px; border-radius: 50%; background-color: #00C853; border: 2px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.3);"><span style=\"color: white; font-size: 10px;\">🌿</span></div>`,
+                          html: `<div style="width: 20px; height: 20px; border-radius: 50%; background-color: #00C853; border: 2px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.3);"><span style="color: white; font-size: 10px;">🌿</span></div>`,
                           iconSize: [20, 20],
                           iconAnchor: [10, 10],
                         })}
@@ -608,7 +734,6 @@ export function ZeniumMapPage() {
                         </Popup>
                       </Marker>
                     ))}
-
                     {/* Click handler for pin */}
                     <MapClickHandler />
                   </MapContainer>
@@ -616,126 +741,6 @@ export function ZeniumMapPage() {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Results + History */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
-          {/* Analysis Result */}
-          <section className="lg:col-span-8 bg-gray-900/50 border border-yellow-500/20 rounded-xl p-4">
-            <h2 className="text-lg font-semibold text-yellow-400 mb-3">Analysis</h2>
-            {!analysisResult ? (
-              <p className="text-sm text-gray-400">No analysis yet. Pin a location and click Analyze.</p>
-            ) : (
-              <div className="space-y-4">
-                <div className="flex flex-wrap items-center gap-4">
-                  <div>
-                    <div className="text-4xl font-bold" style={{ color: getPeacefulnessColor(analysisResult.peacefulnessScore) }}>
-                      {analysisResult.peacefulnessScore}
-                    </div>
-                    <div className="text-sm text-gray-400">Peacefulness (0-100)</div>
-                    <div className="mt-2 h-2 w-48 bg-gray-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${analysisResult.peacefulnessScore}%`,
-                          backgroundColor: getPeacefulnessColor(analysisResult.peacefulnessScore),
-                          transition: 'width 300ms ease'
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="px-3 py-1 rounded-full text-sm border border-yellow-500/30 text-yellow-300">
-                    {analysisResult.peacefulnessLabel}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-medium text-gray-300 mb-2">Area Distribution</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                    <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
-                      <div className="text-green-400">🌿 Green/Blue</div>
-                      <div className="text-white font-semibold">{analysisResult.areaDistribution.greenBlueSpaces.toFixed(1)}%</div>
-                    </div>
-                    <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
-                      <div className="text-gray-300">🏢 Buildings</div>
-                      <div className="text-white font-semibold">{analysisResult.areaDistribution.buildings.toFixed(1)}%</div>
-                    </div>
-                    <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
-                      <div className="text-red-400">🛣️ Roads</div>
-                      <div className="text-white font-semibold">{analysisResult.areaDistribution.roads.toFixed(1)}%</div>
-                    </div>
-                    <div className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
-                      <div className="text-blue-300">⚪ Neutral</div>
-                      <div className="text-white font-semibold">{analysisResult.areaDistribution.neutral.toFixed(1)}%</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-medium text-gray-300 mb-2">AI Analysis</h3>
-                  <p className="text-gray-300 text-sm leading-relaxed">{analysisResult.aiAnalysis.description}</p>
-                </div>
-
-                {!!analysisResult.aiAnalysis.recommendations?.length && (
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-300 mb-2">Recommendations</h3>
-                    <ul className="list-disc list-inside text-sm text-gray-300 space-y-1">
-                      {analysisResult.aiAnalysis.recommendations.map((r, i) => (
-                        <li key={i}>{r}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
-          </section>
-
-          {/* History */}
-          <aside className="lg:col-span-4 bg-gray-900/50 border border-yellow-500/20 rounded-xl p-4 lg:sticky lg:top-20 max-h-[70vh] overflow-auto">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold text-yellow-400">History</h2>
-              <History className="w-4 h-4 text-yellow-400" />
-            </div>
-            {savedAnalyses.length === 0 ? (
-              <p className="text-sm text-gray-400">No saved analyses yet. Save results to build your history.</p>
-            ) : (
-              <div className="space-y-2">
-                {savedAnalyses.map((a) => (
-                  <div key={a._id} className="p-3 bg-gray-800/60 rounded-lg border border-gray-700">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm text-white truncate">{a.address}</div>
-                        <div className="text-xs text-gray-400 mt-0.5">
-                          {new Date(a.createdAt).toLocaleString()} • {a.peacefulnessScore}/100
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => {
-                            const [lng, lat] = a.location.coordinates;
-                            setPinnedLocation([lat, lng]);
-                            setPinnedAddress(a.address);
-                            centerMap(lat, lng);
-                          }}
-                          className="p-2 rounded-md bg-blue-600/20 hover:bg-blue-600/30"
-                          title="View on map"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => deleteAnalysis(a._id)}
-                          className="p-2 rounded-md bg-red-600/20 hover:bg-red-600/30"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </aside>
         </div>
       </main>
     </div>

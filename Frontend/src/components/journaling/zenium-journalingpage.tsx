@@ -20,6 +20,18 @@ import {
   Brain
 } from 'lucide-react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
+import Swal from 'sweetalert2';
+
+// Helpers: sanitize token from storage
+function getAuthToken(): string | null {
+  const raw = localStorage.getItem('authToken') || localStorage.getItem('token');
+  if (!raw) return null;
+  let t = raw.trim();
+  if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) t = t.slice(1, -1);
+  if (t.toLowerCase().startsWith('bearer ')) t = t.slice(7).trim();
+  return t || null;
+}
 
 // Types matching backend
 type Mood = 'happy' | 'sad' | 'anxious' | 'stressed' | 'neutral' | 'energetic' | 'tired' | 'excited';
@@ -75,6 +87,10 @@ export function ZeniumJournalingPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [voiceTranscript, setVoiceTranscript] = useState('');
 
+  // PDF integration state
+  const [pdfHistory, setPdfHistory] = useState<any[]>([]);
+  const [pdfLoading, setPdfLoading] = useState(false);
+
   // AI analysis state
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysis, setAnalysis] = useState<{
@@ -90,13 +106,12 @@ export function ZeniumJournalingPage() {
   // Fetch entries on mount
   useEffect(() => {
     fetchEntries();
+    fetchPdfHistory();
   }, []);
 
-  const token = useMemo(() => localStorage.getItem('token'), []);
+  const token = useMemo(() => getAuthToken(), []);
 
-  const authHeaders = useMemo(() => ({
-    Authorization: `Bearer ${token}`
-  }), [token]);
+  const authHeaders = useMemo(() => (token ? { Authorization: `Bearer ${token}` } : {}), [token]);
 
   const moodOptions: { key: Mood; icon: JSX.Element; color: string }[] = [
     { key: 'happy', icon: <Smile className="w-5 h-5" />, color: 'text-green-400' },
@@ -137,6 +152,19 @@ export function ZeniumJournalingPage() {
     }
   }
 
+  async function fetchPdfHistory() {
+    try {
+      if (!token) return;
+      setPdfLoading(true);
+      const res = await axios.get(`${apiUrl}/journal-pdf`, { headers: authHeaders });
+      setPdfHistory(res.data?.data || []);
+    } catch (e) {
+      console.error('Fetch PDF history failed', e);
+    } finally {
+      setPdfLoading(false);
+    }
+  }
+
   // Filter + sort
   useEffect(() => {
     let filtered = [...entries];
@@ -168,6 +196,7 @@ export function ZeniumJournalingPage() {
       setGuidedQuestions(qs.map(q => ({ question: q, answer: '' })));
     } catch (e) {
       console.error('Load guided questions failed', e);
+      Swal.fire('Error', 'Failed to load guided questions.', 'error');
     }
   }
 
@@ -225,21 +254,30 @@ export function ZeniumJournalingPage() {
       };
       setEntries(prev => [created, ...prev]);
 
-      // If analysis already done in UI, attach to this new entry
-      if (analysis) {
-        try {
-          await axios.post(`${apiUrl}/journals/${j._id}/analyze-attach`, {}, { headers: authHeaders });
-          // Refresh list
-          fetchEntries();
-        } catch (e) {
-          console.error('Attach analysis failed', e);
-        }
+      // Analyze and attach, then generate personalized quote
+      try {
+        await axios.post(`${apiUrl}/journals/${j._id}/analyze-attach`, {}, { headers: authHeaders });
+        await axios.get(`${apiUrl}/daily-quote`, { headers: authHeaders, params: { forceNew: true, mood } });
+        await fetchEntries();
+      } catch (e) {
+        console.error('Post-save analyze+quote failed', e);
       }
 
+      const go = await Swal.fire({
+        title: 'Journal saved',
+        text: 'A personalized quote has been generated. Open Quote page?',
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonText: 'Go to Quotes'
+      });
+      if (go.isConfirmed) {
+        navigate('/quote');
+      }
       resetForm();
       setIsCreating(false);
     } catch (e) {
       console.error('Create journal failed', e);
+      Swal.fire('Error', 'Failed to create journal.', 'error');
     }
   }
 
@@ -258,46 +296,188 @@ export function ZeniumJournalingPage() {
         privacy: 'private'
       };
       await axios.put(`${apiUrl}/journals/${currentEntry.id}`, body, { headers: authHeaders });
-      // Optional: attach analysis to this entry if present in UI
-      if (analysis) {
+      // Analyze and attach, then generate personalized quote
+      try {
         await axios.post(`${apiUrl}/journals/${currentEntry.id}/analyze-attach`, {}, { headers: authHeaders });
+        await axios.get(`${apiUrl}/daily-quote`, { headers: authHeaders, params: { forceNew: true, mood: currentEntry.mood } });
+      } catch (err) {
+        console.error('Post-update analyze+quote failed', err);
       }
       await fetchEntries();
       setIsEditing(false);
       setCurrentEntry(null);
+      const go2 = await Swal.fire({
+        title: 'Journal updated',
+        text: 'A personalized quote has been generated. Open Quote page?',
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonText: 'Go to Quotes'
+      });
+      if (go2.isConfirmed) navigate('/quote');
     } catch (e) {
       console.error('Update journal failed', e);
+      Swal.fire('Error', 'Failed to update journal.', 'error');
     }
   }
 
   // Delete entry
   async function deleteEntry(id: string) {
-    if (!confirm('Delete this journal?')) return;
+    const res = await Swal.fire({
+      title: 'Delete this journal?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#ef4444'
+    });
+    if (!res.isConfirmed) return;
     try {
       await axios.delete(`${apiUrl}/journals/${id}`, { headers: authHeaders });
       setEntries(prev => prev.filter(e => e.id !== id));
+      await Swal.fire('Deleted', 'Journal has been deleted.', 'success');
     } catch (e) {
       console.error('Delete journal failed', e);
+      Swal.fire('Error', 'Failed to delete journal.', 'error');
     }
   }
 
-  // Analyze (AI): does not persist immediately
+  async function deletePdf(id: string) {
+    const res = await Swal.fire({
+      title: 'Delete this PDF?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#ef4444'
+    });
+    if (!res.isConfirmed) return;
+    try {
+      await axios.delete(`${apiUrl}/journal-pdf/${id}`, { headers: authHeaders });
+      setPdfHistory(prev => prev.filter((it: any) => it._id !== id));
+      await Swal.fire('Deleted', 'PDF has been deleted.', 'success');
+    } catch (e) {
+      console.error('Delete PDF failed', e);
+      Swal.fire('Error', 'Failed to delete PDF.', 'error');
+    }
+  }
+
+  // Analyze (AI): process with backend (Qwen) and generate a personalized quote
   async function analyzeCurrent(contentText: string, moodVal: Mood, moodRatingVal: number) {
     try {
+      if (!contentText || contentText.trim().length < 10) {
+        await Swal.fire('Add more detail', 'Please write a bit more (at least 10 characters) before analyzing.', 'info');
+        return;
+      }
+
       setAnalysisLoading(true);
+
+      const t = getAuthToken();
+      if (!t) {
+        await Swal.fire('Login required', 'Please login to analyze your journal.', 'info');
+        navigate('/login');
+        return;
+      }
+
+      // 1) Analyze with backend (uses Qwen under the hood)
       const res = await axios.post(`${apiUrl}/journals/analyze`, {
         content: contentText,
         mood: moodVal,
         moodRating: moodRatingVal
-      }, { headers: authHeaders });
-      setAnalysis(res.data?.data || null);
-    } catch (e) {
+      }, { headers: { Authorization: `Bearer ${t}` } });
+      const data = res.data?.data || null;
+      setAnalysis(data);
+
+      // 2) Trigger personalized quote generation based on this analysis session
+      try {
+        await axios.get(`${apiUrl}/daily-quote`, {
+          headers: { Authorization: `Bearer ${t}` },
+          params: { forceNew: true, mood: moodVal }
+        });
+      } catch (qe) {
+        // non-blocking if quote generation fails
+        console.warn('Quote generation after analyze failed', qe);
+      }
+
+      // 3) Notify and optionally navigate to Quote page
+      const go = await Swal.fire({
+        title: 'Analysis complete',
+        text: 'Personalized quote generated. Open Quote page?',
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonText: 'Go to Quotes'
+      });
+      if (go.isConfirmed) navigate('/quote');
+    } catch (e: any) {
+      if (e?.response?.status === 401) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('token');
+        await Swal.fire('Session expired', 'Please login again.', 'info');
+        navigate('/login');
+        return;
+      }
       console.error('Analyze failed', e);
+      Swal.fire('Error', 'Failed to analyze content.', 'error');
     } finally {
       setAnalysisLoading(false);
     }
   }
 
+  // Export to PDF and analyze via backend
+  async function exportToPdfAndAnalyze() {
+    try {
+      const t = isEditing ? (currentEntry?.title ?? '') : title;
+      const c = isEditing ? (currentEntry?.content ?? '') : content;
+      if (!t.trim() || !c.trim()) return;
+
+      // Build PDF using jsPDF
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      let y = 15;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.text(t, 15, y);
+      y += 8;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      const meta = `Mood: ${isEditing ? (currentEntry?.mood ?? mood) : mood}  |  Rating: ${isEditing ? (currentEntry?.moodRating ?? moodRating) : moodRating}/10`;
+      doc.text(meta, 15, y);
+      y += 8;
+      const tagLine = (isEditing ? (currentEntry?.tags ?? tags) : tags).map(x => `#${x}`).join(' ');
+      if (tagLine) { doc.text(tagLine, 15, y); y += 8; }
+
+      const contentLines = doc.splitTextToSize(c, pageWidth - 30);
+      doc.text(contentLines, 15, y);
+
+      // Convert to Blob
+      const blob = doc.output('blob');
+
+      // Upload to backend
+      const form = new FormData();
+      form.append('title', t);
+      form.append('file', blob, `${t.replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40)}.pdf`);
+
+      const uploadRes = await axios.post(`${apiUrl}/journal-pdf`, form, {
+        headers: { ...authHeaders, 'Content-Type': 'multipart/form-data' }
+      });
+
+      const pdfId = uploadRes.data?.data?._id;
+      if (!pdfId) throw new Error('Upload did not return id');
+
+      // Trigger analyze + quote generation
+      await axios.post(`${apiUrl}/journal-pdf/${pdfId}/analyze-quote`, {}, { headers: authHeaders });
+
+      // Refresh history
+      fetchPdfHistory();
+      await Swal.fire('Success', 'PDF created, analyzed, and personalized quote generated. Check Quote page.', 'success');
+    } catch (e) {
+      console.error('Export PDF & Analyze failed', e);
+      Swal.fire('Error', 'Failed to export and analyze.', 'error');
+    }
+  }
+
+  
   // Voice to text
   function toggleRecording() {
     if (recording) {
@@ -308,11 +488,11 @@ export function ZeniumJournalingPage() {
 
     const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) {
-      alert('SpeechRecognition API tidak tersedia di browser ini.');
+      Swal.fire('Not supported', 'SpeechRecognition API is not available in this browser.', 'info');
       return;
     }
     const recognition = new SR();
-    recognition.lang = 'id-ID';
+    recognition.lang = 'en-US';
     recognition.interimResults = true;
     recognition.continuous = true;
 
@@ -339,7 +519,7 @@ export function ZeniumJournalingPage() {
   // UI helpers
   function formatDate(dateString: string) {
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('id-ID', options);
+    return new Date(dateString).toLocaleDateString('en-US', options);
   }
 
   function classificationBadge(c?: 'safe' | 'needs_attention' | 'high_risk') {
@@ -433,7 +613,7 @@ export function ZeniumJournalingPage() {
               {/* Left: editor */}
               <div className="lg:col-span-2 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Judul</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
                   <input
                     type="text"
                     className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white"
@@ -445,7 +625,7 @@ export function ZeniumJournalingPage() {
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-sm font-medium text-gray-400">Konten</label>
+                    <label className="block text-sm font-medium text-gray-400">Content</label>
                     <button
                       onClick={toggleRecording}
                       className={`px-2 py-1 rounded-md text-xs border ${recording ? 'border-red-500 text-red-300' : 'border-gray-500 text-gray-300'} hover:bg-gray-800`}
@@ -508,7 +688,7 @@ export function ZeniumJournalingPage() {
                     <input
                       type="text"
                       className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-yellow-500/50 text-white"
-                      placeholder="Tambahkan tag"
+                      placeholder="Add tag"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && addTag()}
@@ -517,11 +697,11 @@ export function ZeniumJournalingPage() {
                       onClick={addTag}
                       className="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-r-lg transition-colors duration-300"
                     >
-                      Tambah
+                      Add
                     </button>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {(isEditing ? currentEntry?.tags : tags).map((tag, i) => (
+                    {((isEditing ? currentEntry?.tags : tags) ?? []).map((tag, i) => (
                       <div key={i} className="flex items-center bg-gray-800 text-gray-300 px-2 py-1 rounded-full">
                         <span className="text-xs">{tag}</span>
                         <button onClick={() => isEditing
@@ -546,7 +726,7 @@ export function ZeniumJournalingPage() {
                     </button>
                   </div>
                   {guidedQuestions.length === 0 ? (
-                    <p className="text-xs text-gray-500">Belum ada pertanyaan. Klik "Muat Pertanyaan" untuk menampilkan pertanyaan reflektif.</p>
+                    <p className="text-xs text-gray-500">No questions yet. Click "Load Questions" to display reflective questions.</p>
                   ) : (
                     <div className="space-y-3">
                       {guidedQuestions.map((qa, idx) => (
@@ -571,7 +751,15 @@ export function ZeniumJournalingPage() {
                     disabled={analysisLoading || !(isEditing ? currentEntry?.content : content)}
                     className="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/20 rounded-lg transition-colors duration-300 disabled:opacity-50"
                   >
-                    {analysisLoading ? 'Analyzing...' : (<span className="inline-flex items-center gap-2"><Brain className="w-4 h-4" /> AI Analysis</span>)}
+                    {analysisLoading ? 'Analyzing...' : (<span className="inline-flex items-center gap-2"><Brain className="w-4 h-4" /> Analyze</span>)}
+                  </button>
+
+                  <button
+                    onClick={exportToPdfAndAnalyze}
+                    disabled={isEditing ? !(currentEntry?.title && currentEntry?.content) : !(title && content)}
+                    className="px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/20 rounded-lg transition-colors duration-300"
+                  >
+                    Export as PDF
                   </button>
 
                   <button
@@ -579,9 +767,36 @@ export function ZeniumJournalingPage() {
                     disabled={isEditing ? !(currentEntry?.title && currentEntry?.content) : !(title && content)}
                     className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors duration-300 flex items-center"
                   >
-                    <Save className="w-4 h-4 mr-2" /> {isEditing ? 'Update Journal' : 'Save Journal'}
+                    <Save className="w-4 h-4 mr-2" /> {isEditing ? 'Save to Database' : 'Save to Database'}
                   </button>
                 </div>
+
+                {/* AI Workflow Status */}
+                {analysis && (
+                  <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Brain className="w-4 h-4 text-blue-400" />
+                      <span className="text-sm font-medium text-blue-300">AI Workflow Status</span>
+                    </div>
+                    <div className="text-xs text-blue-200">
+                      ✓ Journal analyzed • ✓ Quote generated • ✓ Recommendations created
+                    </div>
+                    <div className="mt-2 flex gap-2">
+                      <button
+                        onClick={() => navigate('/quote')}
+                        className="px-3 py-1 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/20 rounded-lg text-xs text-blue-300 transition-colors duration-300"
+                      >
+                        View Quote
+                      </button>
+                      <button
+                        onClick={() => navigate('/recommendations')}
+                        className="px-3 py-1 bg-green-600/20 hover:bg-green-600/30 border border-green-500/20 rounded-lg text-xs text-green-300 transition-colors duration-300"
+                      >
+                        View Recommendations
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Right: Analysis panel */}
@@ -593,22 +808,22 @@ export function ZeniumJournalingPage() {
                   ) : (
                     <div className="space-y-3 text-sm">
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Klasifikasi</span>
+                        <span className="text-gray-300">Classification</span>
                         {classificationBadge(analysis.mentalHealthClassification)}
                       </div>
                       <div>
-                        <div className="text-gray-400 mb-1">Sentimen</div>
+                        <div className="text-gray-400 mb-1">Sentiment</div>
                         <div className="text-gray-200">{analysis.aiInsights.sentiment}</div>
                       </div>
                       {analysis.aiInsights.summary && (
                         <div>
-                          <div className="text-gray-400 mb-1">Ringkasan</div>
+                          <div className="text-gray-400 mb-1">Summary</div>
                           <div className="text-gray-200 whitespace-pre-line">{analysis.aiInsights.summary}</div>
                         </div>
                       )}
                       {!!(analysis.aiInsights.keywords?.length) && (
                         <div>
-                          <div className="text-gray-400 mb-1">Kata Kunci</div>
+                          <div className="text-gray-400 mb-1">Keywords</div>
                           <div className="flex flex-wrap gap-1">
                             {analysis.aiInsights.keywords!.map((k, i) => (
                               <span key={i} className="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full">{k}</span>
@@ -638,12 +853,7 @@ export function ZeniumJournalingPage() {
             <Calendar className="w-16 h-16 text-gray-600 mb-4" />
             <h3 className="text-xl font-medium text-gray-400">No journals yet</h3>
             <p className="text-gray-500 mt-2">Start writing your first journal</p>
-            <button
-              onClick={() => { setIsCreating(true); resetForm(); }}
-              className="mt-4 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors duration-300 flex items-center"
-            >
-              <Plus className="w-4 h-4 mr-2" /> Create New Journal
-            </button>
+            {/* Tombol duplikat dihapus dari sini */}
           </div>
         ) : (
           <div className="space-y-4">
@@ -696,6 +906,38 @@ export function ZeniumJournalingPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* PDF History */}
+      <div className="px-4 pb-12">
+        <div className="bg-gray-900/50 rounded-lg border border-yellow-500/20 p-4">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-medium text-yellow-400">PDF History</h2>
+            <div className="flex gap-2">
+              <button onClick={() => navigate('/quote')} className="px-3 py-1 rounded-md bg-yellow-500/10 hover:bg-yellow-500/20">Go to Quotes</button>
+              <button onClick={fetchPdfHistory} className="px-3 py-1 rounded-md bg-gray-800 hover:bg-gray-700">Refresh</button>
+            </div>
+          </div>
+          {pdfLoading ? (
+            <div className="text-gray-400 text-sm">Loading...</div>
+          ) : (pdfHistory.length === 0 ? (
+            <div className="text-gray-500 text-sm">No PDF history.</div>
+          ) : (
+            <div className="space-y-2">
+              {pdfHistory.map((it: any) => (
+                <div key={it._id} className="flex items-center justify-between bg-gray-800/50 rounded-md p-2">
+                  <div>
+                    <div className="text-white text-sm">{it.title}</div>
+                    <div className="text-xs text-gray-400">{new Date(it.createdAt).toLocaleString()} • {it.analyzed ? 'Analyzed' : 'Pending'}</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => deletePdf(it._id)} className="px-2 py-1 text-xs rounded-md bg-red-500/20 hover:bg-red-500/30 border border-red-500/30">Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

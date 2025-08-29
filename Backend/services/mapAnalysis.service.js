@@ -1,4 +1,3 @@
-import axios from 'axios';
 import sharp from 'sharp';
 import fs from 'fs';
 import path from 'path';

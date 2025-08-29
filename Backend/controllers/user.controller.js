@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 export const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select("-password");
+    const user = await User.findById(req.user.id).select("-password");
     
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -18,20 +18,28 @@ export const getUserProfile = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
   try {
-    const { name, email } = req.body;
-    const userId = req.user.userId;
+    const { username, email } = req.body;
+    const userId = req.user.id;
 
     // Check if email is already taken by another user
     if (email) {
-      const existingUser = await User.findOne({ email, _id: { $ne: userId } });
-      if (existingUser) {
+      const existingEmail = await User.findOne({ email, _id: { $ne: userId } });
+      if (existingEmail) {
         return res.status(400).json({ message: "Email already in use" });
+      }
+    }
+
+    // Check if username is already taken by another user
+    if (username) {
+      const existingUsername = await User.findOne({ username, _id: { $ne: userId } });
+      if (existingUsername) {
+        return res.status(400).json({ message: "Username already in use" });
       }
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name, email },
+      { ...(username !== undefined ? { username } : {}), ...(email !== undefined ? { email } : {}) },
       { new: true, runValidators: true }
     ).select("-password");
 
@@ -49,7 +57,7 @@ export const updateUserProfile = async (req, res) => {
 export const updateUserPassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     // Validate input
     if (!currentPassword || !newPassword) {

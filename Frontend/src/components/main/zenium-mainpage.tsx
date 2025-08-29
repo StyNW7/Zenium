@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   User, 
@@ -9,16 +9,17 @@ import {
   X,
   Heart,
   Sparkles,
-  Zap,
   Brain,
   TrendingUp,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/authcontext';
 import Image from '@/assets/logo.png';
+import axios from 'axios';
 
 export function ZeniumMainPage() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [displayName, setDisplayName] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -80,6 +81,23 @@ export function ZeniumMainPage() {
     }
     setShowMobileMenu(false);
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+        const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+        if (!token) { setDisplayName(user?.username || null); return; }
+        const resp = await axios.get(`${apiUrl}/user/profile`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const uname = resp.data?.username || user?.username || null;
+        setDisplayName(uname);
+      } catch {
+        setDisplayName(user?.username || null);
+      }
+    })();
+  }, [user?.username]);
 
   const quickStats = [
     { number: "24/7", label: "AI Support", description: "Always available for you" },
@@ -161,7 +179,7 @@ export function ZeniumMainPage() {
                     <div className="py-2">
                       <div className="px-4 py-3 border-b border-yellow-500/20">
                         <p className="text-sm font-medium text-yellow-400">Welcome back!</p>
-                        <p className="text-xs text-gray-400">{user?.username}</p>
+                        <p className="text-xs text-gray-400">{displayName || user?.username || 'User'}</p>
                       </div>
                       <button 
                         onClick={() => {
@@ -341,9 +359,7 @@ export function ZeniumMainPage() {
         <div className="container mx-auto">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-black" />
-              </div>
+                <img src={Image} alt="Logo Zenium" className="w-12 h-12" />
               <span className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
                 Zenium
               </span>

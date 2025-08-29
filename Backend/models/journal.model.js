@@ -79,6 +79,14 @@ const journalSchema = new mongoose.Schema({
     min: 0,
     max: 1
   },
+  // Optional: attached PDF of this journal (generated client-side)
+  pdf: {
+    type: Buffer,
+  },
+  pdfMimeType: {
+    type: String,
+    default: 'application/pdf',
+  },
 }, {
   timestamps: true,
 });

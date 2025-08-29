@@ -9,6 +9,7 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === "production";
 
 // Middleware untuk parsing JSON
 app.use(express.json());
@@ -32,6 +33,8 @@ if (process.env.NODE_ENV === "development") {
   };
   corsOptions.origin = "https://zenium-frontend.vercel.app";
 }
+
+const allowedOrigins = typeof corsOptions.origin === "string" ? corsOptions.origin : "*";
 
 app.use(cors(corsOptions));
 
@@ -77,7 +80,7 @@ app.use((req, res) => {
 });
 
 // Determine if running in serverless environment
-const isServerless = isVercel;
+const isServerless = !!process.env.VERCEL || process.env.SERVERLESS === "true";
 
 // Serverless handler untuk Vercel
 export default isServerless
