@@ -156,18 +156,18 @@ function App() {
                   } 
                 /> 
 
+                {/* User Dashboard */}
+
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
               </Route>
-
-              {/* User Dashboard */}
-
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                } 
-              /> 
               
               {/* 404 Page */}
               <Route path="*" element={<NotFoundPage />} />
