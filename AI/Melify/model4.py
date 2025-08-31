@@ -49,7 +49,7 @@ except Exception:
     AUDIO_AVAILABLE = False
 
 # ---------------- Config ----------------
-BOT_NAME = "Melyflu"
+BOT_NAME = "Melify"
 SESSIONS_DIR = "sessions"
 MEMORY_PATH = "user_memory.jsonl"
 VECTORIZER_PATH = "vectorizer.joblib"

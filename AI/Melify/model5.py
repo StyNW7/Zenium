@@ -1,11 +1,11 @@
-# melyflu_rag.py
+# Melify_rag.py
 """
-Melyflu RAG — Retrieval-Augmented Generation Therapist
+Melify RAG — Retrieval-Augmented Generation Therapist
 - Uses datasets: train1.csv, train2.csv, combined_dataset.json, intents.json
 - Retrieval: TF-IDF (fast)
 - Generation: OpenAI ChatCompletion (preferred) OR local causal HF model (fallback)
-- Save as: melyflu_rag.py
-Run: python melyflu_rag.py
+- Save as: Melify_rag.py
+Run: python Melify_rag.py
 """
 import os, sys, time, json, random, traceback
 from typing import List, Tuple, Dict, Any, Optional
@@ -48,7 +48,7 @@ except Exception:
     sbert_available = False
 
 # Config
-BOT_NAME = "Melyflu"
+BOT_NAME = "Melify"
 SESSIONS_DIR = "sessions"
 MEMORY_PATH = "user_memory.jsonl"
 VECTORIZER_PATH = "vectorizer.joblib"
@@ -304,7 +304,7 @@ def compose_prompt(user_text: str, retrieved: List[Tuple[str,str,float]], histor
     hist_txt = "\n".join(hist_lines)
     ex_txt = "\n\n".join(examples)
     prompt_parts = []
-    prompt_parts.append("You are Melyflu, a warm trauma-informed therapist. Be empathic, reflective, and conversational.")
+    prompt_parts.append("You are Melify, a warm trauma-informed therapist. Be empathic, reflective, and conversational.")
     if ex_txt:
         prompt_parts.append("Examples of similar exchanges (use these as style + content guides):\n" + ex_txt)
     if hist_txt:
