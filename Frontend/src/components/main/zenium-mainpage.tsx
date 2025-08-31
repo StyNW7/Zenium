@@ -11,6 +11,7 @@ import {
   Sparkles,
   Brain,
   TrendingUp,
+  Library,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/authcontext';
 import Image from '@/assets/logo.png';
@@ -55,6 +56,14 @@ export function ZeniumMainPage() {
       icon: BookOpen,
       gradient: 'from-yellow-400 via-yellow-600 to-yellow-500',
       bgColor: 'from-yellow-500/10 to-yellow-600/10'
+    },
+    {
+      id: 'content',
+      title: 'Mindful Library',
+      description: 'Article to maintain your mental health',
+      icon: Library,
+      gradient: 'from-yellow-600 via-yellow-500 to-yellow-400',
+      bgColor: 'from-yellow-600/10 to-yellow-400/10'
     }
   ];
 
@@ -75,6 +84,9 @@ export function ZeniumMainPage() {
         break;
       case 'map-system':
         navigate('/map');
+        break;
+      case 'content':
+        navigate('/content');
         break;
       default:
         console.warn(`Unknown navigation item: ${itemId}`);

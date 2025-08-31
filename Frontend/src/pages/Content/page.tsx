@@ -18,7 +18,7 @@ const articles = [
     author: "Dr. Sarah Johnson",
     readTime: "8 min read",
     publishedAt: "2024-01-15",
-    image: "/peaceful-meditation.png",
+    image: "/Images/article/anxiety.png",
     featured: true,
   },
   {
@@ -30,7 +30,7 @@ const articles = [
     author: "Dr. Michael Chen",
     readTime: "6 min read",
     publishedAt: "2024-01-12",
-    image: "/brain-meditation-science.png",
+    image: "/Images/article/meditation.png",
     featured: false,
   },
   {
@@ -42,7 +42,7 @@ const articles = [
     author: "Dr. Emily Rodriguez",
     readTime: "10 min read",
     publishedAt: "2024-01-10",
-    image: "/emotional-strength-resilience.png",
+    image: "/Images/article/emotional.png",
     featured: true,
   },
   {
@@ -54,7 +54,7 @@ const articles = [
     author: "Dr. James Wilson",
     readTime: "7 min read",
     publishedAt: "2024-01-08",
-    image: "/peaceful-sleep-bedroom.png",
+    image: "/Images/article/mental-health.png",
     featured: false,
   },
   {
@@ -66,7 +66,7 @@ const articles = [
     author: "Dr. Lisa Park",
     readTime: "9 min read",
     publishedAt: "2024-01-05",
-    image: "/digital-detox-wellness.png",
+    image: "/Images/article/stress.png",
     featured: false,
   },
   {
@@ -77,7 +77,7 @@ const articles = [
     author: "Dr. Robert Kim",
     readTime: "5 min read",
     publishedAt: "2024-01-03",
-    image: "/gratitude-journal-happiness.png",
+    image: "/Images/article/gratitude.png",
     featured: false,
   },
 ]
@@ -132,7 +132,7 @@ export default function ContentLibrary() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+    <div className="min-h-screen bg-gradient-to-br bg-black">
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
@@ -154,7 +154,7 @@ export default function ContentLibrary() {
               </a>
               <div>
                 <h1 className="text-2xl font-bold text-white">Mindful Content Library</h1>
-                <p className="text-slate-400 text-sm">Discover articles to support your mental wellness journey</p>
+                <p className="text-white text-sm">Discover articles to support your mental wellness journey</p>
               </div>
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function ContentLibrary() {
                 className={
                   selectedCategory === category
                     ? "bg-yellow-500 text-black hover:bg-yellow-400"
-                    : "border-slate-600 text-slate-300 hover:border-yellow-500 hover:text-yellow-400"
+                    : "border-slate-600 text- hover:border-yellow-500 hover:text-yellow-400"
                 }
               >
                 {category}
@@ -201,7 +201,7 @@ export default function ContentLibrary() {
 
           {/* Sort Options */}
           <div className="flex items-center gap-4">
-            <span className="text-slate-400 text-sm">Sort by:</span>
+            <span className="text-white text-sm">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}

@@ -88,18 +88,18 @@ function App() {
                 <Route 
                   path="content" 
                   element={
-                    <PublicRoute>
+                    <ProtectedRoute>
                       <ContentLibrary />
-                    </PublicRoute>
+                    </ProtectedRoute>
                   } 
                 />
 
                 <Route 
                   path="content/:id" 
                   element={
-                    <PublicRoute>
+                    <ProtectedRoute>
                       <ArticlePage />
-                    </PublicRoute>
+                    </ProtectedRoute>
                   } 
                 />
 

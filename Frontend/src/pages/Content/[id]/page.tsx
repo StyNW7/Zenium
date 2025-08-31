@@ -20,7 +20,7 @@ const getArticleById = (id: string) => {
       author: "Dr. Sarah Johnson",
       readTime: "8 min read",
       publishedAt: "2024-01-15",
-      image: "/peaceful-meditation.png",
+      image: "/Images/article/anxiety.png",
       content: `
         <h2>What is Anxiety?</h2>
         <p>Anxiety is a natural human response to stress and potential threats. It's characterized by feelings of worry, nervousness, or unease about something with an uncertain outcome. While occasional anxiety is normal and even helpful, persistent anxiety that interferes with daily life may indicate an anxiety disorder.</p>
@@ -67,7 +67,7 @@ const getArticleById = (id: string) => {
       author: "Dr. Michael Chen",
       readTime: "6 min read",
       publishedAt: "2024-01-12",
-      image: "/brain-meditation-science.png",
+      image: "/Images/article/meditation.png",
       content: `
         <h2>The Neuroscience Behind Mindfulness</h2>
         <p>Recent neuroscientific research has revealed fascinating insights into how mindfulness meditation affects the brain. Regular practice leads to measurable changes in brain structure and function, particularly in areas associated with attention, emotional regulation, and self-awareness.</p>
@@ -106,7 +106,7 @@ const getArticleById = (id: string) => {
       author: "Dr. Emily Rodriguez",
       readTime: "10 min read",
       publishedAt: "2024-01-10",
-      image: "/emotional-strength-resilience.png",
+      image: "/Images/article/emotional.png",
       content: `
         <h2>Understanding Emotional Resilience</h2>
         <p>Emotional resilience is the ability to adapt and bounce back when things don't go as planned. It's not about avoiding difficult emotions, but rather learning to navigate them effectively and emerge stronger from challenging experiences.</p>
@@ -145,7 +145,7 @@ const getArticleById = (id: string) => {
       author: "Dr. James Wilson",
       readTime: "7 min read",
       publishedAt: "2024-01-08",
-      image: "/peaceful-sleep-bedroom.png",
+      image: "/Images/article/mental-health.png",
       content: `
         <h2>The Sleep-Mental Health Connection</h2>
         <p>Sleep and mental health are intimately connected. Poor sleep can contribute to mental health problems, while mental health issues can make it harder to sleep well. Understanding this relationship is crucial for overall wellbeing.</p>
@@ -183,7 +183,7 @@ const getArticleById = (id: string) => {
       author: "Dr. Lisa Park",
       readTime: "9 min read",
       publishedAt: "2024-01-05",
-      image: "/digital-detox-wellness.png",
+      image: "/Images/article/stress.png",
       content: `
         <h2>Digital Overwhelm in Modern Life</h2>
         <p>In our hyperconnected world, we're constantly bombarded with notifications, emails, and social media updates. This digital overwhelm can significantly impact our mental health and stress levels.</p>
@@ -221,7 +221,7 @@ const getArticleById = (id: string) => {
       author: "Dr. Robert Kim",
       readTime: "5 min read",
       publishedAt: "2024-01-03",
-      image: "/gratitude-journal-happiness.png",
+      image: "/Images/article/gratitude.png",
       content: `
         <h2>The Science of Gratitude</h2>
         <p>Gratitude is more than just saying "thank you." Research shows that regular gratitude practice can rewire your brain for positivity, improve relationships, and boost overall mental health.</p>
@@ -339,10 +339,10 @@ export default function ArticlePage() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">{article.title}</h1>
 
           {/* Excerpt */}
-          <p className="text-xl text-slate-300 mb-6 leading-relaxed">{article.excerpt}</p>
+          <p className="text-xl text-white mb-6 leading-relaxed">{article.excerpt}</p>
 
           {/* Meta Information */}
-          <div className="flex flex-wrap items-center gap-6 text-slate-400 text-sm">
+          <div className="flex flex-wrap items-center gap-6 text-white text-sm">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4" />
               <span>{article.author}</span>
@@ -383,7 +383,7 @@ export default function ArticlePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="prose prose-lg prose-invert max-w-none"
+          className="prose prose-lg prose-invert max-w-none text-white"
           dangerouslySetInnerHTML={{ __html: article.content }}
         />
 
@@ -397,7 +397,7 @@ export default function ArticlePage() {
           <h3 className="text-white font-semibold mb-4">Tags</h3>
           <div className="flex flex-wrap gap-2">
             {article.tags.map((tag: string) => (
-              <Badge key={tag} variant="outline" className="border-slate-600 text-slate-300 hover:border-yellow-500">
+              <Badge key={tag} variant="outline" className="border-slate-600 text-white hover:border-yellow-500">
                 #{tag}
               </Badge>
             ))}
