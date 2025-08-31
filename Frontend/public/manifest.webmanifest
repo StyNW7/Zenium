@@ -1,0 +1,23 @@
+{
+  "name": "Zenium - Mental Wellness",
+  "short_name": "Zenium",
+  "description": "Your AI companion for mental wellness and emotional support",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/PWA/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/PWA/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["health", "lifestyle", "productivity"]
+}
