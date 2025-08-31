@@ -1,36 +1,40 @@
-# Use an official Python runtime as a base image
-FROM python:3.9-slim
+# Multi-stage build for better optimization
+FROM python:3.9-slim-bullseye as builder
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     make \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file
 COPY requirements.txt .
 
-# Install Python dependencies
+# Install dependencies in virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the current directory contents into the container at /app
+# Final stage
+FROM python:3.9-slim-bullseye
+
+WORKDIR /app
+
+# Copy virtual environment
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy application
 COPY . .
 
-# Create necessary directories
+# Create directories
 RUN mkdir -p sessions logs
 
-# Make port 5000 available to the world outside this container
 EXPOSE 5000
 
-# Define environment variable
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
 
-# Run the application
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["python", "app.py"]
