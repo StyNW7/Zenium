@@ -34,6 +34,8 @@ import Chatbot from "./components/Chatbot";
 import ContentLibrary from "./pages/Content/page";
 import ArticlePage from "./pages/Content/[id]/page";
 
+import DashboardPage from "./pages/Dashboard/overview";
+
 function App() {
   const [appLoading, setAppLoading] = useState(true);
 
@@ -149,6 +151,17 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <MapPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                {/* User Dashboard */}
+
+                <Route 
+                  path="dashboard" 
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
                     </ProtectedRoute>
                   } 
                 /> 
