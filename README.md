@@ -1,216 +1,241 @@
-# Zenium - Agentic AI Workflow System
+<div align="center">
+    <div>
+        <img height="150px" src="./Images/logo.png" alt="Gama Logo"/>
+    </div>
+    <div>
+            <h3><b>Zenium x Melify</b></h3>
+            <p><i>AI with empathy, IoT with soul</i></p>
+    </div>      
+</div>
+<br>
+<h1 align="center">Zenium x Melify - Developer Day: Road to APICTA Awards 2025</h1>
+<div align="center">
 
-Sistem journaling cerdas dengan AI yang mengotomatisasi analisis, generasi quote, dan rekomendasi personal.
+<img src="./Images/pitch-deck.png" alt="Gama Preview"/>
 
-## 🚀 Fitur Utama
+</div>
+<br>
 
-### Core Functionality
-- **Journal Creation**: Pengguna dapat membuat dan menulis entri journal personal
-- **AI Quote Generation**: AI secara otomatis menghasilkan quote motivasi berdasarkan konten journal
-- **Quote Display**: Quote yang dihasilkan ditampilkan di halaman "zenium-quote"
-- **Smart Recommendations**: AI memberikan rekomendasi personal berdasarkan analisis journal
+<b>Zenium</b> is an AI-powered progressive web app combined with <b>Melify</b>, a smart IoT companion doll. Together, they deliver personalized, empathetic, and interactive mental health support. In a time where stress, anxiety, and loneliness are increasing globally, Zenium x Melify empowers individuals to track their well-being, interact naturally, and receive proactive emotional support through AI, IoT, and geospatial intelligence.  
 
-### Journal Page Features (3 Tombol Spesifik)
-1. **Analyze Button**: Memicu analisis AI terhadap konten journal
-2. **Export to PDF Button**: Mengkonversi entri journal ke format PDF yang dapat diunduh
-3. **Save to Database Button**: Menyimpan entri journal ke database
-
-## 🏗️ Arsitektur Sistem
-
-### Backend (Node.js + Express + MongoDB)
-- **AI Workflow Service**: Mengelola workflow otomatis AI
-- **Journal Controller**: Mengelola operasi CRUD journal
-- **Recommendation Controller**: Mengelola rekomendasi AI
-- **Qwen AI Integration**: Menggunakan OpenRouter API untuk analisis AI
-- **Database Models**: Journal, DailyQuote, Recommendation, User
-
-### Frontend (React + TypeScript + Tailwind CSS)
-- **Journaling Page**: Interface untuk menulis dan mengelola journal
-- **Quote Page**: Menampilkan quote motivasi yang dihasilkan AI
-- **Recommendation Page**: Menampilkan rekomendasi personal AI
-- **Responsive Design**: UI yang responsif dan modern
-
-## 🔄 AI Workflow Otomatis
-
-### Expected AI Workflow:
-1. **User writes journal** → Pengguna menulis entri journal
-2. **AI analyzes content** → AI menganalisis konten journal
-3. **AI generates motivational quote** → AI menghasilkan quote motivasi
-4. **Quote appears on zenium-quote page** → Quote muncul di halaman quote
-5. **AI creates personalized recommendations** → AI membuat rekomendasi personal
-6. **All data saved to database** → Semua data disimpan ke database
-
-### Technical Implementation:
-- **Automatic Trigger**: Workflow AI otomatis berjalan setelah journal disimpan
-- **Real-time Processing**: Analisis AI real-time menggunakan Qwen model
-- **Contextual Analysis**: Analisis berdasarkan mood, sentiment, dan konten
-- **Personalized Output**: Quote dan rekomendasi disesuaikan dengan konteks pengguna
-
-## 📊 Fitur AI
-
-### Journal Analysis
-- **Sentiment Analysis**: Analisis sentiment positif/negatif/neutral
-- **Keyword Extraction**: Ekstraksi kata kunci emosional
-- **Risk Assessment**: Penilaian risiko kesehatan mental
-- **Mood Context**: Analisis berdasarkan mood pengguna
-
-### Quote Generation
-- **Personalized Quotes**: Quote yang disesuaikan dengan konten journal
-- **Mood-Aware**: Quote yang sesuai dengan mood saat ini
-- **Contextual**: Quote yang relevan dengan situasi pengguna
-- **Fallback System**: Sistem cadangan jika AI gagal
-
-### Smart Recommendations
-- **Actionable**: Rekomendasi yang dapat diimplementasikan
-- **Categorized**: Dikelompokkan berdasarkan tipe (activity, mindfulness, social, dll)
-- **Prioritized**: Prioritas tinggi/medium/rendah
-- **Time-Estimated**: Estimasi waktu untuk implementasi
-
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- Node.js 18+
-- MongoDB
-- OpenRouter API Key
-
-### Backend Setup
-```bash
-cd Backend
-npm install
-cp .env.example .env
-# Edit .env dengan konfigurasi database dan API key
-npm run dev
-```
-
-### Frontend Setup
-```bash
-cd Frontend
-npm install
-cp .env.example .env
-# Edit .env dengan URL backend
-npm run dev
-```
-
-### Environment Variables
-```env
-# Backend
-MONGODB_URI=mongodb://localhost:27017/zenium
-OPENROUTER_API_KEY=your_openrouter_api_key
-JWT_SECRET=your_jwt_secret
-
-# Frontend
-VITE_API_BASE_URL=http://localhost:3000/api
-```
-
-## 🔌 API Endpoints
-
-### Journal Routes
-- `POST /api/journals` - Create journal
-- `GET /api/journals` - Get user journals
-- `PUT /api/journals/:id` - Update journal
-- `DELETE /api/journals/:id` - Delete journal
-- `POST /api/journals/:id/analyze-attach` - Analyze journal with AI
-
-### AI Workflow Routes
-- `POST /api/journals/:id/trigger-workflow` - Manual trigger AI workflow
-
-### Recommendation Routes
-- `GET /api/recommendations` - Get user recommendations
-- `GET /api/recommendations/stats` - Get recommendation statistics
-- `PUT /api/recommendations/:id/complete` - Mark recommendation completed
-
-### Quote Routes
-- `GET /api/daily-quote` - Get daily quote
-- `GET /api/quotes` - Get user quotes
-
-## 🎯 Use Cases
-
-### 1. Daily Journaling
-- Pengguna menulis journal harian
-- AI otomatis menganalisis konten
-- Quote motivasi personal dihasilkan
-- Rekomendasi aktivitas diberikan
-
-### 2. Mood Tracking
-- Pengguna mencatat mood dan rating
-- AI menganalisis pola mood
-- Rekomendasi disesuaikan dengan mood
-- Quote motivasi yang relevan
-
-### 3. Mental Health Monitoring
-- AI mendeteksi tanda-tanda risiko
-- Klasifikasi kesehatan mental otomatis
-- Rekomendasi intervensi dini
-- Tracking progress kesehatan mental
-
-## 🔒 Security Features
-
-- **JWT Authentication**: Sistem autentikasi yang aman
-- **User Isolation**: Data pengguna terisolasi
-- **Input Validation**: Validasi input yang ketat
-- **Rate Limiting**: Pembatasan rate API
-- **CORS Protection**: Proteksi cross-origin
-
-## 📱 User Experience
-
-### Responsive Design
-- **Mobile-First**: Design yang optimal untuk mobile
-- **Dark Theme**: Tema gelap yang nyaman di mata
-- **Smooth Animations**: Animasi yang halus dan responsif
-- **Intuitive Navigation**: Navigasi yang intuitif
-
-### Accessibility
-- **Screen Reader Support**: Dukungan untuk screen reader
-- **Keyboard Navigation**: Navigasi menggunakan keyboard
-- **High Contrast**: Kontras tinggi untuk keterbacaan
-- **Voice Input**: Input suara untuk journaling
-
-## 🚀 Performance Features
-
-- **Lazy Loading**: Loading komponen secara lazy
-- **Caching**: Cache data untuk performa optimal
-- **Optimized Queries**: Query database yang dioptimasi
-- **Background Processing**: Proses AI di background
-
-## 🔮 Future Enhancements
-
-### Planned Features
-- **Voice Journaling**: Journaling menggunakan suara
-- **Image Analysis**: Analisis gambar untuk mood
-- **Social Features**: Berbagi journal dengan teman
-- **Progress Tracking**: Tracking progress kesehatan mental
-- **Integration**: Integrasi dengan aplikasi kesehatan mental
-
-### AI Improvements
-- **Multi-language Support**: Dukungan multi bahasa
-- **Advanced Sentiment Analysis**: Analisis sentiment yang lebih canggih
-- **Predictive Analytics**: Analisis prediktif untuk kesehatan mental
-- **Personalized Learning**: AI yang belajar dari preferensi pengguna
-
-## 🤝 Contributing
-
-1. Fork repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **OpenRouter**: Untuk API AI yang powerful
-- **Qwen Model**: Untuk kemampuan analisis AI yang canggih
-- **MongoDB**: Untuk database yang scalable
-- **React Community**: Untuk framework frontend yang excellent
-
-## 📞 Support
-
-Untuk pertanyaan atau dukungan, silakan buat issue di repository ini atau hubungi tim development.
+<a href="https://www.canva.com/design/DAGxCitBZzc/JU5sxBhwLXI6WgqbcerFjA/edit?utm_content=DAGxCitBZzc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">Pitch Deck Link</a>
 
 ---
 
-**Zenium** - Empowering mental wellness through intelligent AI journaling 🧠✨
+## 📃 Table of Contents
+- [⚙️ Technology Stack](#-technology-stack)
+- [🧩 Core Features](#-core-features)
+- [🚀 Live Demo](#-live-demo)
+- [🧰 Getting Started Locally](#-getting-started-locally)
+- [🔐 .env Configuration](#-env-configuration)
+- [📸 Website Preview](#-website-preview)
+- [🧭 Diagram](#-diagram)
+- [👥 Owner](#-owner)
+- [📬 Contact](#-contact)
 
+---
+
+## ⚙️ Technology Stack
+
+<div align="center">
+
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/react.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/typescript.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/vite.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/tailwind_css.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/shadcn_ui.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/mongodb.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/express.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/node_js.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/python.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/flask.png" height="60" /></kbd>
+<kbd><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/docker.png" height="60" /></kbd>
+<kbd><img src="./Images/tech/esp32.png" height="60" /></kbd>
+
+</div>
+
+<div align="center">
+<h4>React | TypeScript | Vite | Tailwind CSS | Shadcn UI | MongoDB | Express JS | Node JS | Python | Flask | Hugging Face | Docker | ESP32</h4>
+</div>
+
+---
+
+## 🧩 Core Features
+
+## 🧩 Core Features
+
+### 🌐 Zenium (Progressive Web App)
+- **Mood Check-ins & AI Journaling**: track emotions, get personalized reflection & advice.  
+- **AI Chat Companion**: empathetic dialogue with LLM-based mental health coach.  
+- **Geospatial Insights**: detect patterns of stress vs environment (e.g., urban noise, location).  
+- **Self-help Toolkit**: guided meditation, CBT-based exercises, and mindfulness practices.  
+- **Crisis Detection**: auto-detect risk of depression/anxiety with alert routing.  
+
+### 🧸 Melify (Smart IoT Doll)
+- **Voice Interaction**: natural conversations with AI.  
+- **Emotion Detection**: sensors for tone, stress, and environment.  
+- **Haptic Feedback**: warmth, vibrations, or soothing responses.  
+- **Connected Companion**: sync with Zenium app for real-time updates.  
+
+---
+
+## 🚀 Live Demo
+
+👉 [https://www.zenium-melify.id](https://www.zenium-melify.id)
+
+---
+
+## 🧰 Getting Started Locally
+
+### Prerequisites
+- **Node.js** (v16+)
+- **MongoDB**
+- **Python 3.9+**  
+- **IoT Device**: ESP32 with microphone, speaker, haptic motor
+- **Docker** (optional)
+- **Git**
+
+### Clone the Project
+
+#### To run the Frontend
+```bash
+git clone https://github.com/StyNW7/Zenium.git
+cd Zenium
+cd Frontend
+npm install
+npm run dev
+```
+
+#### To run the Backend
+```bash
+cd Backend
+npm install
+npm run dev
+```
+
+#### To run the AI
+```bash
+cd AI
+# Make Virtual Environment
+python -m venv .venv
+source .venv/bin/activate # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# Run the flask api python (in the root folder)
+python app.py
+```
+
+---
+
+## 🔐 .env Configuration
+
+.env for the Frontend
+```
+VITE_API_BASE_URL=http://localhost:3000/api
+```
+
+.env for the Backend
+```
+MONGO_URI=
+OPENROUTER_API_KEY=
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASS=
+EMAIL_FROM=
+NODE_ENV=development
+
+AZURE_OPENAI_KEY=
+AZURE_OPENAI_ENDPOINT=
+AZURE_API_VERSION=2024-12-01-preview
+AZURE_OPENAI_DEPLOYMENT=gpt-35-turbo
+```
+
+.env for the AI
+```
+OPENAI_API_KEY=
+OPENAI_MODEL=
+```
+
+---
+
+## 📸 &nbsp;Website Preview
+<table style="width:100%; text-align:center">
+    <col width="100%">
+    <tr>
+        <td width="1%" align="center"><img height="370" src="./Images/Preview/Landing.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Home Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/Crafts.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Crafts Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/Inventory.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Inventory Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/Play.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Play Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/Journey.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Journey Recap Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/Gamadex.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">Heritage Books Page</td>
+    </tr>
+    <tr>
+        <td width="1%" align="center"><img height="400" src="./Images/Preview/3d.png"/></td>
+    </tr>
+    <tr>
+        <td width="1%" align="center">3D Monument Quest Game</td>
+    </tr>
+</table>
+
+---
+
+## 🧭 Diagram
+
+*Overall Database System Flow:*
+<p align="center">
+  <img src="./Images/Gama-GH6-Diagram.png" width="700">
+</p>
+
+This diagram shows how the models connected using ERD Diagram
+
+---
+
+## 👥 Owner
+
+This Repository is created by Passione Team - Tertiary Student Project
+<ul>
+<li>Stanley Nathanael Wijaya - Team Lead and Frontend Dev</li>
+<li>Jason Brandon Loi - Fullstack Developer</li>
+<li>Greschen Chin - AI Engineer</li>
+</ul>
+As innovation project for APICTA Awards 2025.
+
+---
+
+## 📬 Contact
+Have questions or want to collaborate?
+
+- 📧 Email: stanley.n.wijaya7@gmail.com
+- 💬 Discord: `stynw7`
+
+<code>Made with ❤️ by Passione Team</code>
