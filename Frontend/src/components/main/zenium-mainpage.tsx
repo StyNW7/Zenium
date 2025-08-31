@@ -175,7 +175,16 @@ export function ZeniumMainPage() {
 
             {/* User Menu */}
             <div className="flex items-center space-x-4">
+
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 hover:from-yellow-500/20 hover:to-yellow-600/20 p-2 rounded-lg transition-all duration-300 border border-yellow-500/20 hover:border-yellow-400/40"
+              >
+                User Dashboard
+              </button>
+
               <div className="relative">
+
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 hover:from-yellow-500/20 hover:to-yellow-600/20 p-2 rounded-lg transition-all duration-300 border border-yellow-500/20 hover:border-yellow-400/40"

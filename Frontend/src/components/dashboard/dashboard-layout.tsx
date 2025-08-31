@@ -5,8 +5,6 @@ import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
-  Home,
-  BookOpen,
   Heart,
   BarChart3,
   Settings,
@@ -14,22 +12,22 @@ import {
   X,
   Brain,
   Calendar,
-  MessageCircle,
   Target,
   Award,
   User,
+  HomeIcon,
+  ChartArea,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useLocation } from "react-router"
 
 const sidebarItems = [
-  { icon: Home, label: "Overview", href: "/dashboard" },
+  { icon: HomeIcon, label: "Home", href: "/main" },
+  { icon: ChartArea, label: "Overview", href: "/dashboard" },
   { icon: Heart, label: "Mood Tracker", href: "/dashboard/mood" },
   { icon: Brain, label: "Mental Health", href: "/dashboard/mental-health" },
-  { icon: BookOpen, label: "Content Library", href: "/content" },
   { icon: Calendar, label: "Sessions", href: "/dashboard/sessions" },
-  { icon: MessageCircle, label: "Chat with Melify", href: "/dashboard/chat" },
   { icon: Target, label: "Goals", href: "/dashboard/goals" },
   { icon: BarChart3, label: "Progress", href: "/dashboard/progress" },
   { icon: Award, label: "Achievements", href: "/dashboard/achievements" },
