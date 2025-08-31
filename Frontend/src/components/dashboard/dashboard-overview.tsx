@@ -52,7 +52,7 @@ export function DashboardOverview() {
           <CardContent className="p-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">Good morning, Sarah! 🌅</h1>
+                <h1 className="text-3xl font-bold text-foreground mb-2">Good morning, Stanley! 🌅</h1>
                 <p className="text-lg text-muted-foreground mb-4">
                   Ready to make today amazing? Let's check in on your wellness journey.
                 </p>
