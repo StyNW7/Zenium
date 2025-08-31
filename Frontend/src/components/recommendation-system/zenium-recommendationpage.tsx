@@ -364,7 +364,7 @@ export function ZeniumRecommendationPage() {
             </p>
             {recommendations.length === 0 && (
               <button
-                onClick={() => navigate('/journaling')}
+                onClick={() => navigate('/journal')}
                 className="mt-4 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors duration-300"
               >
                 Start Journaling
