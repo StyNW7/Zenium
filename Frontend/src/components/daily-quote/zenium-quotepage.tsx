@@ -280,7 +280,7 @@ export function ZeniumQuotePage() {
                 )}
 
                 <div className="mt-8 pt-6 border-t border-yellow-500/20">
-                  <h3 className="text-lg font-medium text-yellow-400 mb-3">Refleksi</h3>
+                  <h3 className="text-lg font-medium text-yellow-400 mb-3">Reflection</h3>
                   <p className="text-gray-300 leading-relaxed">
                     {quote?.explanation}
                   </p>

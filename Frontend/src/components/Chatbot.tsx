@@ -28,7 +28,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Halo! Saya adalah Melify. Bagaimana saya bisa membantu Anda hari ini?",
+      content: "Hi 👋 I'm Melify ur personal companion. How can I help you today?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -221,7 +221,7 @@ export default function Chatbot() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ketik pesan Anda..."
+              placeholder="Write your message..."
               className="flex-1 rounded-full border-gray-300 focus:border-yellow-500 focus:ring-yellow-500"
               disabled={isTyping}
             />
