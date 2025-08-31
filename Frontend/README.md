@@ -1,1 +1,1 @@
-# Zenium - Frontend
+# Zenium - Frontend Directory

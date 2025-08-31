@@ -1,1 +1,1 @@
-# Zenium - AI Repository
+# Zenium - AI Directory

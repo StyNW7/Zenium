@@ -1,1 +1,1 @@
-# Zenium - IoT Repository
+# Zenium - IoT Directory

@@ -18,7 +18,9 @@
 
 <b>Zenium</b> is an AI-powered progressive web app combined with <b>Melify</b>, a smart IoT companion doll. Together, they deliver personalized, empathetic, and interactive mental health support. In a time where stress, anxiety, and loneliness are increasing globally, Zenium x Melify empowers individuals to track their well-being, interact naturally, and receive proactive emotional support through AI, IoT, and geospatial intelligence.  
 
-<a href="https://www.canva.com/design/DAGxCitBZzc/JU5sxBhwLXI6WgqbcerFjA/edit?utm_content=DAGxCitBZzc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">Canva Pitch Deck Link</a>
+<a href="https://www.canva.com/design/DAGxCitBZzc/JU5sxBhwLXI6WgqbcerFjA/edit?utm_content=DAGxCitBZzc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">Canva Pitch Deck Link</a>
+
+<a href="https://s.id/Zenium-Demo-Video" target="_blank">Product Demo Video</a>
 
 ---
 
@@ -254,6 +256,14 @@ OPENAI_MODEL=
 </p>
 
 This diagram shows how the models connected using ERD Diagram
+
+---
+
+## 🔥 API Documentation
+
+Postman Link:
+
+[Zenium x Melify Postman](https://web.postman.co/workspace/a20bbd0f-459f-4e37-9cf5-07f235d2a4a2)
 
 ---
 
