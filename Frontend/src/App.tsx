@@ -36,6 +36,10 @@ import ArticlePage from "./pages/Content/[id]/page";
 
 import DashboardPage from "./pages/Dashboard/overview";
 
+import MoodTrackerPage from "./pages/Dashboard/mood-tracker";
+import MentalHealthPage from "./pages/Dashboard/mental-health";
+import GoalsPage from "./pages/Dashboard/goals";
+
 function App() {
   const [appLoading, setAppLoading] = useState(true);
 
@@ -163,6 +167,33 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <DashboardPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                <Route 
+                  path="/dashboard/mental-health" 
+                  element={
+                    <ProtectedRoute>
+                      <MentalHealthPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                <Route 
+                  path="/dashboard/goals" 
+                  element={
+                    <ProtectedRoute>
+                      <GoalsPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                <Route 
+                  path="/dashboard/mood" 
+                  element={
+                    <ProtectedRoute>
+                      <MoodTrackerPage />
                     </ProtectedRoute>
                   } 
                 /> 
