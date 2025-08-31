@@ -1,6 +1,6 @@
 <div align="center">
     <div>
-        <img height="150px" src="./Images/logo.png" alt="Gama Logo"/>
+        <img height="150px" src="./Images/logo.png" alt="Zenium Logo"/>
     </div>
     <div>
             <h3><b>Zenium x Melify</b></h3>
@@ -11,7 +11,7 @@
 <h1 align="center">Zenium x Melify - Developer Day: Road to APICTA Awards 2025</h1>
 <div align="center">
 
-<img src="./Images/pitch-deck.png" alt="Gama Preview"/>
+<img src="./Images/pitch-deck.png" alt="Zenium Preview"/>
 
 </div>
 <br>
@@ -250,7 +250,7 @@ OPENAI_MODEL=
 
 *Overall Database System Flow:*
 <p align="center">
-  <img src="./Images/Gama-GH6-Diagram.png" width="700">
+  <img src="./Images/Zenium-ERD.png" width="700">
 </p>
 
 This diagram shows how the models connected using ERD Diagram
