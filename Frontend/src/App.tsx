@@ -53,6 +53,7 @@ function App() {
           {!appLoading && (
             <Routes>
               <Route path="/" element={<Layout />}>
+
                 {/* Public Routes - hanya bisa diakses jika belum login */}
                 <Route 
                   index 
@@ -63,7 +64,7 @@ function App() {
                   } 
                 />
                 <Route 
-                  path="register" 
+                  path="/register" 
                   element={
                     <PublicRoute>
                       <RegisterPage />
@@ -71,7 +72,7 @@ function App() {
                   } 
                 />
                 <Route 
-                  path="login" 
+                  path="/login" 
                   element={
                     <PublicRoute>
                       <LoginPage />
@@ -79,7 +80,7 @@ function App() {
                   } 
                 />
                  <Route 
-                  path="forgot-password" 
+                  path="/forgot-password" 
                   element={
                     <PublicRoute>
                       <ForgotPasswordPage />
@@ -88,7 +89,7 @@ function App() {
                 />
 
                 <Route 
-                  path="content" 
+                  path="/content" 
                   element={
                     <ProtectedRoute>
                       <ContentLibrary />
@@ -97,7 +98,7 @@ function App() {
                 />
 
                 <Route 
-                  path="content/:id" 
+                  path="/content/:id" 
                   element={
                     <ProtectedRoute>
                       <ArticlePage />
@@ -107,7 +108,7 @@ function App() {
 
                 {/* Protected Routes - hanya bisa diakses setelah login */}
                 <Route 
-                  path="main" 
+                  path="/main" 
                   element={
                     <ProtectedRoute>
                       <MainPage />
@@ -115,7 +116,7 @@ function App() {
                   } 
                 />
                 <Route 
-                  path="user" 
+                  path="/user" 
                   element={
                     <ProtectedRoute>
                       <UserPage />
@@ -123,7 +124,7 @@ function App() {
                   } 
                 />
                 <Route 
-                  path="recommendation-system" 
+                  path="/recommendation-system" 
                   element={
                     <ProtectedRoute>
                       <RecommendationSystemPage />
@@ -131,7 +132,7 @@ function App() {
                   } 
                 />
                 <Route 
-                  path="journal" 
+                  path="/journal" 
                   element={
                     <ProtectedRoute>
                       <JournalingPage />
@@ -139,7 +140,7 @@ function App() {
                   } 
                 />
                 <Route 
-                  path="quote" 
+                  path="/quote" 
                   element={
                     <ProtectedRoute>
                       <QuotePage />
@@ -147,7 +148,7 @@ function App() {
                   } 
                 />
                 <Route 
-                  path="map" 
+                  path="/map" 
                   element={
                     <ProtectedRoute>
                       <MapPage />
@@ -155,21 +156,24 @@ function App() {
                   } 
                 /> 
 
-                {/* User Dashboard */}
-
-                <Route 
-                  path="dashboard" 
-                  element={
-                    <ProtectedRoute>
-                      <DashboardPage />
-                    </ProtectedRoute>
-                  } 
-                /> 
-                
-                {/* 404 Page */}
-                <Route path="*" element={<NotFoundPage />} />
               </Route>
+
+              {/* User Dashboard */}
+
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                } 
+              /> 
+              
+              {/* 404 Page */}
+              <Route path="*" element={<NotFoundPage />} />
+
             </Routes>
+
           )}
         </AnimatePresence>
 
