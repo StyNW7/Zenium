@@ -9,11 +9,11 @@ import { ArrowLeft, Linkedin, Twitter, Mail, Heart, Target, Users, Zap, Star, Aw
 export default function TeamPage() {
   const teamMembers = [
     {
-      name: "Dr. Sarah Chen",
-      role: "Co-Founder & Chief Executive Officer",
-      image: "/team-sarah.png",
-      bio: "Clinical psychologist with 15+ years in digital mental health. Former researcher at Stanford's AI Lab, passionate about making mental health support accessible to everyone.",
-      expertise: ["Clinical Psychology", "AI Ethics", "Digital Health"],
+      name: "Stanley Nathanael Wijaya",
+      role: "Team Lead",
+      image: "/Images/team/stanley.jpg",
+      bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus tempore ex ea animi vitae ab officiis maiores!",
+      expertise: ["Frontend Developer", "AI Engineer", "IoT Engineer"],
       social: {
         linkedin: "#",
         twitter: "#",
@@ -22,11 +22,11 @@ export default function TeamPage() {
       isLeader: true,
     },
     {
-      name: "Alex Rodriguez",
-      role: "Co-Founder & Chief Technology Officer",
-      image: "/team-alex.png",
-      bio: "Full-stack engineer and AI specialist. Previously led engineering teams at major tech companies, now dedicated to building empathetic AI companions.",
-      expertise: ["AI/ML Engineering", "IoT Development", "System Architecture"],
+      name: "Jason Brandon Loi",
+      role: "Fullstack Developer",
+      image: "/team-jason.png",
+      bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus tempore ex ea animi vitae ab officiis maiores!",
+      expertise: ["Backend Engineer", "IoT Development", "System Architecture"],
       social: {
         linkedin: "#",
         twitter: "#",
@@ -35,11 +35,11 @@ export default function TeamPage() {
       isLeader: false,
     },
     {
-      name: "Dr. Maya Patel",
-      role: "Head of Clinical Research",
-      image: "/team-maya.png",
-      bio: "Neuroscientist and mental health researcher. Leads our clinical validation studies and ensures Zenium's approaches are evidence-based and effective.",
-      expertise: ["Neuroscience", "Clinical Research", "Data Analysis"],
+      name: "Greschen Chin",
+      role: "AI Engineer",
+      image: "/team-greschen.png",
+      bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus tempore ex ea animi vitae ab officiis maiores!",
+      expertise: ["Python"],
       social: {
         linkedin: "#",
         twitter: "#",

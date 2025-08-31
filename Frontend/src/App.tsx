@@ -42,6 +42,9 @@ import GoalsPage from "./pages/Dashboard/goals";
 import TeamPage from "./pages/Utility/Team";
 import LegalPage from "./pages/Utility/Legal";
 import ContactPage from "./pages/Utility/Contact";
+import ProfilePage from "./pages/Dashboard/profile";
+import SessionsPage from "./pages/Dashboard/sessions";
+import AchievementsPage from "./pages/Dashboard/achievements";
 
 function App() {
   const [appLoading, setAppLoading] = useState(true);
@@ -225,6 +228,33 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <MoodTrackerPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                <Route 
+                  path="/dashboard/profile" 
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                <Route 
+                  path="/dashboard/sessions" 
+                  element={
+                    <ProtectedRoute>
+                      <SessionsPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                <Route 
+                  path="/dashboard/achievements" 
+                  element={
+                    <ProtectedRoute>
+                      <AchievementsPage />
                     </ProtectedRoute>
                   } 
                 /> 

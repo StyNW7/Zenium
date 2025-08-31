@@ -6,8 +6,6 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Heart,
-  BarChart3,
-  Settings,
   Menu,
   X,
   Brain,
@@ -29,10 +27,8 @@ const sidebarItems = [
   { icon: Brain, label: "Mental Health", href: "/dashboard/mental-health" },
   { icon: Calendar, label: "Sessions", href: "/dashboard/sessions" },
   { icon: Target, label: "Goals", href: "/dashboard/goals" },
-  { icon: BarChart3, label: "Progress", href: "/dashboard/progress" },
   { icon: Award, label: "Achievements", href: "/dashboard/achievements" },
   { icon: User, label: "Profile", href: "/dashboard/profile" },
-  { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ]
 
 interface DashboardLayoutProps {
