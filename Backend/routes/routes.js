@@ -50,6 +50,7 @@ import {
 } from "../controllers/recommendation.controller.js";
 import { authenticate } from "../middleware/authMiddleware.js";
 import upload from "../middleware/upload.js";
+import { chatWithAI } from "../controllers/chatbot.controller.js";
 
 const router = express.Router();
 
@@ -112,5 +113,9 @@ router.get('/analysis', authenticate, getUserAnalyses);
 router.get('/analysis/nearby', getNearbyAnalyses);
 router.get('/analysis/:id', authenticate, getAnalysisById);
 router.delete('/analysis/:id', authenticate, deleteAnalysis);
+
+// Chatbot
+
+router.post("/chat", chatWithAI);
 
 export default router;

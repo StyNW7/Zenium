@@ -13,7 +13,7 @@ import { ProtectedRoute, PublicRoute } from "@/components/protectedroute";
 import Layout from "@/layouts/root-layout";
 
 // Utility Pages / Components
-import ScrollToTop from "./utility/ScrollToTop";
+// import ScrollToTop from "./utility/ScrollToTop";
 import ScrollToTopFunction from "./utility/ScrollToTopFunction";
 import NotFoundPage from "./pages/Utility/NotFound404";
 import LoadingScreen from "./pages/Utility/LoadingScreen";
@@ -29,6 +29,7 @@ import QuotePage from "./pages/Daily-Quote/page";
 import MapPage from "@/pages/Map-System/page";
 import MainPage from "@/pages/Main/page";
 import ForgotPasswordPage from "./pages/Forgot-Password/page";
+import Chatbot from "./components/Chatbot";
 
 function App() {
   const [appLoading, setAppLoading] = useState(true);
@@ -37,7 +38,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTopFunction />
-        <ScrollToTop />
+        {/* <ScrollToTop /> */}
         
         {appLoading && (
           <LoadingScreen onComplete={() => setAppLoading(false)} />
@@ -137,6 +138,8 @@ function App() {
             </Routes>
           )}
         </AnimatePresence>
+
+        <Chatbot/>
 
         <Toaster position="top-center" />
       </BrowserRouter>
