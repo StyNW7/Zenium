@@ -39,6 +39,9 @@ import DashboardPage from "./pages/Dashboard/overview";
 import MoodTrackerPage from "./pages/Dashboard/mood-tracker";
 import MentalHealthPage from "./pages/Dashboard/mental-health";
 import GoalsPage from "./pages/Dashboard/goals";
+import TeamPage from "./pages/Utility/Team";
+import LegalPage from "./pages/Utility/Legal";
+import ContactPage from "./pages/Utility/Contact";
 
 function App() {
   const [appLoading, setAppLoading] = useState(true);
@@ -159,6 +162,34 @@ function App() {
                     </ProtectedRoute>
                   } 
                 /> 
+
+                <Route 
+                  path="/contact" 
+                  element={
+                    <ProtectedRoute>
+                      <ContactPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                <Route 
+                  path="/legal" 
+                  element={
+                    <ProtectedRoute>
+                      <LegalPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                <Route 
+                  path="/team" 
+                  element={
+                    <ProtectedRoute>
+                      <TeamPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
 
                 {/* User Dashboard */}
 

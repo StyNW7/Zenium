@@ -20,7 +20,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { useLocation } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 
 const sidebarItems = [
   { icon: HomeIcon, label: "Home", href: "/main" },
@@ -40,6 +40,8 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+
+  const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const location = useLocation();
   const pathname = location.pathname;
@@ -134,7 +136,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4">
                 <h3 className="font-semibold text-sidebar-foreground mb-2">Need Support?</h3>
                 <p className="text-sm text-sidebar-foreground/70 mb-3">Connect with our mental health professionals</p>
-                <Button size="sm" className="w-full">
+                <Button size="sm" className="w-full" onClick={() => navigate("/contact")}>
                   Get Help
                 </Button>
               </div>
