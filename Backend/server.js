@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === "development") {
 else {
   corsOptions = {
     credentials: true,
-    origin: ["https://zenium-frontend.vercel.app", "https://www.zenium-melify.id/"]
+    origin: ["https://zenium-frontend.vercel.app", "https://www.zenium-melify.id"]
   };
 }
 
