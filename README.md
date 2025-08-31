@@ -5,7 +5,7 @@
     <div>
             <h3><b>Zenium x Melify</b></h3>
             <p><i>AI with empathy, IoT with soul</i></p>
-    </div>      
+    </div>
 </div>
 <br>
 <h1 align="center">Zenium x Melify - Developer Day: Road to APICTA Awards 2025</h1>
@@ -60,8 +60,6 @@
 </div>
 
 ---
-
-## 🧩 Core Features
 
 ## 🧩 Core Features
 

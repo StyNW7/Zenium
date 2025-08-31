@@ -31,6 +31,9 @@ import MainPage from "@/pages/Main/page";
 import ForgotPasswordPage from "./pages/Forgot-Password/page";
 import Chatbot from "./components/Chatbot";
 
+import ContentLibrary from "./pages/Content/page";
+import ArticlePage from "./pages/Content/[id]/page";
+
 function App() {
   const [appLoading, setAppLoading] = useState(true);
 
@@ -78,6 +81,24 @@ function App() {
                   element={
                     <PublicRoute>
                       <ForgotPasswordPage />
+                    </PublicRoute>
+                  } 
+                />
+
+                <Route 
+                  path="content" 
+                  element={
+                    <PublicRoute>
+                      <ContentLibrary />
+                    </PublicRoute>
+                  } 
+                />
+
+                <Route 
+                  path="content/:id" 
+                  element={
+                    <PublicRoute>
+                      <ArticlePage />
                     </PublicRoute>
                   } 
                 />
