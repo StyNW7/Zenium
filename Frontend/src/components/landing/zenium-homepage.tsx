@@ -50,9 +50,6 @@ export function ZeniumHomepage() {
             <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">
               About
             </a>
-            <a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">
-              Testimonials
-            </a>
             <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">
               FAQ
             </a>
@@ -95,13 +92,6 @@ export function ZeniumHomepage() {
                 onClick={closeMenu}
               >
                 About
-              </a>
-              <a 
-                href="#testimonials" 
-                className="text-muted-foreground hover:text-foreground transition-colors py-2"
-                onClick={closeMenu}
-              >
-                Testimonials
               </a>
               <a 
                 href="#faq" 

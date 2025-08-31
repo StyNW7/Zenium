@@ -15,6 +15,7 @@ import {
   User,
   HomeIcon,
   ChartArea,
+  Bot,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -23,6 +24,7 @@ import { useLocation, useNavigate } from "react-router"
 const sidebarItems = [
   { icon: HomeIcon, label: "Home", href: "/main" },
   { icon: ChartArea, label: "Overview", href: "/dashboard" },
+  { icon: Bot, label: "Melify", href: "/dashboard/melify" },
   { icon: Heart, label: "Mood Tracker", href: "/dashboard/mood" },
   { icon: Brain, label: "Mental Health", href: "/dashboard/mental-health" },
   { icon: Calendar, label: "Sessions", href: "/dashboard/sessions" },
@@ -76,8 +78,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 transition={{ delay: 0.1 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                  <Brain className="h-6 w-6 text-primary-foreground" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+                  <img src="/Images/logo.png" alt="Logo Zenium" className="w-12 h-12" />
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-sidebar-foreground">Zenium</h1>

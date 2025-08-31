@@ -46,6 +46,8 @@ import ProfilePage from "./pages/Dashboard/profile";
 import SessionsPage from "./pages/Dashboard/sessions";
 import AchievementsPage from "./pages/Dashboard/achievements";
 
+import MelifyIntegrationPage from "./pages/Dashboard/Melify";
+
 function App() {
   const [appLoading, setAppLoading] = useState(true);
 
@@ -255,6 +257,15 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <AchievementsPage />
+                    </ProtectedRoute>
+                  } 
+                /> 
+
+                <Route 
+                  path="/dashboard/melify" 
+                  element={
+                    <ProtectedRoute>
+                      <MelifyIntegrationPage />
                     </ProtectedRoute>
                   } 
                 /> 
