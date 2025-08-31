@@ -27,11 +27,13 @@ if (process.env.NODE_ENV === "development") {
     },
     credentials: true,
   };
-} else {
+} 
+
+else {
   corsOptions = {
     credentials: true,
+    origin: ["https://zenium-frontend.vercel.app", "https://www.zenium-melify.id/"]
   };
-  corsOptions.origin = "https://zenium-frontend.vercel.app";
 }
 
 const allowedOrigins = typeof corsOptions.origin === "string" ? corsOptions.origin : "*";
