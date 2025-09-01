@@ -9,36 +9,68 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Force development mode if not in production (Windows compatibility)
+const isDevelopment = process.env.NODE_ENV !== "production";
 const isProduction = process.env.NODE_ENV === "production";
+
+// Debug environment variables
+console.log('🔧 NODE_ENV from process:', process.env.NODE_ENV);
+console.log('🔧 Is Development:', isDevelopment);
+console.log('🔧 Is Production:', isProduction);
 
 // Middleware untuk parsing JSON
 app.use(express.json());
 
-// CORS configuration
-
+// CORS configuration - Default to development if NODE_ENV is not set
 let corsOptions;
 
-if (process.env.NODE_ENV === "development") {
+if (isDevelopment) {
+  console.log('🌐 Using DEVELOPMENT CORS settings');
   corsOptions = {
-    origin: (origin, callback) => {
-      // Jika origin tidak ada (contoh: Postman, curl), izinkan
-      if (!origin) return callback(null, true);
-      return callback(null, true); // Semua origin diizinkan
-    },
+    origin: ["http://localhost:5173", "http://localhost:3000"], // Explicitly allow frontend and backend for local dev
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+      "Access-Control-Request-Method",
+      "Access-Control-Request-Headers"
+    ],
   };
-} 
-
-else {
+} else {
+  console.log('🌐 Using PRODUCTION CORS settings');
   corsOptions = {
     credentials: true,
-    origin: ["https://zenium-frontend.vercel.app", "https://www.zenium-melify.id"]
+    origin: ["https://zenium-frontend.vercel.app", "https://www.zenium-melify.id"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+      "Access-Control-Request-Method",
+      "Access-Control-Request-Headers"
+    ],
   };
 }
 
-const allowedOrigins = typeof corsOptions.origin === "string" ? corsOptions.origin : "*";
+const allowedOrigins = Array.isArray(corsOptions.origin) ? corsOptions.origin : [corsOptions.origin];
 
 app.use(cors(corsOptions));
+
+// Explicitly handle preflight OPTIONS requests
+app.options('*', cors(corsOptions));
+
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`📨 ${req.method} ${req.url} from origin: ${req.headers.origin || 'no-origin'}`);
+  next();
+});
 
 // API Routes with error handling
 try {
@@ -117,7 +149,7 @@ if (!isServerless) {
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log(`📍 Server URL: http://localhost:${port}`);
         console.log(`🔗 API Base: http://localhost:${port}/api`);
-        console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development (default)'}`);
         console.log(`🌐 Allowed Origins:`, allowedOrigins);
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log('✅ Server ready to accept requests');

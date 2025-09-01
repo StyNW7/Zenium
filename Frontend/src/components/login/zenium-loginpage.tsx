@@ -13,8 +13,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Heart, Eye, EyeOff, Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react"
+import { Eye, EyeOff, Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react"
 import { API_BASE_URL, API_ENDPOINTS } from "@/config/api"
+import Image from '@/assets/logo.png'
 
 interface LoginFormData {
   email: string
@@ -146,7 +147,7 @@ export function ZeniumLoginPage() {
             className="flex items-center justify-center space-x-2 mb-4"
           >
             <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30">
-              <Heart className="h-7 w-7 text-black" />
+              <img src={Image} alt="Logo" className="w-full h-full"/>
             </div>
             <span className="text-3xl font-bold text-amber-400">Zenium</span>
           </motion.div>

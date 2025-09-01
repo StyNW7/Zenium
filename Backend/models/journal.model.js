@@ -27,10 +27,7 @@ const journalSchema = new mongoose.Schema({
     max: 10,
     required: true,
   },
-  tags: [{
-    type: String,
-    maxlength: 20,
-  }],
+
   location: {
     type: {
       type: String,
@@ -97,8 +94,7 @@ journalSchema.index({ "location.coordinates": "2dsphere" });
 // Text index for search functionality
 journalSchema.index({
   title: "text",
-  content: "text",
-  tags: "text"
+  content: "text"
 });
 
 const Journal = mongoose.model("Journal", journalSchema);

@@ -54,7 +54,6 @@ interface JournalEntry {
   content: string;
   mood: Mood;
   moodRating: number;
-  tags: string[];
   guidedQuestions?: GuidedQA[];
   voiceTranscript?: string;
   mentalHealthClassification?: 'safe' | 'needs_attention' | 'high_risk';
@@ -77,14 +76,12 @@ export function ZeniumJournalingPage() {
   const [guidedQuestions, setGuidedQuestions] = useState<GuidedQA[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
-  const [tagInput, setTagInput] = useState('');
 
   // New entry state
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [mood, setMood] = useState<Mood>('neutral');
   const [moodRating, setMoodRating] = useState<number>(5);
-  const [tags, setTags] = useState<string[]>([]);
   const [voiceTranscript, setVoiceTranscript] = useState('');
 
   // PDF integration state
@@ -135,7 +132,6 @@ export function ZeniumJournalingPage() {
         content: j.content,
         mood: j.mood,
         moodRating: j.moodRating,
-        tags: j.tags || [],
         guidedQuestions: j.guidedQuestions || [],
         voiceTranscript: j.voiceTranscript || '',
         mentalHealthClassification: j.mentalHealthClassification,
@@ -172,8 +168,7 @@ export function ZeniumJournalingPage() {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(e =>
         e.title.toLowerCase().includes(q) ||
-        e.content.toLowerCase().includes(q) ||
-        e.tags.some(t => t.toLowerCase().includes(q))
+        e.content.toLowerCase().includes(q)
       );
     }
     filtered.sort((a, b) => {
@@ -200,22 +195,13 @@ export function ZeniumJournalingPage() {
     }
   }
 
-  function addTag() {
-    if (!tagInput.trim()) return;
-    if (!tags.includes(tagInput.trim())) setTags(prev => [...prev, tagInput.trim()]);
-    setTagInput('');
-  }
 
-  function removeTag(tag: string) {
-    setTags(prev => prev.filter(t => t !== tag));
-  }
 
   function resetForm() {
     setTitle('');
     setContent('');
     setMood('neutral');
     setMoodRating(5);
-    setTags([]);
     setVoiceTranscript('');
     setGuidedQuestions([]);
     setAnalysis(null);
@@ -230,7 +216,6 @@ export function ZeniumJournalingPage() {
         content,
         mood,
         moodRating,
-        tags,
         guidedQuestions,
         voiceTranscript,
         privacy: 'private'
@@ -243,7 +228,6 @@ export function ZeniumJournalingPage() {
         content: j.content,
         mood: j.mood,
         moodRating: j.moodRating,
-        tags: j.tags || [],
         guidedQuestions: j.guidedQuestions || [],
         voiceTranscript: j.voiceTranscript || '',
         mentalHealthClassification: j.mentalHealthClassification,
@@ -290,7 +274,6 @@ export function ZeniumJournalingPage() {
         content: currentEntry.content,
         mood: currentEntry.mood,
         moodRating: currentEntry.moodRating,
-        tags: currentEntry.tags,
         guidedQuestions: currentEntry.guidedQuestions || [],
         voiceTranscript: currentEntry.voiceTranscript || '',
         privacy: 'private'
@@ -444,8 +427,6 @@ export function ZeniumJournalingPage() {
       const meta = `Mood: ${isEditing ? (currentEntry?.mood ?? mood) : mood}  |  Rating: ${isEditing ? (currentEntry?.moodRating ?? moodRating) : moodRating}/10`;
       doc.text(meta, 15, y);
       y += 8;
-      const tagLine = (isEditing ? (currentEntry?.tags ?? tags) : tags).map(x => `#${x}`).join(' ');
-      if (tagLine) { doc.text(tagLine, 15, y); y += 8; }
 
       const contentLines = doc.splitTextToSize(c, pageWidth - 30);
       doc.text(contentLines, 15, y);
@@ -682,68 +663,6 @@ export function ZeniumJournalingPage() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Tags</label>
-                  <div className="flex">
-                    <input
-                      type="text"
-                      className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-yellow-500/50 text-white"
-                      placeholder="Add tag"
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && addTag()}
-                    />
-                    <button
-                      onClick={addTag}
-                      className="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-r-lg transition-colors duration-300"
-                    >
-                      Add
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {((isEditing ? currentEntry?.tags : tags) ?? []).map((tag, i) => (
-                      <div key={i} className="flex items-center bg-gray-800 text-gray-300 px-2 py-1 rounded-full">
-                        <span className="text-xs">{tag}</span>
-                        <button onClick={() => isEditing
-                          ? setCurrentEntry(prev => prev ? { ...prev, tags: prev.tags.filter(t => t !== tag) } : prev)
-                          : removeTag(tag)} className="ml-1 p-0.5 rounded-full hover:bg-gray-700">
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Guided Questions */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium text-gray-400">Guided Journaling</label>
-                    <button
-                      onClick={loadGuidedQuestions}
-                      className="px-2 py-1 text-xs border border-yellow-500/30 rounded-md hover:bg-yellow-500/10"
-                    >
-                      <Sparkles className="w-4 h-4 inline-block mr-1" /> Load Questions
-                    </button>
-                  </div>
-                  {guidedQuestions.length === 0 ? (
-                    <p className="text-xs text-gray-500">No questions yet. Click "Load Questions" to display reflective questions.</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {guidedQuestions.map((qa, idx) => (
-                        <div key={idx} className="p-3 bg-gray-800 rounded-lg border border-gray-700">
-                          <div className="text-sm text-yellow-300 mb-2">Q{idx + 1}. {qa.question}</div>
-                          <textarea
-                            className="w-full text-sm px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-yellow-500/50 text-white min-h-[80px]"
-                            placeholder="Write your answer here..."
-                            value={qa.answer}
-                            onChange={(e) => setGuidedQuestions(prev => prev.map((x, i) => i === idx ? ({ ...x, answer: e.target.value }) : x))}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
                 {/* Actions */}
                 <div className="flex flex-wrap gap-2 justify-end">
                   <button
@@ -895,13 +814,7 @@ export function ZeniumJournalingPage() {
                 <div className="mt-3">
                   <p className="text-gray-300 whitespace-pre-line">{entry.content}</p>
                 </div>
-                {!!entry.tags.length && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {entry.tags.map((tag, index) => (
-                      <span key={index} className="text-xs bg-yellow-500/10 text-yellow-400 px-2 py-0.5 rounded-full">#{tag}</span>
-                    ))}
-                  </div>
-                )}
+
               </div>
             ))}
           </div>

@@ -244,7 +244,7 @@ export function ZeniumQuotePage() {
                     onClick={handleRefresh}
                     disabled={refreshing}
                     className={`p-2 rounded-full ${refreshing ? 'bg-yellow-500/5 text-gray-500' : 'bg-yellow-500/10 hover:bg-yellow-500/20'} transition-colors duration-300`}
-                    title="Generate quote baru"
+                    title="Generate new quote"
                   >
                     <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                   </button>
@@ -314,7 +314,7 @@ export function ZeniumQuotePage() {
                     <span className="mx-2">•</span>
                     <div className="flex items-center">
                       <User className="w-3 h-3 mr-1" />
-                      <span>Dibuat khusus untuk {user?.username || 'Anda'}</span>
+                      <span>Created especially for {user?.username || 'You'}</span>
                     </div>
                   </div>
                 )}
