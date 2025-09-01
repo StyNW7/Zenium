@@ -63,6 +63,40 @@ interface JournalEntry {
   updatedAt: string;
 }
 
+interface Recommendation {
+  _id: string;
+  type: 'activity' | 'mindfulness' | 'social' | 'professional' | 'health' | 'general';
+  title: string;
+  description: string;
+  priority: 'low' | 'medium' | 'high';
+  category: 'immediate' | 'short_term' | 'long_term';
+  actionable: boolean;
+  estimatedTime: number;
+  tags: string[];
+  aiGenerated: boolean;
+  isCompleted: boolean;
+  completedAt?: string;
+  userFeedback?: {
+    helpful?: boolean;
+    implemented?: boolean;
+    notes?: string;
+  };
+  context: {
+    mood: string;
+    sentiment: string;
+    keywords: string[];
+    riskScore: number;
+  };
+  createdAt: string;
+  journalId?: {
+    _id: string;
+    title: string;
+    content: string;
+    mood: string;
+    createdAt: string;
+  };
+}
+
 export function ZeniumJournalingPage() {
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
@@ -76,6 +110,8 @@ export function ZeniumJournalingPage() {
   const [guidedQuestions, setGuidedQuestions] = useState<GuidedQA[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
 
   // New entry state
   const [title, setTitle] = useState('');
@@ -100,15 +136,23 @@ export function ZeniumJournalingPage() {
   const [recording, setRecording] = useState(false);
   const recognitionRef = useRef<any>(null);
 
-  // Fetch entries on mount
-  useEffect(() => {
-    fetchEntries();
-    fetchPdfHistory();
-  }, []);
-
   const token = useMemo(() => getAuthToken(), []);
 
   const authHeaders = useMemo(() => (token ? { Authorization: `Bearer ${token}` } : {}), [token]);
+
+  // Fetch entries and recommendations on mount
+  useEffect(() => {
+    fetchEntries();
+    fetchPdfHistory();
+    fetchRecommendations();
+  }, [authHeaders]);
+
+  // Priority colors for recommendations
+  const priorityColors = {
+    high: 'text-red-400 border-red-500/20 bg-red-500/10',
+    medium: 'text-yellow-400 border-yellow-500/20 bg-yellow-500/10',
+    low: 'text-green-400 border-green-500/20 bg-green-500/10'
+  };
 
   const moodOptions: { key: Mood; icon: JSX.Element; color: string }[] = [
     { key: 'happy', icon: <Smile className="w-5 h-5" />, color: 'text-green-400' },
@@ -125,8 +169,9 @@ export function ZeniumJournalingPage() {
     try {
       if (!token) return navigate('/login');
       setLoading(true);
-      const res = await axios.get(`${apiUrl}/journals`, { headers: authHeaders });
-      const list = (res.data?.data || []).map((j: any): JournalEntry => ({
+  const res = await axios.get(`${apiUrl}/journals`, { headers: authHeaders });
+  const apiResponse: any = res.data?.data || [];
+  const list = apiResponse.map((j: any): JournalEntry => ({
         id: j._id,
         title: j.title,
         content: j.content,
@@ -161,6 +206,20 @@ export function ZeniumJournalingPage() {
     }
   }
 
+
+  async function fetchRecommendations() {
+    try {
+      if (!token) return;
+      setRecommendationsLoading(true);
+      const res = await axios.get(`${apiUrl}/recommendations`, { headers: authHeaders, params: { limit: 10, page: 1 } });
+      setRecommendations(res.data?.data || []);
+    } catch (e) {
+      console.error('Fetch recommendations failed', e);
+    } finally {
+      setRecommendationsLoading(false);
+    }
+  }
+
   // Filter + sort
   useEffect(() => {
     let filtered = [...entries];
@@ -179,21 +238,7 @@ export function ZeniumJournalingPage() {
     setFilteredEntries(filtered);
   }, [entries, searchQuery, sortOrder]);
 
-  // Guided questions
-  async function loadGuidedQuestions() {
-    try {
-      if (!token) return navigate('/login');
-      const res = await axios.get(`${apiUrl}/journals/guided-questions`, {
-        headers: authHeaders,
-        params: { mood, recentActivity: '' }
-      });
-      const qs: string[] = res.data?.data || [];
-      setGuidedQuestions(qs.map(q => ({ question: q, answer: '' })));
-    } catch (e) {
-      console.error('Load guided questions failed', e);
-      Swal.fire('Error', 'Failed to load guided questions.', 'error');
-    }
-  }
+
 
 
 
@@ -243,8 +288,8 @@ export function ZeniumJournalingPage() {
         await axios.post(`${apiUrl}/journals/${j._id}/analyze-attach`, {}, { headers: authHeaders });
         await axios.get(`${apiUrl}/daily-quote`, { headers: authHeaders, params: { forceNew: true, mood } });
         await fetchEntries();
-      } catch (e) {
-        console.error('Post-save analyze+quote failed', e);
+      } catch (error) {
+        console.error('Post-save analyze+quote failed', error);
       }
 
       const go = await Swal.fire({
@@ -283,8 +328,8 @@ export function ZeniumJournalingPage() {
       try {
         await axios.post(`${apiUrl}/journals/${currentEntry.id}/analyze-attach`, {}, { headers: authHeaders });
         await axios.get(`${apiUrl}/daily-quote`, { headers: authHeaders, params: { forceNew: true, mood: currentEntry.mood } });
-      } catch (err) {
-        console.error('Post-update analyze+quote failed', err);
+      } catch (error) {
+        console.error('Post-update analyze+quote failed', error);
       }
       await fetchEntries();
       setIsEditing(false);
@@ -707,12 +752,6 @@ export function ZeniumJournalingPage() {
                       >
                         View Quote
                       </button>
-                      <button
-                        onClick={() => navigate('/recommendations')}
-                        className="px-3 py-1 bg-green-600/20 hover:bg-green-600/30 border border-green-500/20 rounded-lg text-xs text-green-300 transition-colors duration-300"
-                      >
-                        View Recommendations
-                      </button>
                     </div>
                   </div>
                 )}
@@ -850,6 +889,128 @@ export function ZeniumJournalingPage() {
               ))}
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* AI Recommendations */}
+      <div className="px-4 pb-6">
+        <div className="bg-gray-900/50 rounded-lg border border-yellow-500/20 p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-medium text-yellow-400 flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              AI Recommendations
+            </h2>
+            <button
+              onClick={fetchRecommendations}
+              className="px-3 py-1 rounded-md bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 text-sm transition-colors duration-300"
+            >
+              Refresh
+            </button>
+          </div>
+
+          {recommendationsLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="flex flex-col items-center">
+                <div className="w-8 h-8 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-400">Loading recommendations...</p>
+              </div>
+            </div>
+          ) : recommendations.length === 0 ? (
+            <div className="text-center py-8">
+              <Sparkles className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <h3 className="text-xl font-medium text-gray-400 mb-2">No recommendations yet</h3>
+              <p className="text-gray-500">Write a journal entry and analyze it to generate personalized recommendations.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {recommendations.map((rec) => (
+                <div
+                  key={rec._id}
+                  className={`p-4 bg-gray-900/50 rounded-lg border ${priorityColors[rec.priority]} hover:bg-gray-900/70 transition-colors duration-300`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-lg font-medium text-white">{rec.title}</h3>
+                        <span className={`text-xs px-2 py-1 rounded-full ${rec.category === 'immediate' ? 'bg-red-500/20 text-red-300' :
+                          rec.category === 'short_term' ? 'bg-yellow-500/20 text-yellow-300' : 'bg-green-500/20 text-green-300'}`}>
+                          {rec.category.replace('_', ' ')}
+                        </span>
+                      </div>
+                      <p className="text-gray-300 mb-3">{rec.description}</p>
+
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <span className="text-xs bg-gray-800/50 text-gray-400 px-2 py-1 rounded-full">
+                          {rec.type}
+                        </span>
+                        <span className="text-xs bg-gray-800/50 text-gray-400 px-2 py-1 rounded-full">
+                          ⏱️ {rec.estimatedTime} mins
+                        </span>
+                        {rec.tags.map((tag, i) => (
+                          <span key={i} className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      {rec.journalId && (
+                        <div className="text-xs text-gray-400 mb-3">
+                          Based on journal: {rec.journalId.title}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-2 ml-4">
+                      <button
+                        onClick={async () => {
+                          const result = await Swal.fire({
+                            title: rec.isCompleted ? 'Mark as incomplete?' : 'Mark as completed?',
+                            text: rec.isCompleted ? 'This will move the recommendation back to active.' : 'Great job! This will help track your progress.',
+                            icon: rec.isCompleted ? 'question' : 'success',
+                            showCancelButton: true,
+                            confirmButtonText: rec.isCompleted ? 'Mark Incomplete' : 'Mark Complete',
+                            cancelButtonText: 'Cancel'
+                          });
+
+                          if (result.isConfirmed) {
+                            try {
+                              await axios.patch(`${apiUrl}/recommendations/${rec._id}/complete`, {
+                                completed: !rec.isCompleted
+                              }, { headers: authHeaders });
+                              await fetchRecommendations();
+                              Swal.fire({
+                                title: rec.isCompleted ? 'Marked as incomplete' : 'Marked as complete!',
+                                text: rec.isCompleted ? 'Recommendation moved back to active.' : 'Keep up the great work!',
+                                icon: rec.isCompleted ? 'info' : 'success',
+                                timer: 2000
+                              });
+                            } catch (error) {
+                              console.error('Failed to update recommendation:', error);
+                              Swal.fire('Error', 'Failed to update recommendation status.', 'error');
+                            }
+                          }
+                        }}
+                        className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-300 ${rec.isCompleted
+                          ? 'bg-gray-600/20 hover:bg-gray-600/30 border border-gray-500/20 text-gray-300'
+                          : 'bg-yellow-500 hover:bg-yellow-600 text-black'}`}
+                      >
+                        {rec.isCompleted ? '✓ Completed' : 'Mark Complete'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {rec.isCompleted && rec.completedAt && (
+                    <div className="mt-3 pt-3 border-t border-gray-700/50 text-xs text-gray-400">
+                      Completed on {new Date(rec.completedAt).toLocaleDateString()}
+                      {rec.userFeedback?.notes && (
+                        <p className="mt-1 text-gray-300">{rec.userFeedback.notes}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import {
   forgotPassword,
   resetPassword,
 } from "../controllers/auth.controller.js";
-import { getUserProfile, updateUserProfile, updateUserPassword } from "../controllers/user.controller.js";
+import { getUserProfile, updateUserProfile, updateUserPassword, uploadProfilePhoto } from "../controllers/user.controller.js";
 import { getDailyQuote, getUserDailyQuotes, deleteQuote } from "../controllers/dailyQuote.controller.js";
 import uploadPdf from "../middleware/uploadPdf.js";
 import { uploadJournalPdf, analyzePdfAndGenerateQuote, getPdfHistory } from "../controllers/journal.controller.js";
@@ -63,6 +63,7 @@ router.post("/auth/reset-password", resetPassword);
 router.get("/user/profile", authenticate, getUserProfile);
 router.put("/user/profile", authenticate, updateUserProfile);
 router.put("/change-password", authenticate, updateUserPassword);
+router.post("/user/upload-profile-photo", authenticate, upload.single('profilePhoto'), uploadProfilePhoto);
 
 router.get('/daily-quote', authenticate, getDailyQuote);
 router.get('/quotes', authenticate, getUserDailyQuotes);

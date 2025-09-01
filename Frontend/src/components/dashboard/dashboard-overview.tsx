@@ -1,11 +1,15 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Heart, Brain, Target, Calendar, TrendingUp, Smile, BookOpen, Award, MessageCircle, Zap } from "lucide-react"
+import { Heart, Brain, Target, Calendar, TrendingUp, Smile, BookOpen, Award, MessageCircle, Zap, Upload, Camera, User } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
+import { useAuth } from "@/contexts/authcontext"
+import { getTimezoneGreeting } from "@/lib/utils"
+import { useState, useRef } from "react"
+import axios from 'axios'
 
 const moodData = [
   { day: "Mon", mood: "happy", score: 8 },
@@ -40,36 +44,116 @@ const itemVariants = {
 }
 
 export function DashboardOverview() {
+  const { user } = useAuth();
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(user?.profilePhoto || null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const currentMood = moodData[moodData.length - 1]
   const weeklyAverage = Math.round(moodData.reduce((acc, day) => acc + day.score, 0) / moodData.length)
   const todayQuote = motivationalQuotes[new Date().getDay() % motivationalQuotes.length]
+
+  const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('profilePhoto', file);
+
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+
+      const response = await axios.post(`${apiUrl}/user/upload-profile-photo`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.user?.profilePhoto) {
+        setUploadedPhoto(response.data.user.profilePhoto);
+        // Update user context if needed
+        window.location.reload(); // Refresh to show new photo
+      }
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
       {/* Welcome Section */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/5 border-primary/20">
+        <Card className="bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-yellow-500/5 border-yellow-500/20">
           <CardContent className="p-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">Good morning, Stanley! 🌅</h1>
-                <p className="text-lg text-muted-foreground mb-4">
+                <h1 className="text-3xl font-bold text-white mb-2">
+                  {getTimezoneGreeting()}, {user?.username || 'User'}! 
+                </h1>
+                <p className="text-lg text-gray-300 mb-4">
                   Ready to make today amazing? Let's check in on your wellness journey.
                 </p>
                 <div className="flex items-center space-x-4">
-                  <Badge variant="secondary" className="bg-accent/20 text-accent-foreground">
+                  <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
                     <Zap className="h-3 w-3 mr-1" />
                     7-day streak
                   </Badge>
-                  <Badge variant="outline" className="border-primary/30">
+                  <Badge variant="outline" className="border-yellow-500/30 text-yellow-400">
                     Level 3 Wellness Warrior
                   </Badge>
                 </div>
               </div>
-              <div className="hidden md:block">
-                <div className="w-32 h-32 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
-                  <Brain className="h-16 w-16 text-white" />
-                </div>
+              <div className="hidden md:block relative">
+                {uploadedPhoto || user?.profilePhoto ? (
+                  <div className="relative">
+                    <img
+                      src={uploadedPhoto || (user && user.profilePhoto?.startsWith('http') ? user.profilePhoto : `http://localhost:3000/${user?.profilePhoto || ''}`)}
+                      alt="Profile"
+                      className="w-32 h-32 rounded-full object-cover border-4 border-yellow-500/30"
+                    />
+                    <Button
+                      onClick={triggerFileInput}
+                      className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-yellow-500 hover:bg-yellow-600 p-0"
+                      disabled={isUploading}
+                    >
+                      {isUploading ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Camera className="h-5 w-5 text-white" />
+                      )}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="w-32 h-32 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center border-4 border-yellow-500/30 relative">
+                    <User className="h-16 w-16 text-white" />
+                    <Button
+                      onClick={triggerFileInput}
+                      className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-yellow-500 hover:bg-yellow-600 p-0 flex items-center justify-center"
+                      disabled={isUploading}
+                    >
+                      {isUploading ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Upload className="h-5 w-5 text-white" />
+                      )}
+                    </Button>
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="hidden"
+                />
               </div>
             </div>
           </CardContent>

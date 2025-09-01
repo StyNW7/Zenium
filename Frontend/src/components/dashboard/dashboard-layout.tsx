@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useLocation, useNavigate } from "react-router"
+import { useAuth } from "@/contexts/authcontext"
 
 const sidebarItems = [
   { icon: HomeIcon, label: "Home", href: "/main" },
@@ -30,7 +31,6 @@ const sidebarItems = [
   { icon: Calendar, label: "Sessions", href: "/dashboard/sessions" },
   { icon: Target, label: "Goals", href: "/dashboard/goals" },
   { icon: Award, label: "Achievements", href: "/dashboard/achievements" },
-  { icon: User, label: "Profile", href: "/dashboard/profile" },
 ]
 
 interface DashboardLayoutProps {
@@ -43,18 +43,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const location = useLocation();
   const pathname = location.pathname;
+  const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0b0b0b]">
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <Button
           variant="outline"
           size="icon"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="bg-card border-primary/20"
+          className="bg-[#1a1a1a] border-gray-700/40"
         >
-          {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          {sidebarOpen ? <X className="h-4 w-4 text-yellow-400" /> : <Menu className="h-4 w-4 text-yellow-400" />}
         </Button>
       </div>
 
@@ -65,13 +66,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           animate={{ x: sidebarOpen ? 0 : -320 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className={cn(
-            "fixed left-0 top-0 z-40 h-screen bg-sidebar-background border-r border-sidebar-border",
+            "fixed left-0 top-0 z-40 h-screen bg-[#0c0c0c] border-r border-gray-800",
             sidebarOpen ? "w-80" : "w-0",
           )}
         >
           <div className="flex h-full flex-col overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-sidebar-border">
+            <div className="flex items-center justify-between p-6 border-b border-gray-800">
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -82,13 +83,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <img src="/Images/logo.png" alt="Logo Zenium" className="w-12 h-12" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-sidebar-foreground">Zenium</h1>
-                  <p className="text-sm text-sidebar-foreground/70">Mental Wellness</p>
+                  <h1 className="text-xl font-bold text-gray-100">Zenium</h1>
+                  <p className="text-sm text-gray-400">Mental Wellness</p>
                 </div>
               </motion.div>
 
               <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="lg:hidden">
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4 text-yellow-400" />
               </Button>
             </div>
 
@@ -109,16 +110,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                         className={cn(
                           "flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 group",
                           isActive
-                            ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-md"
-                            : "text-sidebar-foreground hover:bg-sidebar-accent/10 hover:text-sidebar-accent",
+                            ? "bg-yellow-600 text-black shadow-md"
+                            : "text-gray-300 hover:bg-yellow-500/20 hover:text-yellow-400",
                         )}
                       >
                         <item.icon
                           className={cn(
                             "h-5 w-5 transition-colors",
                             isActive
-                              ? "text-sidebar-primary-foreground"
-                              : "text-sidebar-foreground/70 group-hover:text-sidebar-accent",
+                              ? "text-black"
+                              : "text-gray-400/70 group-hover:text-yellow-400",
                           )}
                         />
                         <span className="font-medium">{item.label}</span>
@@ -130,10 +131,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </nav>
 
             {/* Footer */}
-            <div className="p-4 border-t border-sidebar-border">
-              <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4">
-                <h3 className="font-semibold text-sidebar-foreground mb-2">Need Support?</h3>
-                <p className="text-sm text-sidebar-foreground/70 mb-3">Connect with our mental health professionals</p>
+            <div className="p-4 border-t border-gray-800">
+              <div className="bg-gradient-to-r from-yellow-900/10 to-yellow-800/10 rounded-lg p-4">
+                <h3 className="font-semibold text-gray-100 mb-2">Need Support?</h3>
+                <p className="text-sm text-gray-400 mb-3">Connect with our mental health professionals</p>
                 <Button size="sm" className="w-full" onClick={() => navigate("/contact")}>
                   Get Help
                 </Button>
@@ -144,29 +145,36 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </AnimatePresence>
 
       {/* Main content */}
-      <div className={cn("transition-all duration-300 ease-in-out", sidebarOpen ? "lg:ml-80" : "ml-0")}>
+      <div className={cn("transition-all duration-300 ease-in-out bg-[#0b0b0b]", sidebarOpen ? "lg:ml-80" : "ml-0")}>
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border">
+        <header className="sticky top-0 z-30 bg-[#0a0a0a]/90 backdrop-blur-sm border-b border-gray-800/50">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center space-x-4">
               {!sidebarOpen && (
-                <Button variant="outline" size="icon" onClick={() => setSidebarOpen(true)} className="hidden lg:flex">
-                  <Menu className="h-4 w-4" />
+                <Button variant="outline" size="icon" onClick={() => setSidebarOpen(true)} className="hidden lg:flex bg-yellow-900/10 border-yellow-800/30 hover:bg-yellow-900/20">
+                  <Menu className="h-4 w-4 text-yellow-400" />
                 </Button>
               )}
               <div>
-                <h2 className="text-2xl font-bold text-foreground">Welcome back!</h2>
-                <p className="text-muted-foreground">Let's continue your wellness journey</p>
+                <h2 className="text-2xl font-bold text-yellow-400">
+                  Welcome back, {user?.username || 'User'}!
+                </h2>
+                <p className="text-gray-400">Let's continue your wellness journey</p>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="border-gray-700/50 text-gray-300 hover:bg-yellow-500/20 hover:text-yellow-400">
                 <Heart className="h-4 w-4 mr-2" />
                 Quick Mood Check
               </Button>
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                <User className="h-5 w-5 text-primary-foreground" />
+              <div className="flex flex-col items-end">
+                <div className="w-10 h-10 bg-yellow-900 rounded-full flex items-center justify-center">
+                  <User className="h-5 w-5 text-yellow-400" />
+                </div>
+                <p className="text-xs text-gray-400 mt-1">
+                  {user?.email || ''}
+                </p>
               </div>
             </div>
           </div>
@@ -178,7 +186,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-30 bg-black/50 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 z-30 bg-black lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
     </div>
   )

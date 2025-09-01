@@ -60,27 +60,77 @@ export const getDailyQuote = async (req, res) => {
 
     // Generate new quote using Qwen service, contextualized by mood/activity
     const contextPrompt = mood || activity ? `User context -> mood: ${mood || 'n/a'}, recent activity: ${activity || 'n/a'}. Tailor the motivation to this context.` : '';
-    const messages = [{
-      role: 'user',
-      content: [{
-        type: 'text',
-        text: `Generate an inspirational daily motivation quote for mental wellness and motivation. The quote should be uplifting, positive, and encouraging, considering the user's context if provided. Include:
+
+    let newQuoteData = {};
+    let attempts = 0;
+    const maxAttempts = 3; // Limit attempts to avoid infinite loop
+
+    while (attempts < maxAttempts) {
+      const messages = [{
+        role: 'user',
+        content: [{
+          type: 'text',
+          text: `Generate an inspirational daily motivation quote for mental wellness and motivation. The quote should be uplifting, positive, and encouraging, considering the user's context if provided. Include:
 1) quote (1-2 sentences)
 2) explanation (1 sentence)
 3) author
 ${contextPrompt}
 Return JSON: {"quote":"string","explanation":"string","author":"string"}`
-      }]
-    }];
-    const responseText = await QwenService.makeRequest(messages);
-    let newQuoteData = {};
-    try {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) newQuoteData = JSON.parse(jsonMatch[0]);
-    } catch {}
+        }]
+      }];
+      const responseText = await QwenService.makeRequest(messages);
 
-    if (!newQuoteData.quote) {
-      newQuoteData = await QwenService.generateDailyQuote();
+      try {
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) newQuoteData = JSON.parse(jsonMatch[0]);
+      } catch {}
+
+      if (!newQuoteData.quote) {
+        newQuoteData = await QwenService.generateDailyQuote();
+      }
+
+      // Check for duplicate quotes by comparing against recent quotes
+      const recentQuotes = await DailyQuote.find({
+        ...(userId ? { userId: userId } : { userId: null }),
+        generatedAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } // Last 30 days
+      }).select('quote').limit(50);
+
+      const isDuplicate = recentQuotes.some(recentQuote => {
+        // Normalize quotes for comparison (remove extra whitespace and make lowercase)
+        const normalize = (text) => text.replace(/\s+/g, ' ').trim().toLowerCase();
+        return normalize(recentQuote.quote) === normalize(newQuoteData.quote);
+      });
+
+      if (!isDuplicate) {
+        break; // Found a unique quote
+      }
+
+      attempts++;
+      console.log(`Duplicate quote detected, regenerating... Attempt ${attempts}/${maxAttempts}`);
+    }
+
+    // If we still have a duplicate after max attempts, use a fallback
+    if (attempts >= maxAttempts) {
+      const fallbackOptions = [
+        {
+          quote: "The journey of a thousand miles begins with a single step. Each day offers new opportunities for growth and self-improvement.",
+          explanation: "A timeless reminder that even the most ambitious goals start small",
+          author: "Lao Tzu"
+        },
+        {
+          quote: "You are stronger than you know. You've overcome obstacles before and you'll overcome them again.",
+          explanation: "A reminder of your inner strength and resilience in the face of challenges",
+          author: "Zenium Support"
+        },
+        {
+          quote: "Peace begins with a smile. Let yourself smile today - you've earned it.",
+          explanation: "A gentle reminder to practice self-care and find joy in simple pleasures",
+          author: "Mother Teresa"
+        }
+      ];
+
+      const randomFallback = fallbackOptions[Math.floor(Math.random() * fallbackOptions.length)];
+      newQuoteData = randomFallback;
     }
 
     // Save to database

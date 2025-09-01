@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
   resetPasswordExpires: {
     type: Date,
   },
+  profilePhoto: {
+    type: String,
+    default: null,
+  },
 });
 
 userSchema.pre("save", async function (next) {

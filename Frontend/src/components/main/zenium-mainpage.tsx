@@ -9,7 +9,6 @@ import {
   X,
   Heart,
   Sparkles,
-  Brain,
   TrendingUp,
   Library,
 } from 'lucide-react';
@@ -42,14 +41,6 @@ export function ZeniumMainPage() {
       bgColor: 'from-yellow-400/10 to-yellow-500/10'
     },
     {
-      id: 'recommendation-system',
-      title: 'AI Recommendations',
-      description: 'Personalized wellness suggestions powered by advanced AI',
-      icon: Brain,
-      gradient: 'from-yellow-600 via-yellow-500 to-yellow-400',
-      bgColor: 'from-yellow-600/10 to-yellow-400/10'
-    },
-    {
       id: 'journal',
       title: 'Digital Journaling',
       description: 'Express your thoughts and track your emotional journey',
@@ -70,8 +61,8 @@ export function ZeniumMainPage() {
   const handleNavigation = (itemId: string) => {
     // Perbaikan routing untuk konsistensi
     switch (itemId) {
-      case 'user':
-        navigate('/user');
+      case 'dashboard':
+        navigate('/dashboard');
         break;
       case 'recommendation-system':
         navigate('/recommendation-system');
@@ -175,22 +166,16 @@ export function ZeniumMainPage() {
 
             {/* User Menu */}
             <div className="flex items-center space-x-4">
-
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 hover:from-yellow-500/20 hover:to-yellow-600/20 p-2 rounded-lg transition-all duration-300 border border-yellow-500/20 hover:border-yellow-400/40"
-              >
-                User Dashboard
-              </button>
-
               <div className="relative">
-
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 hover:from-yellow-500/20 hover:to-yellow-600/20 p-2 rounded-lg transition-all duration-300 border border-yellow-500/20 hover:border-yellow-400/40"
                 >
                   <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-black" />
+                    <User className="w-5 h-5 text-black"/>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-yellow-400">Dashboard</p>
                   </div>
                 </button>
 
@@ -199,18 +184,15 @@ export function ZeniumMainPage() {
                   <div className="absolute right-0 mt-2 w-56 bg-black backdrop-blur-md rounded-xl shadow-2xl border border-yellow-500/20 z-50">
                     <div className="py-2">
                       <div className="px-4 py-3 border-b border-yellow-500/20">
-                        <p className="text-sm font-medium text-yellow-400">Welcome back!</p>
+                        <p className="text-sm font-medium text-yellow-400">Hello</p>
                         <p className="text-xs text-gray-400">{displayName || user?.username || 'User'}</p>
                       </div>
                       <button 
-                        onClick={() => {
-                          handleNavigation('user');
-                          setShowUserMenu(false);
-                        }}
+                        onClick={() => navigate("/dashboard")}
                         className="flex items-center space-x-3 w-full px-4 py-3 text-sm text-gray-300 hover:text-yellow-400 hover:bg-gradient-to-r hover:from-yellow-500/10 hover:to-yellow-600/10 transition-all duration-300"
                       >
                         <User className="w-4 h-4" />
-                        <span>Profile Setting</span>
+                        <span>Overview</span>
                       </button>
                     </div>
                   </div>

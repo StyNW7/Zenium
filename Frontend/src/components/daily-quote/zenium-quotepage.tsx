@@ -14,11 +14,22 @@ interface Quote {
   isAiGenerated: boolean;
 }
 
+interface ApiQuoteData {
+  _id?: string;
+  id?: string;
+  quote: string;
+  author: string;
+  explanation: string;
+  category?: string;
+  generatedAt: Date | string;
+  isAiGenerated: boolean;
+}
+
 export function ZeniumQuotePage() {
   const [quote, setQuote] = useState<Quote | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [quotes, setQuotes] = useState<ApiQuoteData[]>([]);
   const [quotesLoading, setQuotesLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -86,7 +97,8 @@ export function ZeniumQuotePage() {
         return true;
       }
       return false;
-    } catch (e) {
+    } catch (error) {
+      console.error('Error fetching user quotes:', error);
       // ignore and fallback to daily quote
       return false;
     } finally {
@@ -112,7 +124,11 @@ export function ZeniumQuotePage() {
       setTtsAvailable(false);
     }
     return () => {
-      try { window.speechSynthesis?.cancel(); } catch {}
+      try {
+        window.speechSynthesis?.cancel();
+      } catch (error) {
+        console.error('Failed to cancel speech synthesis on cleanup:', error);
+      }
     };
   }, []);
 
@@ -138,7 +154,9 @@ export function ZeniumQuotePage() {
       window.speechSynthesis.speak(u);
       setSpeaking(true);
       setPaused(false);
-    } catch {}
+    } catch (error) {
+      console.error('TTS speak failed:', error);
+    }
   };
 
   const pauseSpeech = () => {
@@ -147,7 +165,9 @@ export function ZeniumQuotePage() {
         window.speechSynthesis.pause();
         setPaused(true);
       }
-    } catch {}
+    } catch (error) {
+      console.error('TTS pause failed:', error);
+    }
   };
 
   const stopSpeech = () => {
@@ -156,7 +176,9 @@ export function ZeniumQuotePage() {
       setSpeaking(false);
       setPaused(false);
       utteranceRef.current = null;
-    } catch {}
+    } catch (error) {
+      console.error('TTS stop failed:', error);
+    }
   };
 
   const handleRefresh = () => {
@@ -170,8 +192,8 @@ export function ZeniumQuotePage() {
       await axios.delete(`${apiUrl}/quotes/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setQuotes(prev => prev.filter((q: any) => (q._id || q.id) !== id));
-      if (quote && ((quote as any).id === id)) {
+      setQuotes(prev => prev.filter((q: ApiQuoteData) => (q._id || q.id) !== id));
+      if (quote && (quote.id === id)) {
         setQuote(null);
       }
     } catch (e) {
@@ -297,10 +319,10 @@ export function ZeniumQuotePage() {
                       This quote was created based on your journal content analysis. The AI also generated personalized recommendations for you.
                     </p>
                     <button
-                      onClick={() => navigate('/recommendations')}
+                      onClick={() => navigate('/main')}
                       className="px-3 py-1 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/20 rounded-lg text-xs text-blue-300 transition-colors duration-300"
                     >
-                      View AI Recommendations
+                      Go to Main Dashboard
                     </button>
                   </div>
                 )}
@@ -335,13 +357,13 @@ export function ZeniumQuotePage() {
                 <div className="text-gray-500 text-sm">No quotes yet.</div>
               ) : (
                 <div className="space-y-2">
-                  {quotes.map((q: any) => (
+                  {quotes.map((q: ApiQuoteData) => (
                     <div key={q._id || q.id} className="flex items-start justify-between bg-gray-800/40 rounded-md p-3">
                       <div>
                         <div className="text-yellow-100 text-sm italic">"{q.quote}"</div>
                         <div className="text-xs text-gray-400 mt-1">— {q.author || 'Unknown'} • {new Date(q.generatedAt).toLocaleString()}</div>
                       </div>
-                      <button onClick={() => deleteQuoteById(q._id || q.id)} className="p-1.5 rounded-md bg-red-500/20 hover:bg-red-500/30 border border-red-500/30" title="Delete">
+                      <button onClick={() => deleteQuoteById(q._id || q.id || '')} className="p-1.5 rounded-md bg-red-500/20 hover:bg-red-500/30 border border-red-500/30" title="Delete">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>

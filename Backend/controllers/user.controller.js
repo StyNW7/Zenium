@@ -61,8 +61,8 @@ export const updateUserPassword = async (req, res) => {
 
     // Validate input
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ 
-        message: "Current password and new password are required" 
+      return res.status(400).json({
+        message: "Current password and new password are required"
       });
     }
 
@@ -88,6 +88,38 @@ export const updateUserPassword = async (req, res) => {
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
     console.error("Error updating password:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const uploadProfilePhoto = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    // Get the file path
+    const profilePhotoPath = req.file.path;
+
+    // Update user profile with photo path
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePhoto: profilePhotoPath },
+      { new: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Profile photo uploaded successfully",
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error("Error uploading profile photo:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

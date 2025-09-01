@@ -22,8 +22,6 @@ import LoadingScreen from "./pages/Utility/LoadingScreen";
 import LandingPage from "@/pages/Landing/page";
 import LoginPage from "@/pages/Login/page";
 import RegisterPage from "@/pages/Register/page";
-import UserPage from "@/pages/User/page";
-import RecommendationSystemPage from "@/pages/Recommendation-System/page";
 import JournalingPage from "@/pages/Journaling/page";
 import QuotePage from "./pages/Daily-Quote/page";
 import MapPage from "@/pages/Map-System/page";
@@ -127,22 +125,8 @@ function App() {
                     </ProtectedRoute>
                   } 
                 />
-                <Route 
-                  path="/user" 
-                  element={
-                    <ProtectedRoute>
-                      <UserPage />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/recommendation-system" 
-                  element={
-                    <ProtectedRoute>
-                      <RecommendationSystemPage />
-                    </ProtectedRoute>
-                  } 
-                />
+
+
                 <Route 
                   path="/journal" 
                   element={
