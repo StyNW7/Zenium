@@ -9,6 +9,10 @@ class QwenService {
 
   async makeRequest(messages) {
     try {
+      if (!this.apiKey) {
+        throw new Error("OPENROUTER_API_KEY is not configured");
+      }
+
       const response = await fetch(this.baseUrl, {
         method: "POST",
         headers: {
@@ -26,14 +30,21 @@ class QwenService {
       });
 
       if (!response.ok) {
-        throw new Error(`OpenRouter API error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        console.error("OpenRouter API error response:", errorText);
+        throw new Error(`OpenRouter API error: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
       const data = await response.json();
+
+      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+        throw new Error("Invalid response format from OpenRouter API");
+      }
+
       return data.choices[0].message.content;
     } catch (error) {
       console.error("OpenRouter API request failed:", error);
-      throw error;
+      throw new Error(`Qwen API request failed: ${error.message}`);
     }
   }
 

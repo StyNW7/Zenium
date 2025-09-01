@@ -107,21 +107,39 @@ Return JSON: {"quote":"string","explanation":"string","author":"string"}`
 
   } catch (error) {
     console.error('Daily quote generation error:', error);
-    
+
+    // Try to get existing quote from database as fallback
+    try {
+      const existingQuote = await DailyQuote.findOne()
+        .sort({ generatedAt: -1 })
+        .limit(1);
+
+      if (existingQuote) {
+        return res.status(200).json({
+          success: true,
+          data: existingQuote,
+          message: "Using existing quote due to generation error",
+          error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+      }
+    } catch (dbError) {
+      console.error('Database fallback error:', dbError);
+    }
+
     // Return fallback quote on error
     const fallbackQuote = {
       quote: "Every day is a new beginning. Take a deep breath, smile, and start again.",
       explanation: "A gentle reminder that each day offers fresh opportunities for growth and positivity",
-      author: "Unknown",
+      author: "Zenium AI",
       isAiGenerated: false,
       generatedAt: new Date(),
       category: "motivation"
     };
 
-    res.status(500).json({
-      success: false,
+    res.status(200).json({
+      success: true,
       data: fallbackQuote,
-      message: "Failed to generate quote, returning fallback quote",
+      message: "Using fallback quote due to service unavailability",
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }

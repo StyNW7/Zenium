@@ -5,7 +5,7 @@ import AIWorkflowService from "../services/aiWorkflow.service.js";
 
 export const getUserJournals = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
     const { sortBy = "createdAt", sortOrder = "desc", limit = 10, page = 1 } = req.query;
     
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -37,7 +37,7 @@ export const getUserJournals = async (req, res) => {
 // Get a specific journal entry
 export const getJournalById = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
     const journalId = req.params.id;
     
     const journal = await Journal.findOne({ _id: journalId, userId });
@@ -56,7 +56,7 @@ export const getJournalById = async (req, res) => {
 // Create a new journal entry (supports Smart Journaling fields)
 export const createJournal = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
     const { title, content, mood, moodRating, tags, location, privacy, guidedQuestions, voiceTranscript } = req.body;
 
     const newJournal = new Journal({
@@ -93,7 +93,7 @@ export const createJournal = async (req, res) => {
 // Update a journal entry (Smart Journaling fields included)
 export const updateJournal = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
     const journalId = req.params.id;
     const { title, content, mood, moodRating, tags, location, privacy, guidedQuestions, voiceTranscript } = req.body;
 
@@ -125,7 +125,7 @@ export const updateJournal = async (req, res) => {
 // Delete a journal entry
 export const deleteJournal = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
     const journalId = req.params.id;
 
     const journal = await Journal.findOneAndDelete({ _id: journalId, userId });
@@ -228,7 +228,7 @@ export const analyzeJournal = async (req, res) => {
 // Analyze and attach insights to a specific journal entry
 export const analyzeAndAttachJournal = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
     const journalId = req.params.id;
     
     console.log(`🚀 Manual analysis request for journal ${journalId}`);
@@ -246,7 +246,7 @@ export const analyzeAndAttachJournal = async (req, res) => {
 // Journaling insights summary for recommendation system
 export const getJournalSummary = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
 
     const last7 = await Journal.find({ userId }).sort({ createdAt: -1 }).limit(7).lean();
     const total = await Journal.countDocuments({ userId });
@@ -291,7 +291,7 @@ export const getJournalSummary = async (req, res) => {
 // Expect: multipart/form-data with fields: title, file (pdf)
 export const uploadJournalPdf = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
     const { title = '', content = '', mood = 'neutral', moodRating = 5, tags = [] } = req.body || {};
     const file = req.file;
 
@@ -321,7 +321,7 @@ export const uploadJournalPdf = async (req, res) => {
 // Analyze attached PDF and generate personalized quote
 export const analyzePdfAndGenerateQuote = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
     const { id } = req.params;
     const doc = await Journal.findOne({ _id: id, userId });
     if (!doc) return res.status(404).json({ success: false, message: 'Journal not found' });
@@ -406,7 +406,7 @@ export const analyzePdfAndGenerateQuote = async (req, res) => {
 // List journals with PDF attached (history)
 export const getPdfHistory = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId || req.user.id;
     const { page = 1, limit = 10 } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
