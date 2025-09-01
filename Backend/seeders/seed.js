@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import dotenv from "dotenv";
-// import Question from "../models/question.model.js";
 
 dotenv.config();
 
