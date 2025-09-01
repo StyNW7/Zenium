@@ -16,14 +16,24 @@ import {
   HomeIcon,
   ChartArea,
   Bot,
+  LogOut,
+  Settings,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { useLocation, useNavigate } from "react-router"
 import { useAuth } from "@/contexts/authcontext"
 
 const sidebarItems = [
-  { icon: HomeIcon, label: "Home", href: "/main" },
+  { icon: HomeIcon, label: "MainPage", href: "/main" },
   { icon: ChartArea, label: "Overview", href: "/dashboard" },
   { icon: Bot, label: "Melify", href: "/dashboard/melify" },
   { icon: Heart, label: "Mood Tracker", href: "/dashboard/mood" },
@@ -43,7 +53,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const location = useLocation();
   const pathname = location.pathname;
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen bg-[#0b0b0b]">
@@ -168,14 +183,31 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Heart className="h-4 w-4 mr-2" />
                 Quick Mood Check
               </Button>
-              <div className="flex flex-col items-end">
-                <div className="w-10 h-10 bg-yellow-900 rounded-full flex items-center justify-center">
-                  <User className="h-5 w-5 text-yellow-400" />
-                </div>
-                <p className="text-xs text-gray-400 mt-1">
-                  {user?.email || ''}
-                </p>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="flex items-center space-x-2 border-gray-700/50 text-gray-300 hover:bg-yellow-500/20 hover:text-yellow-400">
+                    <div className="w-8 h-8 bg-yellow-900 rounded-full flex items-center justify-center">
+                      <User className="h-4 w-4 text-yellow-400" />
+                    </div>
+                    <span>{user?.username || 'User'}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-gray-900 border-gray-700">
+                  <DropdownMenuLabel className="text-gray-200">
+                    My Account
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-gray-700" />
+                  <DropdownMenuItem className="text-gray-300 hover:bg-gray-800" onClick={() => navigate("/profile")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Profile Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-gray-700" />
+                  <DropdownMenuItem className="text-red-400 hover:bg-red-900 focus:bg-red-900 focus:text-red-400" onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </header>

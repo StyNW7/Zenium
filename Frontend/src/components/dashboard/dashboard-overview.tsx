@@ -161,7 +161,7 @@ export function DashboardOverview() {
       </motion.div>
 
       {/* Quick Stats */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <Card className="bg-gradient-to-br from-chart-1/10 to-chart-1/5 border-chart-1/20">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -224,7 +224,7 @@ export function DashboardOverview() {
       </motion.div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
         {/* Mood Tracking */}
         <motion.div variants={itemVariants} className="lg:col-span-2">
           <Card>
@@ -258,12 +258,12 @@ export function DashboardOverview() {
                   </motion.div>
                 ))}
               </div>
-              <div className="mt-6 flex space-x-3">
-                <Button className="flex-1">
+              <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                <Button className="flex-1 sm:flex-[1_1_auto]">
                   <Heart className="h-4 w-4 mr-2" />
                   Log Today's Mood
                 </Button>
-                <Button variant="outline">View Detailed Analytics</Button>
+                <Button variant="outline" className="flex-1 sm:flex-[1_1_auto]">View Detailed Analytics</Button>
               </div>
             </CardContent>
           </Card>
