@@ -22,15 +22,6 @@ import {
   getJournalSummary
 } from "../controllers/journal.controller.js";
 import {
-  getLocations,
-  getLocationById,
-  createLocation,
-  updateLocation,
-  deleteLocation,
-  seedLocations,
-  saveLocationAnalysis
-} from "../controllers/location.controller.js";
-import {
   analyzeLocation,
   saveAnalysis,
   getUserAnalyses,
@@ -96,15 +87,6 @@ router.get('/recommendations/type/:type', authenticate, getRecommendationsByType
 router.get('/recommendations/:id', authenticate, getRecommendationById);
 router.put('/recommendations/:id/complete', authenticate, markRecommendationCompleted);
 router.delete('/recommendations/:id', authenticate, deleteRecommendation);
-
-// Location routes
-router.get('/locations', getLocations);
-router.get('/locations/:id', getLocationById);
-router.post('/locations', authenticate, createLocation);
-router.put('/locations/:id', authenticate, updateLocation);
-router.delete('/locations/:id', authenticate, deleteLocation);
-router.post('/locations/seed', authenticate, seedLocations);
-router.post('/locations/analysis', authenticate, saveLocationAnalysis);
 
 // Analysis routes (PeaceFinder)
 router.post('/analysis/analyze', analyzeLocation);
