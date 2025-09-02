@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Heart, Mail, ArrowRight, ArrowLeft, Check, RefreshCw } from "lucide-react"
+import { Mail, ArrowRight, ArrowLeft, Check, RefreshCw } from "lucide-react"
 import { API_BASE_URL, API_ENDPOINTS } from "@/config/api"
 import Image from '@/assets/logo.png'
 
