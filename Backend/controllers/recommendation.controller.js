@@ -4,7 +4,7 @@ import Recommendation from "../models/recommendation.model.js";
 // Get user's AI recommendations
 export const getUserRecommendations = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { type, priority, completed, limit = 10, page = 1 } = req.query;
 
     const result = await AIWorkflowService.getUserRecommendations(userId, {
@@ -25,7 +25,7 @@ export const getUserRecommendations = async (req, res) => {
 // Get recommendation by ID
 export const getRecommendationById = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const recommendationId = req.params.id;
 
     const recommendation = await Recommendation.findOne({ _id: recommendationId, userId })
@@ -45,7 +45,7 @@ export const getRecommendationById = async (req, res) => {
 // Mark recommendation as completed
 export const markRecommendationCompleted = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const recommendationId = req.params.id;
     const { helpful, implemented, notes } = req.body;
 
@@ -65,7 +65,7 @@ export const markRecommendationCompleted = async (req, res) => {
 // Delete recommendation
 export const deleteRecommendation = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const recommendationId = req.params.id;
 
     const recommendation = await Recommendation.findOneAndDelete({ _id: recommendationId, userId });
@@ -84,7 +84,7 @@ export const deleteRecommendation = async (req, res) => {
 // Get recommendation statistics
 export const getRecommendationStats = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const stats = await Recommendation.aggregate([
       { $match: { userId: new Recommendation().constructor.db.base.Types.ObjectId(userId) } },
@@ -129,7 +129,7 @@ export const getRecommendationStats = async (req, res) => {
 // Trigger AI workflow for a specific journal
 export const triggerAIWorkflow = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const journalId = req.params.id;
 
     console.log(`🚀 Manual trigger of AI workflow for journal ${journalId}`);
@@ -150,7 +150,7 @@ export const triggerAIWorkflow = async (req, res) => {
 // Get recommendations by type
 export const getRecommendationsByType = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { type } = req.params;
     const { limit = 5, page = 1 } = req.query;
 
@@ -170,7 +170,7 @@ export const getRecommendationsByType = async (req, res) => {
 // Get high priority recommendations
 export const getHighPriorityRecommendations = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { limit = 5 } = req.query;
 
     const result = await AIWorkflowService.getUserRecommendations(userId, {

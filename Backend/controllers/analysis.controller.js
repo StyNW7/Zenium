@@ -156,7 +156,7 @@ export const analyzeLocation = async (req, res) => {
     if (Array.isArray(coordinates)) {
       coordinates = [parseFloat(coordinates[0]), parseFloat(coordinates[1])];
     }
-    const userId = req.user?._id || null;
+    const userId = req.user?.userId || null;
     
     // Handle file upload if present
     if (req.file) {
@@ -260,25 +260,131 @@ export const analyzeLocation = async (req, res) => {
 // Save analysis result to database
 export const saveAnalysis = async (req, res) => {
   try {
+    console.log("🔍 Save analysis request received");
+    console.log("📦 Request body:", JSON.stringify(req.body, null, 2));
+    console.log("🔐 Authorization header:", req.header("Authorization"));
+    console.log("👤 req.user object:", JSON.stringify(req.user, null, 2));
+    console.log("👤 Request headers:", JSON.stringify(req.headers, null, 2));
+    console.log("👤 Auth middleware completed:", !!req.user);
+
     const analysisData = req.body;
-    const userId = req.user._id;
-    
-    // Ensure the analysis belongs to the current user
+    let userId = req.user?.userId;
+
+    // FIX: Handle MongoDB ObjectId properly
+    if (!userId && req.user) {
+      userId = req.user.id || req.user._id;
+    }
+
+    // If still no userId, check if backend authentication is working
+    if (!userId) {
+      console.error("❌ CRITICAL: No userId found in req.user, checking auth structure:");
+      console.log("📦 req.user keys:", Object.keys(req.user || {}));
+      console.log("📦 req.user data:", JSON.stringify(req.user, null, 2));
+      return res.status(401).json({
+        success: false,
+        message: "Authentication failed - no user identification"
+      });
+    }
+
+    console.log("👤 User ID from token:", userId);
+
+    if (!userId) {
+      console.error("❌ No userId found in req.user");
+      console.log("🔍 req.user object:", req.user);
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required - please login again"
+      });
+    }
+
+    // Ensure the analysis belongs to the current user and has required fields
     analysisData.userId = userId;
-    
+
+    console.log("� Final userId in analysisData after assignment:", analysisData.userId);
+
+    console.log("�📊 Validating required fields...");
+
+    // Validate required fields
+    const requiredFields = [
+      'location.coordinates', 'address', 'peacefulnessScore',
+      'peacefulnessLabel', 'areaDistribution.greenBlueSpaces',
+      'aiAnalysis.description'
+    ];
+
+    for (const field of requiredFields) {
+      const keys = field.split('.');
+      let value = analysisData;
+      let currentPath = '';
+      for (const key of keys) {
+        currentPath += (currentPath ? '.' : '') + key;
+        value = value && value[key];
+        if (value === undefined || value === null) {
+          console.error(`❌ Missing required field: ${currentPath}`);
+          return res.status(400).json({
+            success: false,
+            message: `Missing required field: ${currentPath}`
+          });
+        }
+      }
+    }
+
+    console.log("📍 Validating coordinates...");
+
+    // Ensure coordinates are [longitude, latitude] and numbers
+    if (!Array.isArray(analysisData.location.coordinates) ||
+        analysisData.location.coordinates.length !== 2 ||
+        typeof analysisData.location.coordinates[0] !== 'number' ||
+        typeof analysisData.location.coordinates[1] !== 'number') {
+      console.error("❌ Invalid coordinates format");
+      console.log("📍 Coordinates received:", analysisData.location.coordinates);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid coordinates format. Must be [longitude, latitude] array of numbers"
+      });
+    }
+
+    console.log("💾 Attempting to save to database...");
+
     const newAnalysis = new Analysis(analysisData);
     const savedAnalysis = await newAnalysis.save();
-    
+
+    console.log("✅ Analysis saved successfully:", savedAnalysis._id);
+
     res.status(201).json({
       success: true,
       data: savedAnalysis,
       message: "Analysis saved successfully"
     });
   } catch (error) {
-    console.error("Error saving analysis:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Failed to save analysis" 
+    console.error("❌ Error saving analysis:", error);
+    console.error("🔍 Error details:", {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
+
+    // Provide more detailed error information
+    let errorMessage = "Failed to save analysis";
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message).join(', ');
+      errorMessage = `Validation error: ${errors}`;
+    } else if (error.name === 'CastError') {
+      errorMessage = `Data type error: Invalid ${error.path} - expected ${error.kind}`;
+    } else if (error.name === 'MongoError' || error.name === 'MongoServerError') {
+      if (error.code === 11000) {
+        errorMessage = "Duplicate analysis - this location has already been analyzed";
+      } else {
+        errorMessage = `Database error: ${error.message}`;
+      }
+    }
+
+    res.status(error.status || 500).json({
+      success: false,
+      message: errorMessage,
+      ...(process.env.NODE_ENV !== 'production' && {
+        error: error.message,
+        errorName: error.name
+      })
     });
   }
 };
@@ -286,7 +392,7 @@ export const saveAnalysis = async (req, res) => {
 // Get user's saved analyses
 export const getUserAnalyses = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.userId;
     const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
     
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -321,7 +427,7 @@ export const getUserAnalyses = async (req, res) => {
 export const getAnalysisById = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user._id;
+    const userId = req.user.userId;
     
     const analysis = await Analysis.findOne({ _id: id, userId });
     
@@ -349,7 +455,7 @@ export const getAnalysisById = async (req, res) => {
 export const deleteAnalysis = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user._id;
+    const userId = req.user.userId;
     
     const analysis = await Analysis.findOneAndDelete({ _id: id, userId });
     
