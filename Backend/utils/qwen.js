@@ -2,7 +2,7 @@ class QwenService {
   constructor() {
     this.apiKey = process.env.OPENROUTER_API_KEY;
     this.baseUrl = "https://openrouter.ai/api/v1/chat/completions";
-    this.model = "qwen/qwen2.5-vl-32b-instruct:free";
+    this.model = "qwen/qwen2.5-vl-72b-instruct:free";
     this.siteUrl = "http://localhost:3000";
     this.siteName = "Zenium";
   }
