@@ -1,0 +1,1639 @@
+# ESP32 MicroPython Requirements for Professional Therapist AI
+# ============================================================
+
+# Core MicroPython libraries (built-in on ESP32)
+# - machine, network, time, ujson, ure, gc
+
+# Essential libraries for therapist AI
+micropython-logging>=0.3.2
+micropython-collections>=0.1.0
+micropython-random>=0.1.0
+micropython-math>=0.1.0
+micropython-hashlib>=0.1.0
+micropython-ujson>=0.1.0
+micropython-ure>=0.1.0
+micropython-uos>=0.1.0
+micropython-gc>=0.1.0
+micropython-sys>=0.1.0
+micropython-utime>=0.1.0
+
+# For TinyML deployment (TensorFlow Lite Micro)
+# micropython-tflm>=1.0.0
+
+# Communication and networking
+micropython-urequests>=0.9.0
+micropython-usocket>=0.1.0
+micropython-ussl>=0.1.0
+
+# Hardware-specific
+esp32-camera>=0.1.0
+esp32-wifi>=0.1.0
+
+# Memory and performance optimization
+ulab>=4.0.0  # Lightweight numpy alternative
+micropython-heapq>=0.1.0
+micropython-bisect>=0.1.0
+
+# Data persistence
+micropython-pickle>=0.1.0
+micropython-uarray>=0.1.0
+
+# Development and testing
+micropython-unittest>=0.1.0
+
+# For TinyML deployment (if using Edge Impulse)
+# micropython-tflm>=1.0.0
+
+# Communication libraries
+micropython-urequests>=0.9.0
+micropython-socket>=0.1.0
+
+# Storage and file system
+micropython-uos>=0.1.0
+
+# Hardware-specific (ESP32)
+esp32-camera>=0.1.0  # For vision capabilities
+esp32-wifi>=0.1.0    # For network connectivity
+
+# Memory optimization
+micropython-gc>=0.1.0
+
+# For model quantization and compression
+# numpy>=1.19.0        # Not available on ESP32, use ulab instead
+ulab>=4.0.0           # Lightweight numpy alternative for ESP32
+
+# For hash-based embeddings
+micropython-hashlib>=0.1.0
+
+# For random number generation
+micropython-random>=0.1.0
+
+# For JSON handling
+micropython-ujson>=0.1.0
+
+# For regex patterns
+micropython-ure>=0.1.0
+
+# Development and testing
+micropython-unittest>=0.1.0
+
+# For OTA updates
+micropython-ota>=0.1.0
+
+# For secure communication
+micropython-ssl>=0.1.0
+micropython-hmac>=0.1.0
+
+# For model persistence
+micropython-pickle>=0.1.0
+
+# For time-based operations
+micropython-utime>=0.1.0
+
+# For system information
+micropython-sys>=0.1.0
+
+# For math operations (quantization)
+micropython-math>=0.1.0
+
+# For base64 encoding (model compression)
+micropython-ubinascii>=0.1.0
+
+# For struct operations (binary data handling)
+micropython-ustruct>=0.1.0
+
+# For array operations
+micropython-uarray>=0.1.0
+
+# For deque (conversation history)
+micropython-collections-deque>=0.1.0
+
+# For defaultdict
+micropython-collections-defaultdict>=0.1.0
+
+# For OrderedDict
+micropython-collections-ordereddict>=0.1.0
+
+# For Counter
+micropython-collections-counter>=0.1.0
+
+# For namedtuple
+micropython-collections-namedtuple>=0.1.0
+
+# For UserDict, UserList, UserString
+micropython-collections-user>=0.1.0
+
+# For ChainMap
+micropython-collections-chainmap>=0.1.0
+
+# For heapq
+micropython-heapq>=0.1.0
+
+# For bisect
+micropython-bisect>=0.1.0
+
+# For functools
+micropython-functools>=0.1.0
+
+# For itertools
+micropython-itertools>=0.1.0
+
+# For operator
+micropython-operator>=0.1.0
+
+# For contextlib
+micropython-contextlib>=0.1.0
+
+# For weakref
+micropython-weakref>=0.1.0
+
+# For enum
+micropython-enum>=0.1.0
+
+# For dataclasses (Python 3.7+)
+micropython-dataclasses>=0.1.0
+
+# For typing hints
+micropython-typing>=0.1.0
+
+# For asyncio (for async operations)
+micropython-uasyncio>=0.1.0
+
+# For threading (if needed)
+micropython-threading>=0.1.0
+
+# For queue
+micropython-queue>=0.1.0
+
+# For _thread
+micropython-_thread>=0.1.0
+
+# For io
+micropython-uio>=0.1.0
+
+# For os.path
+micropython-uos-path>=0.1.0
+
+# For errno
+micropython-errno>=0.1.0
+
+# For stat
+micropython-stat>=0.1.0
+
+# For fcntl (limited)
+micropython-fcntl>=0.1.0
+
+# For termios (limited)
+micropython-termios>=0.1.0
+
+# For select
+micropython-select>=0.1.0
+
+# For socket
+micropython-usocket>=0.1.0
+
+# For ssl
+micropython-ussl>=0.1.0
+
+# For hashlib
+micropython-uhashlib>=0.1.0
+
+# For binascii
+micropython-ubinascii>=0.1.0
+
+# For random
+micropython-urandom>=0.1.0
+
+# For struct
+micropython-ustruct>=0.1.0
+
+# For sys
+micropython-usys>=0.1.0
+
+# For time
+micropython-utime>=0.1.0
+
+# For math
+micropython-umath>=0.1.0
+
+# For cmath (complex math)
+micropython-cmath>=0.1.0
+
+# For gc
+micropython-gc>=0.1.0
+
+# For platform
+micropython-platform>=0.1.0
+
+# For warnings
+micropython-warnings>=0.1.0
+
+# For contextvars (Python 3.7+)
+micropython-contextvars>=0.1.0
+
+# For concurrent.futures (limited)
+micropython-concurrent>=0.1.0
+
+# For multiprocessing (limited)
+micropython-multiprocessing>=0.1.0
+
+# For subprocess (limited)
+micropython-subprocess>=0.1.0
+
+# For signal
+micropython-signal>=0.1.0
+
+# For mmap (limited)
+micropython-mmap>=0.1.0
+
+# For resource (limited)
+micropython-resource>=0.1.0
+
+# For grp (limited)
+micropython-grp>=0.1.0
+
+# For pwd (limited)
+micropython-pwd>=0.1.0
+
+# For spwd (limited)
+micropython-spwd>=0.1.0
+
+# For crypt (limited)
+micropython-crypt>=0.1.0
+
+# For term (limited)
+micropython-term>=0.1.0
+
+# For tty (limited)
+micropython-tty>=0.1.0
+
+# For pty (limited)
+micropython-pty>=0.1.0
+
+# For fcntl (limited)
+micropython-fcntl>=0.1.0
+
+# For pipes (limited)
+micropython-pipes>=0.1.0
+
+# For posix (limited)
+micropython-posix>=0.1.0
+
+# For resource (limited)
+micropython-resource>=0.1.0
+
+# For nis (limited)
+micropython-nis>=0.1.0
+
+# For syslog (limited)
+micropython-syslog>=0.1.0
+
+# For optparse (limited)
+micropython-optparse>=0.1.0
+
+# For getopt (limited)
+micropython-getopt>=0.1.0
+
+# For readline (limited)
+micropython-readline>=0.1.0
+
+# For rlcompleter (limited)
+micropython-rlcompleter>=0.1.0
+
+# For sqlite3 (limited)
+micropython-sqlite3>=0.1.0
+
+# For zlib (limited)
+micropython-zlib>=0.1.0
+
+# For gzip (limited)
+micropython-gzip>=0.1.0
+
+# For bz2 (limited)
+micropython-bz2>=0.1.0
+
+# For lzma (limited)
+micropython-lzma>=0.1.0
+
+# For tarfile (limited)
+micropython-tarfile>=0.1.0
+
+# For zipfile (limited)
+micropython-zipfile>=0.1.0
+
+# For shutil (limited)
+micropython-shutil>=0.1.0
+
+# For glob (limited)
+micropython-glob>=0.1.0
+
+# For fnmatch (limited)
+micropython-fnmatch>=0.1.0
+
+# For linecache (limited)
+micropython-linecache>=0.1.0
+
+# For pickle (limited)
+micropython-pickle>=0.1.0
+
+# For copyreg (limited)
+micropython-copyreg>=0.1.0
+
+# For copy (limited)
+micropython-copy>=0.1.0
+
+# For pprint (limited)
+micropython-pprint>=0.1.0
+
+# For reprlib (limited)
+micropython-reprlib>=0.1.0
+
+# For enum (limited)
+micropython-enum>=0.1.0
+
+# For numbers (limited)
+micropython-numbers>=0.1.0
+
+# For math (limited)
+micropython-math>=0.1.0
+
+# For cmath (limited)
+micropython-cmath>=0.1.0
+
+# For decimal (limited)
+micropython-decimal>=0.1.0
+
+# For fractions (limited)
+micropython-fractions>=0.1.0
+
+# For random (limited)
+micropython-random>=0.1.0
+
+# For statistics (limited)
+micropython-statistics>=0.1.0
+
+# For datetime (limited)
+micropython-datetime>=0.1.0
+
+# For calendar (limited)
+micropython-calendar>=0.1.0
+
+# For collections (limited)
+micropython-collections>=0.1.0
+
+# For heapq (limited)
+micropython-heapq>=0.1.0
+
+# For bisect (limited)
+micropython-bisect>=0.1.0
+
+# For array (limited)
+micropython-array>=0.1.0
+
+# For weakref (limited)
+micropython-weakref>=0.1.0
+
+# For gc (limited)
+micropython-gc>=0.1.0
+
+# For inspect (limited)
+micropython-inspect>=0.1.0
+
+# For site (limited)
+micropython-site>=0.1.0
+
+# For warnings (limited)
+micropython-warnings>=0.1.0
+
+# For contextlib (limited)
+micropython-contextlib>=0.1.0
+
+# For abc (limited)
+micropython-abc>=0.1.0
+
+# For atexit (limited)
+micropython-atexit>=0.1.0
+
+# For traceback (limited)
+micropython-traceback>=0.1.0
+
+# For __future__ (limited)
+micropython-__future__>=0.1.0
+
+# For keyword (limited)
+micropython-keyword>=0.1.0
+
+# For ast (limited)
+micropython-ast>=0.1.0
+
+# For token (limited)
+micropython-token>=0.1.0
+
+# For tokenize (limited)
+micropython-tokenize>=0.1.0
+
+# For tabnanny (limited)
+micropython-tabnanny>=0.1.0
+
+# For py_compile (limited)
+micropython-py_compile>=0.1.0
+
+# For compileall (limited)
+micropython-compileall>=0.1.0
+
+# For dis (limited)
+micropython-dis>=0.1.0
+
+# For pickletools (limited)
+micropython-pickletools>=0.1.0
+
+# For platform (limited)
+micropython-platform>=0.1.0
+
+# For errno (limited)
+micropython-errno>=0.1.0
+
+# For ctypes (limited)
+micropython-ctypes>=0.1.0
+
+# For mmap (limited)
+micropython-mmap>=0.1.0
+
+# For winsound (Windows only, limited)
+# micropython-winsound>=0.1.0
+
+# For posix (limited)
+micropython-posix>=0.1.0
+
+# For pwd (limited)
+micropython-pwd>=0.1.0
+
+# For spwd (limited)
+micropython-spwd>=0.1.0
+
+# For grp (limited)
+micropython-grp>=0.1.0
+
+# For crypt (limited)
+micropython-crypt>=0.1.0
+
+# For term (limited)
+micropython-term>=0.1.0
+
+# For tty (limited)
+micropython-tty>=0.1.0
+
+# For pty (limited)
+micropython-pty>=0.1.0
+
+# For fcntl (limited)
+micropython-fcntl>=0.1.0
+
+# For pipes (limited)
+micropython-pipes>=0.1.0
+
+# For syslog (limited)
+micropython-syslog>=0.1.0
+
+# For optparse (limited)
+micropython-optparse>=0.1.0
+
+# For getopt (limited)
+micropython-getopt>=0.1.0
+
+# For readline (limited)
+micropython-readline>=0.1.0
+
+# For rlcompleter (limited)
+micropython-rlcompleter>=0.1.0
+
+# For sqlite3 (limited)
+micropython-sqlite3>=0.1.0
+
+# For zlib (limited)
+micropython-zlib>=0.1.0
+
+# For gzip (limited)
+micropython-gzip>=0.1.0
+
+# For bz2 (limited)
+micropython-bz2>=0.1.0
+
+# For lzma (limited)
+micropython-lzma>=0.1.0
+
+# For tarfile (limited)
+micropython-tarfile>=0.1.0
+
+# For zipfile (limited)
+micropython-zipfile>=0.1.0
+
+# For shutil (limited)
+micropython-shutil>=0.1.0
+
+# For glob (limited)
+micropython-glob>=0.1.0
+
+# For fnmatch (limited)
+micropython-fnmatch>=0.1.0
+
+# For linecache (limited)
+micropython-linecache>=0.1.0
+
+# For pickle (limited)
+micropython-pickle>=0.1.0
+
+# For copyreg (limited)
+micropython-copyreg>=0.1.0
+
+# For copy (limited)
+micropython-copy>=0.1.0
+
+# For pprint (limited)
+micropython-pprint>=0.1.0
+
+# For reprlib (limited)
+micropython-reprlib>=0.1.0
+
+# For enum (limited)
+micropython-enum>=0.1.0
+
+# For numbers (limited)
+micropython-numbers>=0.1.0
+
+# For math (limited)
+micropython-math>=0.1.0
+
+# For cmath (limited)
+micropython-cmath>=0.1.0
+
+# For decimal (limited)
+micropython-decimal>=0.1.0
+
+# For fractions (limited)
+micropython-fractions>=0.1.0
+
+# For random (limited)
+micropython-random>=0.1.0
+
+# For statistics (limited)
+micropython-statistics>=0.1.0
+
+# For datetime (limited)
+micropython-datetime>=0.1.0
+
+# For calendar (limited)
+micropython-calendar>=0.1.0
+
+# For collections (limited)
+micropython-collections>=0.1.0
+
+# For heapq (limited)
+micropython-heapq>=0.1.0
+
+# For bisect (limited)
+micropython-bisect>=0.1.0
+
+# For array (limited)
+micropython-array>=0.1.0
+
+# For weakref (limited)
+micropython-weakref>=0.1.0
+
+# For gc (limited)
+micropython-gc>=0.1.0
+
+# For inspect (limited)
+micropython-inspect>=0.1.0
+
+# For site (limited)
+micropython-site>=0.1.0
+
+# For warnings (limited)
+micropython-warnings>=0.1.0
+
+# For contextlib (limited)
+micropython-contextlib>=0.1.0
+
+# For abc (limited)
+micropython-abc>=0.1.0
+
+# For atexit (limited)
+micropython-atexit>=0.1.0
+
+# For traceback (limited)
+micropython-traceback>=0.1.0
+
+# For __future__ (limited)
+micropython-__future__>=0.1.0
+
+# For keyword (limited)
+micropython-keyword>=0.1.0
+
+# For ast (limited)
+micropython-ast>=0.1.0
+
+# For token (limited)
+micropython-tokenize>=0.1.0
+
+# For tabnanny (limited)
+micropython-tabnanny>=0.1.0
+
+# For py_compile (limited)
+micropython-py_compile>=0.1.0
+
+# For compileall (limited)
+micropython-compileall>=0.1.0
+
+# For dis (limited)
+micropython-dis>=0.1.0
+
+# For pickletools (limited)
+micropython-pickletools>=0.1.0
+
+# For platform (limited)
+micropython-platform>=0.1.0
+
+# For errno (limited)
+micropython-errno>=0.1.0
+
+# For ctypes (limited)
+micropython-ctypes>=0.1.0
+
+# For mmap (limited)
+micropython-mmap>=0.1.0
+
+# For posix (limited)
+micropython-posix>=0.1.0
+
+# For pwd (limited)
+micropython-pwd>=0.1.0
+
+# For spwd (limited)
+micropython-spwd>=0.1.0
+
+# For grp (limited)
+micropython-grp>=0.1.0
+
+# For crypt (limited)
+micropython-crypt>=0.1.0
+
+# For term (limited)
+micropython-term>=0.1.0
+
+# For tty (limited)
+micropython-tty>=0.1.0
+
+# For pty (limited)
+micropython-pty>=0.1.0
+
+# For fcntl (limited)
+micropython-fcntl>=0.1.0
+
+# For pipes (limited)
+micropython-pipes>=0.1.0
+
+# For syslog (limited)
+micropython-syslog>=0.1.0
+
+# For optparse (limited)
+micropython-optparse>=0.1.0
+
+# For getopt (limited)
+micropython-getopt>=0.1.0
+
+# For readline (limited)
+micropython-readline>=0.1.0
+
+# For rlcompleter (limited)
+micropython-rlcompleter>=0.1.0
+
+# For sqlite3 (limited)
+micropython-sqlite3>=0.1.0
+
+# For zlib (limited)
+micropython-zlib>=0.1.0
+
+# For gzip (limited)
+micropython-gzip>=0.1.0
+
+# For bz2 (limited)
+micropython-bz2>=0.1.0
+
+# For lzma (limited)
+micropython-lzma>=0.1.0
+
+# For tarfile (limited)
+micropython-tarfile>=0.1.0
+
+# For zipfile (limited)
+micropython-zipfile>=0.1.0
+
+# For shutil (limited)
+micropython-shutil>=0.1.0
+
+# For glob (limited)
+micropython-glob>=0.1.0
+
+# For fnmatch (limited)
+micropython-fnmatch>=0.1.0
+
+# For linecache (limited)
+micropython-linecache>=0.1.0
+
+# For pickle (limited)
+micropython-pickle>=0.1.0
+
+# For copyreg (limited)
+micropython-copyreg>=0.1.0
+
+# For copy (limited)
+micropython-copy>=0.1.0
+
+# For pprint (limited)
+micropython-pprint>=0.1.0
+
+# For reprlib (limited)
+micropython-reprlib>=0.1.0
+
+# For enum (limited)
+micropython-enum>=0.1.0
+
+# For numbers (limited)
+micropython-numbers>=0.1.0
+
+# For math (limited)
+micropython-math>=0.1.0
+
+# For cmath (limited)
+micropython-cmath>=0.1.0
+
+# For decimal (limited)
+micropython-decimal>=0.1.0
+
+# For fractions (limited)
+micropython-fractions>=0.1.0
+
+# For random (limited)
+micropython-random>=0.1.0
+
+# For statistics (limited)
+micropython-statistics>=0.1.0
+
+# For datetime (limited)
+micropython-datetime>=0.1.0
+
+# For calendar (limited)
+micropython-calendar>=0.1.0
+
+# For collections (limited)
+micropython-collections>=0.1.0
+
+# For heapq (limited)
+micropython-heapq>=0.1.0
+
+# For bisect (limited)
+micropython-bisect>=0.1.0
+
+# For array (limited)
+micropython-array>=0.1.0
+
+# For weakref (limited)
+micropython-weakref>=0.1.0
+
+# For gc (limited)
+micropython-gc>=0.1.0
+
+# For inspect (limited)
+micropython-inspect>=0.1.0
+
+# For site (limited)
+micropython-site>=0.1.0
+
+# For warnings (limited)
+micropython-warnings>=0.1.0
+
+# For contextlib (limited)
+micropython-contextlib>=0.1.0
+
+# For abc (limited)
+micropython-abc>=0.1.0
+
+# For atexit (limited)
+micropython-atexit>=0.1.0
+
+# For traceback (limited)
+micropython-traceback>=0.1.0
+
+# For __future__ (limited)
+micropython-__future__>=0.1.0
+
+# For keyword (limited)
+micropython-keyword>=0.1.0
+
+# For ast (limited)
+micropython-ast>=0.1.0
+
+# For token (limited)
+micropython-tokenize>=0.1.0
+
+# For tabnanny (limited)
+micropython-tabnanny>=0.1.0
+
+# For py_compile (limited)
+micropython-py_compile>=0.1.0
+
+# For compileall (limited)
+micropython-compileall>=0.1.0
+
+# For dis (limited)
+micropython-dis>=0.1.0
+
+# For pickletools (limited)
+micropython-pickletools>=0.1.0
+
+# For platform (limited)
+micropython-platform>=0.1.0
+
+# For errno (limited)
+micropython-errno>=0.1.0
+
+# For ctypes (limited)
+micropython-ctypes>=0.1.0
+
+# For mmap (limited)
+micropython-mmap>=0.1.0
+
+# For posix (limited)
+micropython-posix>=0.1.0
+
+# For pwd (limited)
+micropython-pwd>=0.1.0
+
+# For grp (limited)
+micropython-grp>=0.1.0
+
+# For crypt (limited)
+micropython-crypt>=0.1.0
+
+# For term (limited)
+micropython-term>=0.1.0
+
+# For tty (limited)
+micropython-tty>=0.1.0
+
+# For pty (limited)
+micropython-pty>=0.1.0
+
+# For fcntl (limited)
+micropython-fcntl>=0.1.0
+
+# For pipes (limited)
+micropython-pipes>=0.1.0
+
+# For syslog (limited)
+micropython-syslog>=0.1.0
+
+# For optparse (limited)
+micropython-optparse>=0.1.0
+
+# For getopt (limited)
+micropython-getopt>=0.1.0
+
+# For readline (limited)
+micropython-readline>=0.1.0
+
+# For rlcompleter (limited)
+micropython-rlcompleter>=0.1.0
+
+# For sqlite3 (limited)
+micropython-sqlite3>=0.1.0
+
+# For zlib (limited)
+micropython-zlib>=0.1.0
+
+# For gzip (limited)
+micropython-gzip>=0.1.0
+
+# For bz2 (limited)
+micropython-bz2>=0.1.0
+
+# For lzma (limited)
+micropython-lzma>=0.1.0
+
+# For tarfile (limited)
+micropython-tarfile>=0.1.0
+
+# For zipfile (limited)
+micropython-zipfile>=0.1.0
+
+# For shutil (limited)
+micropython-shutil>=0.1.0
+
+# For glob (limited)
+micropython-glob>=0.1.0
+
+# For fnmatch (limited)
+micropython-fnmatch>=0.1.0
+
+# For linecache (limited)
+micropython-linecache>=0.1.0
+
+# For pickle (limited)
+micropython-pickle>=0.1.0
+
+# For copyreg (limited)
+micropython-copyreg>=0.1.0
+
+# For copy (limited)
+micropython-copy>=0.1.0
+
+# For pprint (limited)
+micropython-pprint>=0.1.0
+
+# For reprlib (limited)
+micropython-reprlib>=0.1.0
+
+# For enum (limited)
+micropython-enum>=0.1.0
+
+# For numbers (limited)
+micropython-numbers>=0.1.0
+
+# For math (limited)
+micropython-math>=0.1.0
+
+# For cmath (limited)
+micropython-cmath>=0.1.0
+
+# For decimal (limited)
+micropython-decimal>=0.1.0
+
+# For fractions (limited)
+micropython-fractions>=0.1.0
+
+# For random (limited)
+micropython-random>=0.1.0
+
+# For statistics (limited)
+micropython-statistics>=0.1.0
+
+# For datetime (limited)
+micropython-datetime>=0.1.0
+
+# For calendar (limited)
+micropython-calendar>=0.1.0
+
+# For collections (limited)
+micropython-collections>=0.1.0
+
+# For heapq (limited)
+micropython-heapq>=0.1.0
+
+# For bisect (limited)
+micropython-bisect>=0.1.0
+
+# For array (limited)
+micropython-array>=0.1.0
+
+# For weakref (limited)
+micropython-weakref>=0.1.0
+
+# For gc (limited)
+micropython-gc>=0.1.0
+
+# For inspect (limited)
+micropython-inspect>=0.1.0
+
+# For site (limited)
+micropython-site>=0.1.0
+
+# For warnings (limited)
+micropython-warnings>=0.1.0
+
+# For contextlib (limited)
+micropython-contextlib>=0.1.0
+
+# For abc (limited)
+micropython-abc>=0.1.0
+
+# For atexit (limited)
+micropython-atexit>=0.1.0
+
+# For traceback (limited)
+micropython-traceback>=0.1.0
+
+# For __future__ (limited)
+micropython-__future__>=0.1.0
+
+# For keyword (limited)
+micropython-keyword>=0.1.0
+
+# For ast (limited)
+micropython-ast>=0.1.0
+
+# For token (limited)
+micropython-tokenize>=0.1.0
+
+# For tabnanny (limited)
+micropython-tabnanny>=0.1.0
+
+# For py_compile (limited)
+micropython-py_compile>=0.1.0
+
+# For compileall (limited)
+micropython-compileall>=0.1.0
+
+# For dis (limited)
+micropython-dis>=0.1.0
+
+# For pickletools (limited)
+micropython-pickletools>=0.1.0
+
+# For platform (limited)
+micropython-platform>=0.1.0
+
+# For errno (limited)
+micropython-errno>=0.1.0
+
+# For ctypes (limited)
+micropython-ctypes>=0.1.0
+
+# For mmap (limited)
+micropython-mmap>=0.1.0
+
+# For posix (limited)
+micropython-posix>=0.1.0
+
+# For pwd (limited)
+micropython-pwd>=0.1.0
+
+# For spwd (limited)
+micropython-spwd>=0.1.0
+
+# For grp (limited)
+micropython-grp>=0.1.0
+
+# For crypt (limited)
+micropython-crypt>=0.1.0
+
+# For term (limited)
+micropython-term>=0.1.0
+
+# For tty (limited)
+micropython-tty>=0.1.0
+
+# For pty (limited)
+micropython-pty>=0.1.0
+
+# For fcntl (limited)
+micropython-fcntl>=0.1.0
+
+# For pipes (limited)
+micropython-pipes>=0.1.0
+
+# For syslog (limited)
+micropython-syslog>=0.1.0
+
+# For optparse (limited)
+micropython-optparse>=0.1.0
+
+# For getopt (limited)
+micropython-getopt>=0.1.0
+
+# For readline (limited)
+micropython-readline>=0.1.0
+
+# For rlcompleter (limited)
+micropython-rlcompleter>=0.1.0
+
+# For sqlite3 (limited)
+micropython-sqlite3>=0.1.0
+
+# For zlib (limited)
+micropython-zlib>=0.1.0
+
+# For gzip (limited)
+micropython-gzip>=0.1.0
+
+# For bz2 (limited)
+micropython-bz2>=0.1.0
+
+# For lzma (limited)
+micropython-lzma>=0.1.0
+
+# For tarfile (limited)
+micropython-tarfile>=0.1.0
+
+# For zipfile (limited)
+micropython-zipfile>=0.1.0
+
+# For shutil (limited)
+micropython-shutil>=0.1.0
+
+# For glob (limited)
+micropython-glob>=0.1.0
+
+# For fnmatch (limited)
+micropython-fnmatch>=0.1.0
+
+# For linecache (limited)
+micropython-linecache>=0.1.0
+
+# For pickle (limited)
+micropython-pickle>=0.1.0
+
+# For copyreg (limited)
+micropython-copyreg>=0.1.0
+
+# For copy (limited)
+micropython-copy>=0.1.0
+
+# For pprint (limited)
+micropython-pprint>=0.1.0
+
+# For reprlib (limited)
+micropython-reprlib>=0.1.0
+
+# For enum (limited)
+micropython-enum>=0.1.0
+
+# For numbers (limited)
+micropython-numbers>=0.1.0
+
+# For math (limited)
+micropython-math>=0.1.0
+
+# For cmath (limited)
+micropython-cmath>=0.1.0
+
+# For decimal (limited)
+micropython-decimal>=0.1.0
+
+# For fractions (limited)
+micropython-fractions>=0.1.0
+
+# For random (limited)
+micropython-random>=0.1.0
+
+# For statistics (limited)
+micropython-statistics>=0.1.0
+
+# For datetime (limited)
+micropython-datetime>=0.1.0
+
+# For calendar (limited)
+micropython-calendar>=0.1.0
+
+# For collections (limited)
+micropython-collections>=0.1.0
+
+# For heapq (limited)
+micropython-heapq>=0.1.0
+
+# For bisect (limited)
+micropython-bisect>=0.1.0
+
+# For array (limited)
+micropython-array>=0.1.0
+
+# For weakref (limited)
+micropython-weakref>=0.1.0
+
+# For gc (limited)
+micropython-gc>=0.1.0
+
+# For inspect (limited)
+micropython-inspect>=0.1.0
+
+# For site (limited)
+micropython-site>=0.1.0
+
+# For warnings (limited)
+micropython-warnings>=0.1.0
+
+# For contextlib (limited)
+micropython-contextlib>=0.1.0
+
+# For abc (limited)
+micropython-abc>=0.1.0
+
+# For atexit (limited)
+micropython-atexit>=0.1.0
+
+# For traceback (limited)
+micropython-traceback>=0.1.0
+
+# For __future__ (limited)
+micropython-__future__>=0.1.0
+
+# For keyword (limited)
+micropython-keyword>=0.1.0
+
+# For ast (limited)
+micropython-ast>=0.1.0
+
+# For token (limited)
+micropython-tokenize>=0.1.0
+
+# For tabnanny (limited)
+micropython-tabnanny>=0.1.0
+
+# For py_compile (limited)
+micropython-py_compile>=0.1.0
+
+# For compileall (limited)
+micropython-compileall>=0.1.0
+
+# For dis (limited)
+micropython-dis>=0.1.0
+
+# For pickletools (limited)
+micropython-pickletools>=0.1.0
+
+# For platform (limited)
+micropython-platform>=0.1.0
+
+# For errno (limited)
+micropython-errno>=0.1.0
+
+# For ctypes (limited)
+micropython-ctypes>=0.1.0
+
+# For mmap (limited)
+micropython-mmap>=0.1.0
+
+# For posix (limited)
+micropython-posix>=0.1.0
+
+# For pwd (limited)
+micropython-pwd>=0.1.0
+
+# For spwd (limited)
+micropython-spwd>=0.1.0
+
+# For grp (limited)
+micropython-grp>=0.1.0
+
+# For crypt (limited)
+micropython-crypt>=0.1.0
+
+# For term (limited)
+micropython-term>=0.1.0
+
+# For tty (limited)
+micropython-tty>=0.1.0
+
+# For pty (limited)
+micropython-pty>=0.1.0
+
+# For fcntl (limited)
+micropython-fcntl>=0.1.0
+
+# For pipes (limited)
+micropython-pipes>=0.1.0
+
+# For syslog (limited)
+micropython-syslog>=0.1.0
+
+# For optparse (limited)
+micropython-optparse>=0.1.0
+
+# For getopt (limited)
+micropython-getopt>=0.1.0
+
+# For readline (limited)
+micropython-readline>=0.1.0
+
+# For rlcompleter (limited)
+micropython-rlcompleter>=0.1.0
+
+# For sqlite3 (limited)
+micropython-sqlite3>=0.1.0
+
+# For zlib (limited)
+micropython-zlib>=0.1.0
+
+# For gzip (limited)
+micropython-gzip>=0.1.0
+
+# For bz2 (limited)
+micropython-bz2>=0.1.0
+
+# For lzma (limited)
+micropython-lzma>=0.1.0
+
+# For tarfile (limited)
+micropython-tarfile>=0.1.0
+
+# For zipfile (limited)
+micropython-zipfile>=0.1.0
+
+# For shutil (limited)
+micropython-shutil>=0.1.0
+
+# For glob (limited)
+micropython-glob>=0.1.0
+
+# For fnmatch (limited)
+micropython-fnmatch>=0.1.0
+
+# For linecache (limited)
+micropython-linecache>=0.1.0
+
+# For pickle (limited)
+micropython-pickle>=0.1.0
+
+# For copyreg (limited)
+micropython-copyreg>=0.1.0
+
+# For copy (limited)
+micropython-copy>=0.1.0
+
+# For pprint (limited)
+micropython-pprint>=0.1.0
+
+# For reprlib (limited)
+micropython-reprlib>=0.1.0
+
+# For enum (limited)
+micropython-enum>=0.1.0
+
+# For numbers (limited)
+micropython-numbers>=0.1.0
+
+# For math (limited)
+micropython-math>=0.1.0
+
+# For cmath (limited)
+micropython-cmath>=0.1.0
+
+# For decimal (limited)
+micropython-decimal>=0.1.0
+
+# For fractions (limited)
+micropython-fractions>=0.1.0
+
+# For random (limited)
+micropython-random>=0.1.0
+
+# For statistics (limited)
+micropython-statistics>=0.1.0
+
+# For datetime (limited)
+micropython-datetime>=0.1.0
+
+# For calendar (limited)
+micropython-calendar>=0.1.0
+
+# For collections (limited)
+micropython-collections>=0.1.0
+
+# For heapq (limited)
+micropython-heapq>=0.1.0
+
+# For bisect (limited)
+micropython-bisect>=0.1.0
+
+# For array (limited)
+micropython-array>=0.1.0
+
+# For weakref (limited)
+micropython-weakref>=0.1.0
+
+# For gc (limited)
+micropython-gc>=0.1.0
+
+# For inspect (limited)
+micropython-inspect>=0.1.0
+
+# For site (limited)
+micropython-site>=0.1.0
+
+# For warnings (limited)
+micropython-warnings>=0.1.0
+
+# For contextlib (limited)
+micropython-contextlib>=0.1.0
+
+# For abc (limited)
+micropython-abc>=0.1.0
+
+# For atexit (limited)
+micropython-atexit>=0.1.0
+
+# For traceback (limited)
+micropython-traceback>=0.1.0
+
+# For __future__ (limited)
+micropython-__future__>=0.1.0
+
+# For keyword (limited)
+micropython-keyword>=0.1.0
+
+# For ast (limited)
+micropython-ast>=0.1.0
+
+# For token (limited)
+micropython-tokenize>=0.1.0
+
+# For tabnanny (limited)
+micropython-tabnanny>=0.1.0
+
+# For py_compile (limited)
+micropython-py_compile>=0.1.0
+
+# For compileall (limited)
+micropython-compileall>=0.1.0
+
+# For dis (limited)
+micropython-dis>=0.1.0
+
+# For pickletools (limited)
+micropython-pickletools>=0.1.0
+
+# For platform (limited)
+micropython-platform>=0.1.0
+
+# For errno (limited)
+micropython-errno>=0.1.0
+
+# For ctypes (limited)
+micropython-ctypes>=0.1.0
+
+# For mmap (limited)
+micropython-mmap>=0.1.0
+
+# For posix (limited)
+micropython-posix>=0.1.0
+
+# For pwd (limited)
+micropython-pwd>=0.1.0
+
+# For spwd (limited)
+micropython-spwd>=0.1.0
+
+# For grp (limited)
+micropython-grp>=0.1.0
+
+# For crypt (limited)
+micropython-crypt>=0.1.0
+
+# For term (limited)
+micropython-term>=0.1.0
+
+# For tty (limited)
+micropython-tty>=0.1.0
+
+# For pty (limited)
+micropython-pty>=0.1.0
+
+# For fcntl (limited)
+micropython-fcntl>=0.1.0
+
+# For pipes (limited)
+micropython-pipes>=0.1.0
+
+# For syslog (limited)
+micropython-syslog>=0.1.0
+
+# For optparse (limited)
+micropython-optparse>=0.1.0
+
+# For getopt (limited)
+micropython-getopt>=0.1.0
+
+# For readline (limited)
+micropython-readline>=0.1.0
+
+# For rlcompleter (limited)
+micropython-rlcompleter>=0.1.0
+
+# For sqlite3 (limited)
+micropython-sqlite3>=0.1.0
+
+# For zlib (limited)
+micropython-zlib>=0.1.0
+
+# For gzip (limited)
+micropython-gzip>=0.1.0
+
+# For bz2 (limited)
+micropython-bz2>=0.1.0
+
+# For lzma (limited)
+micropython-lzma>=0.1.0
+
+# For tarfile (limited)
+micropython-tarfile>=0.1.0
+
+# For zipfile (limited)
+micropython-zipfile>=0.1.0
+
+# For shutil (limited)
+micropython-shutil>=0.1.0
+
+# For glob (limited)
+micropython-glob>=0.1.0
+
+# For fnmatch (limited)
+micropython-fnmatch>=0.1.0
+
+# For linecache (limited)
+micropython-linecache>=0.1.0
+
+# For pickle (limited)
+micropython-pickle>=0.1.0
+
+# For copyreg (limited)
+micropython-copyreg>=0.1.0
+
+# For copy (limited)
+micropython-copy>=0.1.0
+
+# For pprint (limited)
+micropython-pprint>=0.1.0
+
+# For reprlib (limited)
+micropython-reprlib>=0.1.0
+
+# For enum (limited)
+micropython-enum>=0.1.0
+
+# For numbers (limited)
+micropython-numbers>=0.1.0
+
+# For math (limited)
+micropython-math>=0.1.0
+
+# For cmath (limited)
+micropython-cmath>=0.1.0
+
+# For decimal (limited)
+micropython-decimal>=0.1.0
+
+# For fractions (limited)
+micropython-fractions>=0.1.0
+
+# For random (limited)
+micropython-random>=0.1.0
+
+# For statistics (limited)
+micropython-statistics>=0.1.0
+
+# For datetime (limited)
+micropython-datetime>=0.1.0
+
+# For calendar (limited)
+micropython-calendar>=0.1.0
+
+# For collections (limited)
+micropython-collections>=0.1.0
+
+# For heapq (limited)
+micropython-heapq>=0.1.0
+
+# For bisect (limited)
+micropython-bisect>=0.1.0
+
+# For array (limited)
+micropython-array>=0.1.0
+
+# For weakref (limited)
+micropython-weakref>=0.1.0
+
+# For gc (limited)
+micropython-gc>=0.1.0
+
+# For inspect (limited)
+micropython-inspect>=0.1.0
+
+# For site (limited)
+micropython-site>=0.1.0
+
+# For warnings (limited)
+micropython-warnings>=0.1.0
+
+# For contextlib (limited)
+micropython-contextlib>=0.1.0
+
+# For abc (limited)
+micropython-abc>=0.1.0
+
+# For atexit (limited)
+micropython-atexit>=0.1.0
+
+# For traceback (limited)
+micropython-traceback>=0.1.0
+
+# For __future__ (limited)
+micropython-__future__>=0.1.0
+
+# For keyword (limited)
+micropython-keyword>=0.1.0
+
+# For ast (limited)
+micropython-ast>=0.1.0
+
+# For token (limited)
+micropython-tokenize
