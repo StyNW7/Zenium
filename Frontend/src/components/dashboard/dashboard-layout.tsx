@@ -33,7 +33,7 @@ import { useLocation, useNavigate } from "react-router"
 import { useAuth } from "@/contexts/authcontext"
 
 const sidebarItems = [
-  { icon: HomeIcon, label: "MainPage", href: "/main" },
+  { icon: HomeIcon, label: "Home", href: "/main" },
   { icon: ChartArea, label: "Overview", href: "/dashboard" },
   { icon: Bot, label: "Melify", href: "/dashboard/melify" },
   { icon: Heart, label: "Mood Tracker", href: "/dashboard/mood" },
@@ -197,7 +197,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     My Account
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-gray-700" />
-                  <DropdownMenuItem className="text-gray-300 hover:bg-gray-800" onClick={() => navigate("/profile")}>
+                  <DropdownMenuItem className="text-gray-300 hover:bg-gray-800" onClick={() => navigate("/dashboard/profile")}>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Profile Settings</span>
                   </DropdownMenuItem>
