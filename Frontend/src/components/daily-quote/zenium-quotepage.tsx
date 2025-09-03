@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, RefreshCw, Calendar, User, Clock, Trash2, VolumeX, Pause, Play, Brain } from 'lucide-react';
-import axios from 'axios';
 import { useAuth } from '@/contexts/authcontext';
+import Swal from 'sweetalert2';
+import axios from 'axios';
 
 interface Quote {
   id?: string;
@@ -12,6 +13,7 @@ interface Quote {
   category?: string;
   generatedAt: Date | string;
   isAiGenerated: boolean;
+  isInUserHistory?: boolean;
 }
 
 interface ApiQuoteData {
@@ -31,6 +33,7 @@ export function ZeniumQuotePage() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [quotes, setQuotes] = useState<ApiQuoteData[]>([]);
   const [quotesLoading, setQuotesLoading] = useState<boolean>(false);
+
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -42,30 +45,41 @@ export function ZeniumQuotePage() {
 
   const fetchDailyQuote = async (forceNew = false) => {
     try {
-      setLoading(true);
+      // Don't set loading on refresh, only on initial load
+      if (!forceNew) setLoading(true);
       if (forceNew) setRefreshing(true);
+
+      console.log('🔮 Fetching quote from collection...', { forceNew });
 
       const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
       const token = localStorage.getItem('authToken') || localStorage.getItem('token');
 
+      // Call backend API for quote from JSON collection
       const response = await axios.get(`${apiUrl}/daily-quote`, {
-        params: { forceNew, mood: '', activity: '' },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        params: forceNew ? { forceNew: true } : {},
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
 
-      setQuote(response.data.data);
-    } catch (err) {
-      console.error('Error fetching quote:', err);
-      // Use a gentle fallback if API fails (no error UI)
-      setQuote({
-        quote: "Every day is a new opportunity to become the best version of yourself.",
-        author: "Zenium AI",
-        explanation: "Remember that each day brings new opportunities for growth, healing, and happiness.",
-        generatedAt: new Date().toISOString(),
-        isAiGenerated: true
-      });
+      if (response.data.success) {
+        const quoteData = {
+          id: response.data.data._id || response.data.data.id,
+          quote: response.data.data.quote,
+          author: response.data.data.author,
+          explanation: response.data.data.explanation,
+          category: response.data.data.category,
+          generatedAt: response.data.data.generatedAt,
+          isAiGenerated: response.data.data.isAiGenerated
+        };
+
+        console.log('✅ Quote received from collection:', quoteData);
+        setQuote(quoteData);
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch quote');
+      }
+    } catch (error) {
+      console.error('❌ Error fetching quote:', error);
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to load quote from collection';
+      Swal.fire('Error', errorMessage, 'error');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -77,29 +91,26 @@ export function ZeniumQuotePage() {
       setQuotesLoading(true);
       const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
       const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+
+      if (!token) {
+        setQuotesLoading(false);
+        return false;
+      }
+
       const resp = await axios.get(`${apiUrl}/quotes`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { page: 1, limit: 10 }
       });
       const items = resp.data?.data?.quotes || [];
+
+      // Only set the quotes history, don't replace the main quote display
       setQuotes(items);
-      if (items.length > 0) {
-        const top = items[0];
-        setQuote({
-          id: top._id || top.id,
-          quote: top.quote,
-          author: top.author,
-          explanation: top.explanation,
-          category: top.category,
-          generatedAt: top.generatedAt,
-          isAiGenerated: top.isAiGenerated,
-        });
-        return true;
-      }
-      return false;
+      setQuotesLoading(false);
+
+      return items.length > 0;
     } catch (error) {
       console.error('Error fetching user quotes:', error);
-      // ignore and fallback to daily quote
+      setQuotes([]); // Set empty array on error
       return false;
     } finally {
       setQuotesLoading(false);
@@ -108,12 +119,11 @@ export function ZeniumQuotePage() {
 
   useEffect(() => {
     (async () => {
-      const hasPersonal = await fetchUserQuotes();
-      if (!hasPersonal) {
-        await fetchDailyQuote();
-      } else {
-        setLoading(false);
-      }
+      // Always start with a fresh random quote
+      await fetchDailyQuote();
+      // Load user's quote history in background (but don't replace the main quote)
+      await fetchUserQuotes();
+      // Already set loading to false in fetchDailyQuote
     })();
   }, []);
 
@@ -181,23 +191,44 @@ export function ZeniumQuotePage() {
     }
   };
 
-  const handleRefresh = () => {
-    fetchDailyQuote(true);
+  const handleRefresh = async () => {
+    console.log('🔮 Getting new quote from collection...');
+
+    try {
+      await fetchDailyQuote(true);
+      console.log('✅ New quote loaded from collection');
+    } catch (error) {
+      console.error('❌ Error getting new quote:', error);
+      await Swal.fire('Error', 'Failed to load new quote. Please try again.', 'error');
+    }
   };
 
   const deleteQuoteById = async (id: string) => {
     try {
+      // Check if this is a temporary quote (not in database)
+      if (id && id.startsWith('temp-')) {
+        console.log(`Skipping delete for temporary quote: ${id}`);
+        // Remove from frontend state only
+        setQuotes(prev => prev.filter((q) => (q._id || q.id) !== id));
+        return;
+      }
+
       const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
       const token = localStorage.getItem('authToken') || localStorage.getItem('token');
       await axios.delete(`${apiUrl}/quotes/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setQuotes(prev => prev.filter((q: ApiQuoteData) => (q._id || q.id) !== id));
+      setQuotes(prev => prev.filter((q) => (q._id || q.id) !== id));
       if (quote && (quote.id === id)) {
         setQuote(null);
       }
-    } catch (e) {
-      console.error('Delete quote failed', e);
+    } catch (error) {
+      console.error('Delete quote failed', error);
+      // If delete fails, just remove from frontend state anyway
+      if ((error as any)?.response?.status === 404) {
+        console.log(`Quote ${id} already deleted or doesn't exist, removing from UI`);
+        setQuotes(prev => prev.filter((q) => (q._id || q.id) !== id));
+      }
     }
   };
 
@@ -208,6 +239,23 @@ export function ZeniumQuotePage() {
       month: 'long',
       year: 'numeric',
     }).format(date);
+  };
+
+  const fallbackShare = async (quoteText: string) => {
+    try {
+      await navigator.clipboard.writeText(`${quoteText}\n\nShared from Zenium Daily Quotes`);
+      await Swal.fire('Copied!', 'Quote copied to clipboard.', 'success');
+    } catch (error) {
+      console.error('Clipboard failed:', error);
+      // Fallback: prompt user to copy manually
+      Swal.fire({
+        title: 'Copy this quote',
+        html: `<p class="text-left mb-3">Copy the text below to share:</p>
+               <textarea readonly rows="4" class="w-full bg-gray-800 text-white border border-gray-600 rounded p-2 text-sm mb-0">${quoteText}\n\nShared from Zenium Daily Quotes</textarea>`,
+        showConfirmButton: true,
+        confirmButtonText: 'Close'
+      });
+    }
   };
 
   return (
@@ -262,14 +310,109 @@ export function ZeniumQuotePage() {
                     <Calendar className="w-4 h-4 mr-2" />
                     <span>{quote?.generatedAt ? formatDate(quote.generatedAt) : 'Today'}</span>
                   </div>
-                  <button
-                    onClick={handleRefresh}
-                    disabled={refreshing}
-                    className={`p-2 rounded-full ${refreshing ? 'bg-yellow-500/5 text-gray-500' : 'bg-yellow-500/10 hover:bg-yellow-500/20'} transition-colors duration-300`}
-                    title="Generate new quote"
-                  >
-                    <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {/* Save Quote - Available for all quotes but replaces existing saved quote */}
+                    <button
+                      onClick={async () => {
+                        const result = await Swal.fire({
+                          title: 'Save this quote?',
+                          text: 'This will save the quote to your personal collection.',
+                          icon: 'question',
+                          showCancelButton: true,
+                          confirmButtonText: 'Save',
+                          cancelButtonText: 'Cancel'
+                        });
+
+                        if (result.isConfirmed) {
+                          try {
+                            const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+                            const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+
+                            await axios.post(`${apiUrl}/user-quotes`, {
+                              quote: quote.quote,
+                              author: quote.author,
+                              explanation: quote.explanation,
+                              source: 'Quote Page Save'
+                            }, {
+                              headers: { Authorization: `Bearer ${token}` }
+                            });
+
+                            await Swal.fire('Saved!', 'Your quote has been saved successfully!', 'success');
+                            await fetchUserQuotes(); // Refresh saved quotes
+
+                          } catch (error) {
+                            console.error('Save quote failed:', error);
+                            Swal.fire('Error', 'Failed to save quote.', 'error');
+                          }
+                        }
+                      }}
+                      className="p-2 rounded-full bg-green-500/10 hover:bg-green-500/20 transition-colors duration-300"
+                      title="Save quote to collection"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a3.307 3.307 0 0 0-2.933.133L7 5.293a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3l2.067-.133a3.307 3.307 0 0 0 2.933.133L12 18.646l2.067 1.188a3.307 3.307 0 0 0 2.933-.133L19 19.424a3 3 0 0 0 3-3V8.293a3 3 0 0 0-3-3l-2.067.133a3.307 3.307 0 0 0-2.933-.133L12 4.354z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
+                      </svg>
+                    </button>
+
+                    {/* Share Quote */}
+                    <button
+                      onClick={async () => {
+                        const quoteText = `"${quote.quote}" - ${quote.author || 'Unknown'}`;
+
+                        if (navigator.share) {
+                          try {
+                            await navigator.share({
+                              title: 'Inspiring Quote',
+                              text: quoteText,
+                              url: window.location.href
+                            });
+                          } catch (error) {
+                            if ((error as Error).name !== 'AbortError') {
+                              console.error('Share failed:', error);
+                              fallbackShare(quoteText);
+                            }
+                          }
+                        } else {
+                          fallbackShare(quoteText);
+                        }
+                      }}
+                      className="p-2 rounded-full bg-blue-500/10 hover:bg-blue-500/20 transition-colors duration-300"
+                      title="Share quote"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                      </svg>
+                    </button>
+
+                    {/* Get New Quote */}
+                    <button
+                      onClick={handleRefresh}
+                      disabled={refreshing}
+                      className={`px-3 py-2 rounded-lg font-medium text-sm ${
+                        refreshing
+                          ? 'bg-yellow-500/20 text-gray-400 cursor-not-allowed'
+                          : 'bg-yellow-500 hover:bg-yellow-400 text-black shadow-lg hover:shadow-xl'
+                      } transition-all duration-300 transform hover:scale-105`}
+                      title={
+                        refreshing
+                          ? "Loading new quote..."
+                          : "Get a new inspirational quote from our collection"
+                      }
+                    >
+                      {refreshing ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 animate-spin mr-2 inline-block" />
+                          Loading...
+                        </>
+                      ) : (
+                        <>
+                          Get New Quote
+                          <RefreshCw className="w-4 h-4 ml-2 inline-block" />
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mb-6">
@@ -357,7 +500,7 @@ export function ZeniumQuotePage() {
                 <div className="text-gray-500 text-sm">No quotes yet.</div>
               ) : (
                 <div className="space-y-2">
-                  {quotes.map((q: ApiQuoteData) => (
+                  {quotes.map((q) => (
                     <div key={q._id || q.id} className="flex items-start justify-between bg-gray-800/40 rounded-md p-3">
                       <div>
                         <div className="text-yellow-100 text-sm italic">"{q.quote}"</div>
@@ -375,8 +518,9 @@ export function ZeniumQuotePage() {
 
           {/* Additional Info */}
           <div className="mt-8 text-center text-gray-400 text-sm">
-            <p>New motivational quotes will be available every 24 hours.</p>
-            <p className="mt-2">Created with AI to provide motivation tailored to your needs.</p>
+            <p className="mb-2">✨ Click "Get New Quote" to discover inspirational quotes from our curated collection!</p>
+            <p>Carefully selected quotes from philosophers, authors, and thought leaders.</p>
+            <p className="mt-1 text-xs text-gray-500">180+ quotes across 20+ categories - always something meaningful to discover</p>
           </div>
         </div>
       </div>

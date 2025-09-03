@@ -7,7 +7,7 @@ import {
   resetPassword,
 } from "../controllers/auth.controller.js";
 import { getUserProfile, updateUserProfile, updateUserPassword, uploadProfilePhoto } from "../controllers/user.controller.js";
-import { getDailyQuote, getUserDailyQuotes, deleteQuote } from "../controllers/dailyQuote.controller.js";
+import { getDailyQuote, getUserDailyQuotes, deleteQuote, createUserQuote } from "../controllers/dailyQuote.controller.js";
 import uploadPdf from "../middleware/uploadPdf.js";
 import { uploadJournalPdf, analyzePdfAndGenerateQuote, getPdfHistory } from "../controllers/journal.controller.js";
 import {
@@ -42,6 +42,7 @@ import {
 import { authenticate } from "../middleware/authMiddleware.js";
 import upload from "../middleware/upload.js";
 import { chatWithAI } from "../controllers/chatbot.controller.js";
+import { verifyToken } from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
@@ -50,14 +51,17 @@ router.post("/auth/login", loginUser);
 router.put("/auth/change-password/:id", changePassword);
 router.post("/auth/forgot-password", forgotPassword);
 router.post("/auth/reset-password", resetPassword);
+router.get("/auth/verify", authenticate, verifyToken);
 
 router.get("/user/profile", authenticate, getUserProfile);
 router.put("/user/profile", authenticate, updateUserProfile);
 router.put("/change-password", authenticate, updateUserPassword);
 router.post("/user/upload-profile-photo", authenticate, upload.single('profilePhoto'), uploadProfilePhoto);
 
-router.get('/daily-quote', authenticate, getDailyQuote);
+// Daily quote routes - allow guest access for basic quote
+router.get('/daily-quote', getDailyQuote);
 router.get('/quotes', authenticate, getUserDailyQuotes);
+router.post('/user-quotes', authenticate, createUserQuote);
 router.delete('/quotes/:id', authenticate, deleteQuote);
 
 // Journal routes

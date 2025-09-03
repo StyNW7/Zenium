@@ -120,50 +120,84 @@ class AIWorkflowService {
     return Math.min(1, Math.max(0, Number(riskScore.toFixed(2))));
   }
 
-  // Generate personalized quote based on journal content
+  // Generate personalized quote based on mock data (no Qwen)
   async generatePersonalizedQuote(content, analysis, mood) {
     try {
-      const quotePrompt = `You are a compassionate AI coach. Create a motivational quote (1-2 sentences) that is:
-      1. Personalized to this journal content: "${content.substring(0, 500)}"
-      2. Appropriate for someone feeling ${mood}
-      3. Empathetic and supportive
-      4. Actionable and encouraging
-      
-      Return JSON: {"quote": "string", "explanation": "string", "author": "Qwen Coach", "category": "personalized"}`;
+      // Import and use DailyQuoteService to get mock data quotes
+      const dailyQuoteService = (await import('../services/dailyQuoteService.js')).default;
 
-      const response = await this.qwenService.makeRequest([{
-        role: 'user',
-        content: [{ type: 'text', text: quotePrompt }]
-      }]);
+      // Get all available quotes
+      const allQuotes = dailyQuoteService.allQuotes || [];
 
-      let quoteData = {};
-      try {
-        const jsonMatch = response.match(/\{[\s\S]*\}/);
-        if (jsonMatch) quoteData = JSON.parse(jsonMatch[0]);
-      } catch {}
-
-      if (!quoteData.quote) {
-        // Fallback to general quote
-        const fallback = await this.qwenService.generateDailyQuote();
-        quoteData = {
-          quote: fallback.quote,
-          explanation: fallback.explanation,
-          author: fallback.author,
-          category: 'fallback'
+      if (!allQuotes.length) {
+        // Fallback: return a basic quote if no mock data is available
+        return {
+          quote: "Take one step at a time towards your goals.",
+          explanation: "Every journey begins with a single step. Progress happens gradually.",
+          author: "Ancient Wisdom",
+          category: 'personalized',
+          moodContext: mood,
+          activityContext: 'journaling'
         };
       }
 
+      // Select a quote based on mood and analysis
+      let selectedQuote;
+
+      // Priority 1: Try to match by category based on mood
+      const moodCategoryMap = {
+        'sad': ['motivation', 'positivity', 'gratitude', 'resilience'],
+        'happy': ['gratitude', 'positivity', 'mindfulness'],
+        'anxious': ['mindfulness', 'peace', 'calm'],
+        'angry': ['positivity', 'mindfulness', 'resilience'],
+        'stressed': ['mindfulness', 'peace', 'productivity'],
+        'excited': ['positivity', 'dreams'],
+        'neutral': ['mindfulness', 'motivation'],
+        'tired': ['rest', 'balance'],
+        'confused': ['wisdom', 'leadership']
+      };
+
+      const relevantCategories = moodCategoryMap[mood] || ['motivation', 'positivity'];
+
+      // Filter quotes by relevant categories
+      let categoryQuotes = allQuotes.filter(quote =>
+        relevantCategories.some(cat => quote.category.toLowerCase().includes(cat))
+      );
+
+      // If no category match, use all quotes
+      if (categoryQuotes.length === 0) {
+        categoryQuotes = allQuotes;
+      }
+
+      // Select a random quote from the filtered list
+      const randomIndex = Math.floor(Math.random() * categoryQuotes.length);
+      selectedQuote = categoryQuotes[randomIndex];
+
+      // Create personalized explanation based on the user's mood
+      const personalizedExpl = this.createPersonalizedExplanation(selectedQuote, mood, analysis);
+
       return {
-        quote: quoteData.quote,
-        explanation: quoteData.explanation || 'Personalized motivation based on your journaling',
-        author: quoteData.author || 'Qwen Coach',
-        category: quoteData.category || 'personalized',
+        quote: selectedQuote.quote,
+        explanation: personalizedExpl,
+        author: selectedQuote.author,
+        category: selectedQuote.category,
+        isAiGenerated: false, // Mark as non-AI since it's from mock data
         moodContext: mood,
         activityContext: 'journaling'
       };
     } catch (error) {
-      console.error('Error generating personalized quote:', error);
-      return await this.qwenService.generateDailyQuote();
+      console.error('Error generating personalized quote from mock data:', error);
+
+      // Fallback quote
+      return {
+        quote: "Every step forward is a victory worth celebrating.",
+        explanation: "Each small action contributes to your growth. Be kind to yourself in this process.",
+        author: "Mock Wisdom",
+        category: 'fallback',
+        isAiGenerated: false,
+        moodContext: mood,
+        activityContext: 'journaling'
+      };
     }
   }
 
@@ -299,6 +333,73 @@ class AIWorkflowService {
     }
   }
 
+  // Create personalized explanation based on mood and context
+  createPersonalizedExplanation(selectedQuote, mood, analysis) {
+    try {
+      // Base personalized explanations for different moods
+      const moodExplanations = {
+        'sad': [
+          'Remember that every challenge is temporary and your strength lies within.',
+          'Your feelings are valid, and healing begins with gentle self-compassion.',
+          'Like a storm that eventually clears, difficult emotions also pass with time.',
+          'You are not alone in this emotional journey—reach out when you need support.'
+        ],
+        'anxious': [
+          'Peace comes from grounding yourself in the present moment.',
+          'Breathe through the uncertainty—your inner strength will guide you.',
+          'Trust that you have faced challenging moments before and emerged stronger.',
+          'Take one small, manageable step at a time towards calm.'
+        ],
+        'happy': [
+          'Cherish these moments of joy—they are worth savoring and celebrating.',
+          'Happiness grows when shared with others who care about you.',
+          'Use this positive energy as a foundation for continued growth.',
+          'Celebrate your achievements and the progress you\'ve made.'
+        ],
+        'angry': [
+          'Channel intense emotions into constructive actions that serve your well-being.',
+          'Take space to process and understand your feelings before taking action.',
+          'Your strength comes from responding thoughtfully rather than reacting impulsively.',
+          'Healthy outlets for frustration can help you regain clarity and peace.'
+        ],
+        'stressed': [
+          'Your well-being matters—give yourself permission to pause and breathe.',
+          'Break down overwhelming tasks into smaller, manageable steps.',
+          'Remember that it\'s okay to ask for help when the load feels too heavy.',
+          'Prioritize what truly matters and let go of what you cannot control.'
+        ],
+        'tired': [
+          'Rest is not a luxury—it\'s essential for maintaining your strength and resilience.',
+          'Be gentle with yourself during times of physical or emotional fatigue.',
+          'Restorative practices help you recharge and face challenges with renewed energy.',
+          'Small moments of self-care add up to profound benefits for your well-being.'
+        ],
+        'neutral': [
+          'Every day offers opportunities for growth and positive change.',
+          'Use this balanced state as a foundation for meaningful progress.',
+          'Acknowledge your ability to navigate various emotions with grace.',
+          'Continue building habits that support your overall well-being.'
+        ],
+        'default': [
+          'Every moment is an opportunity for growth and learning.',
+          'Trust in your ability to navigate life\'s challenges with strength.',
+          'Your experiences are shaping you into who you are meant to be.',
+          'Approach each day with curiosity and openness to what it brings.'
+        ]
+      };
+
+      // Get explanations for the mood or use default
+      const explanations = moodExplanations[mood] || moodExplanations['default'];
+      const randomExplanation = explanations[Math.floor(Math.random() * explanations.length)];
+
+      // Combine the original explanation with personalized context
+      return `${selectedQuote.explanation} ${randomExplanation}`;
+    } catch (error) {
+      console.error('Error creating personalized explanation:', error);
+      return `${selectedQuote.explanation} Remember that growth happens gradually, and every step forward matters.`;
+    }
+  }
+
   // Save generated quote
   async saveQuote(quoteData, userId, journalId) {
     try {
@@ -308,7 +409,7 @@ class AIWorkflowService {
         explanation: quoteData.explanation,
         author: quoteData.author,
         category: quoteData.category,
-        isAiGenerated: true,
+        isAiGenerated: false, // Changed to false since we're using mock data
         generatedAt: new Date(),
         moodContext: quoteData.moodContext,
         activityContext: quoteData.activityContext

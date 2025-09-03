@@ -68,7 +68,7 @@ export const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "365d", // 365 days (1 year) - much longer lived token
     });
     
     res.json({
@@ -187,5 +187,40 @@ export const resetPassword = async (req, res) => {
   } catch (error) {
     console.error("Reset password error:", error);
     return res.status(500).json({ success: false, message: "Server error during reset password" });
+  }
+};
+
+// Verify token endpoint - useful for long-lived tokens
+export const verifyToken = async (req, res) => {
+  try {
+    // Token is already verified by middleware, just return user info
+    const user = await User.findById(req.user.userId).select('username email role profilePhoto createdAt lastLoginAt');
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Update last login time for long-lived tokens
+    user.lastLoginAt = new Date();
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Token is valid",
+      data: {
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+          profilePhoto: user.profilePhoto,
+          createdAt: user.createdAt,
+          lastLoginAt: user.lastLoginAt
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Token verification error:", error);
+    res.status(500).json({ success: false, message: "Server error during token verification" });
   }
 };
