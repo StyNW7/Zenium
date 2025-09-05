@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import {
   Heart,
   Menu,
@@ -55,37 +55,44 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = location.pathname;
   const { user, logout } = useAuth();
 
+  // Force sidebar to stay open on larger screens
+  useState(() => {
+    if (window.innerWidth >= 1024) {
+      setSidebarOpen(true);
+    }
+  });
+
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
+
   return (
     <div className="min-h-screen bg-[#0b0b0b]">
-      {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
+      {/* Mobile hamburger menu - Repositioned to avoid logo overlap */}
+      <div className="lg:hidden fixed top-6 right-4 z-50">
         <Button
           variant="outline"
           size="icon"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="bg-[#1a1a1a] border-gray-700/40"
+          onClick={toggleSidebar}
+          className="bg-[#1a1a1a]/80 backdrop-blur-sm border-gray-700/40 hover:bg-[#2a2a2a] shadow-lg"
         >
           {sidebarOpen ? <X className="h-4 w-4 text-yellow-400" /> : <Menu className="h-4 w-4 text-yellow-400" />}
         </Button>
       </div>
 
       {/* Sidebar */}
-      <AnimatePresence mode="wait">
-        <motion.aside
-          initial={{ x: sidebarOpen ? 0 : -320 }}
-          animate={{ x: sidebarOpen ? 0 : -320 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className={cn(
-            "fixed left-0 top-0 z-40 h-screen bg-[#0c0c0c] border-r border-gray-800",
-            sidebarOpen ? "w-80" : "w-0",
-          )}
-        >
-          <div className="flex h-full flex-col overflow-hidden">
+      <motion.aside
+        initial={{ x: sidebarOpen ? 0 : -320 }}
+        animate={{ x: sidebarOpen ? 0 : -320 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="fixed left-0 top-0 z-40 h-screen bg-gradient-to-b from-[#0c0c0c] to-[#080808] border-r border-gray-800/60 w-80"
+      >
+        <div className="flex h-full flex-col overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-800">
               <motion.div
@@ -103,8 +110,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 </div>
               </motion.div>
 
-              <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="lg:hidden">
-                <X className="h-4 w-4 text-yellow-400" />
+              {/* Desktop X close button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleSidebar}
+                className="hidden lg:flex hover:bg-yellow-500/20"
+              >
+                <X className="h-4 w-4 text-yellow-400 hover:text-yellow-300" />
               </Button>
             </div>
 
@@ -157,69 +170,93 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
           </div>
         </motion.aside>
-      </AnimatePresence>
 
       {/* Main content */}
       <div className={cn("transition-all duration-300 ease-in-out bg-[#0b0b0b]", sidebarOpen ? "lg:ml-80" : "ml-0")}>
         {/* Top bar */}
         <header className="sticky top-0 z-30 bg-[#0a0a0a]/90 backdrop-blur-sm border-b border-gray-800/50">
-          <div className="flex items-center justify-between px-6 py-4">
-            <div className="flex items-center space-x-4">
-              {!sidebarOpen && (
-                <Button variant="outline" size="icon" onClick={() => setSidebarOpen(true)} className="hidden lg:flex bg-yellow-900/10 border-yellow-800/30 hover:bg-yellow-900/20">
-                  <Menu className="h-4 w-4 text-yellow-400" />
-                </Button>
-              )}
-              <div>
-                <h2 className="text-2xl font-bold text-yellow-400">
-                  Welcome back, {user?.username || 'User'}!
-                </h2>
-                <p className="text-gray-400">Let's continue your wellness journey</p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm" className="border-gray-700/50 text-gray-300 hover:bg-yellow-500/20 hover:text-yellow-400">
-                <Heart className="h-4 w-4 mr-2" />
-                Quick Mood Check
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center space-x-2 border-gray-700/50 text-gray-300 hover:bg-yellow-500/20 hover:text-yellow-400">
-                    <div className="w-8 h-8 bg-yellow-900 rounded-full flex items-center justify-center">
-                      <User className="h-4 w-4 text-yellow-400" />
-                    </div>
-                    <span>{user?.username || 'User'}</span>
+          <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+              <div className="flex items-center gap-4 w-full sm:w-auto">
+                {!sidebarOpen && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setSidebarOpen(true)}
+                    className="hidden lg:flex shrink-0 bg-yellow-900/10 border-yellow-800/30 hover:bg-yellow-900/20"
+                  >
+                    <Menu className="h-4 w-4 text-yellow-400" />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-gray-900 border-gray-700">
-                  <DropdownMenuLabel className="text-gray-200">
-                    My Account
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-gray-700" />
-                  <DropdownMenuItem className="text-gray-300 hover:bg-gray-800" onClick={() => navigate("/dashboard/profile")}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Profile Settings</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-gray-700" />
-                  <DropdownMenuItem className="text-red-400 hover:bg-red-900 focus:bg-red-900 focus:text-red-400" onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                )}
+
+                <div className="w-full sm:w-auto min-w-0">
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-400 leading-tight truncate sm:whitespace-normal">
+                    Welcome back, {user?.username || 'User'}! 👋
+                  </h2>
+                  <p className="text-sm sm:text-base text-gray-400 mt-1">Let's continue your wellness journey</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="min-h-[44px] shrink-0 transition-all duration-200 bg-gradient-to-r from-yellow-600/20 to-yellow-500/20 border-yellow-500/50 text-yellow-300 hover:bg-yellow-500/30 hover:text-yellow-400 hover:border-yellow-400/60"
+                >
+                  <Heart className="h-4 w-4 mr-2 sm:mr-3" />
+                  <span className="hidden md:inline">Quick Mood Check</span>
+                  <span className="md:hidden">Mood</span>
+                </Button>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="min-h-[44px] border-gray-700/50 hover:bg-yellow-500/20 hover:border-yellow-500/70 transition-all duration-200"
+                    >
+                      <div className="w-8 h-8 bg-gradient-to-br from-yellow-900 to-yellow-700 rounded-full flex items-center justify-center mr-2 sm:mr-3">
+                        <User className="h-4 w-4 text-yellow-300" />
+                      </div>
+                      <span className="hidden md:inline text-gray-300">{user?.username || 'User'}</span>
+                      <div className="w-5 h-5 rounded-full bg-yellow-400/20 flex items-center justify-center md:hidden">
+                        <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                      </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 bg-black backdrop-blur-sm border-gray-700">
+                    <DropdownMenuLabel className="text-gray-200 py-3 px-4 bg-gradient-to-r from-gray-800/80 to-gray-700/80">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-yellow-900 to-yellow-700 rounded-full flex items-center justify-center">
+                          <User className="h-5 w-5 text-yellow-300" />
+                        </div>
+                        <div>
+                          <p className="font-semibold">{user?.username || 'User'}</p>
+                          <p className="text-sm text-gray-400">View profile</p>
+                        </div>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-gray-700" />
+                    <DropdownMenuItem className="text-gray-300 hover:bg-yellow-900/20 hover:text-yellow-400 transition-colors" onClick={() => navigate("/dashboard/profile")}>
+                      <Settings className="mr-3 h-4 w-4" />
+                      <span>Profile Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-gray-700" />
+                    <DropdownMenuItem className="text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-colors" onClick={handleLogout}>
+                      <LogOut className="mr-3 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* Page content */}
-        <main className="p-6">{children}</main>
+        {/* Page content - Optimized for permanent sidebar */}
+        <main className="px-3 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8">{children}</main>
       </div>
 
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-30 bg-black lg:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
+
     </div>
   )
 }

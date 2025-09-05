@@ -88,61 +88,71 @@ export function DashboardOverview() {
   };
 
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4 sm:space-y-6 lg:space-y-8">
       {/* Welcome Section */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-yellow-500/5 border-yellow-500/20">
-          <CardContent className="p-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-white mb-2">
-                  {getTimezoneGreeting()}, {user?.username || 'User'}! 
-                </h1>
-                <p className="text-lg text-gray-300 mb-4">
+        <Card className="relative bg-gradient-to-r from-yellow-500/20 via-yellow-600/10 to-yellow-500/20 border-yellow-500/40 hover:border-yellow-500/60 transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-400/5 to-transparent opacity-50"></div>
+          <CardContent className="relative p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-yellow-900 to-yellow-700 rounded-full flex items-center justify-center">
+                    <User className="h-5 w-5 text-yellow-300" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
+                      {getTimezoneGreeting()}, {user?.username || 'User'}! ✌️
+                    </h1>
+                  </div>
+                </div>
+
+                <p className="text-base sm:text-lg text-gray-300 mb-6 leading-relaxed">
                   Ready to make today amazing? Let's check in on your wellness journey.
                 </p>
-                <div className="flex items-center space-x-4">
-                  <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-                    <Zap className="h-3 w-3 mr-1" />
+
+                <div className="flex items-center gap-4 flex-wrap">
+                  <Badge className="bg-gradient-to-r from-yellow-600 to-yellow-500 text-black hover:from-yellow-500 hover:to-yellow-400 border-0 px-4 py-2 text-sm font-medium shadow-lg">
+                    <Zap className="h-3 w-3 mr-2" />
                     7-day streak
                   </Badge>
-                  <Badge variant="outline" className="border-yellow-500/30 text-yellow-400">
-                    Level 3 Wellness Warrior
+                  <Badge variant="outline" className="border-yellow-500/60 text-yellow-400 hover:border-yellow-400/80 px-4 py-2 text-sm">
+                    🏆 Level 3 Wellness Warrior
                   </Badge>
                 </div>
               </div>
-              <div className="hidden md:block relative">
+              <div className="relative flex-shrink-0 mt-4 sm:mt-0">
                 {uploadedPhoto || user?.profilePhoto ? (
                   <div className="relative">
                     <img
                       src={uploadedPhoto || (user && user.profilePhoto?.startsWith('http') ? user.profilePhoto : `http://localhost:3000/${user?.profilePhoto || ''}`)}
                       alt="Profile"
-                      className="w-32 h-32 rounded-full object-cover border-4 border-yellow-500/30"
+                      className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full object-cover border-2 sm:border-4 border-yellow-500/30"
                     />
                     <Button
                       onClick={triggerFileInput}
-                      className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-yellow-500 hover:bg-yellow-600 p-0"
+                      className="absolute -bottom-2 -right-2 sm:bottom-0 sm:right-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-500 hover:bg-yellow-600 p-0 min-h-[32px] min-w-[32px] sm:min-h-[40px] sm:min-w-[40px]"
                       disabled={isUploading}
                     >
                       {isUploading ? (
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       ) : (
-                        <Camera className="h-5 w-5 text-white" />
+                        <Camera className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                       )}
                     </Button>
                   </div>
                 ) : (
-                  <div className="w-32 h-32 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center border-4 border-yellow-500/30 relative">
-                    <User className="h-16 w-16 text-white" />
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center border-2 sm:border-4 border-yellow-500/30 relative">
+                    <User className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-white" />
                     <Button
                       onClick={triggerFileInput}
-                      className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-yellow-500 hover:bg-yellow-600 p-0 flex items-center justify-center"
+                      className="absolute -bottom-2 -right-2 sm:bottom-0 sm:right-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-500 hover:bg-yellow-600 p-0 min-h-[32px] min-w-[32px] sm:min-h-[40px] sm:min-w-[40px] flex items-center justify-center"
                       disabled={isUploading}
                     >
                       {isUploading ? (
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       ) : (
-                        <Upload className="h-5 w-5 text-white" />
+                        <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                       )}
                     </Button>
                   </div>
@@ -161,62 +171,62 @@ export function DashboardOverview() {
       </motion.div>
 
       {/* Quick Stats */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <Card className="bg-gradient-to-br from-chart-1/10 to-chart-1/5 border-chart-1/20">
-          <CardContent className="p-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/30 border-gray-700/50 hover:border-yellow-500/50 transition-all duration-200">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Current Mood</p>
-                <p className="text-2xl font-bold capitalize">{currentMood.mood}</p>
-                <p className="text-sm text-muted-foreground">{currentMood.score}/10</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-400">Current Mood</p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-bold capitalize text-white">{currentMood.mood}</p>
+                <p className="text-xs sm:text-sm text-yellow-400">{currentMood.score}/10</p>
               </div>
-              <div className="w-12 h-12 bg-chart-1/20 rounded-full flex items-center justify-center">
-                <Smile className="h-6 w-6 text-chart-1" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700/30 rounded-full flex items-center justify-center">
+                <Smile className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-chart-2/10 to-chart-2/5 border-chart-2/20">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/30 border-gray-700/50 hover:border-yellow-500/50 transition-all duration-200">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Weekly Average</p>
-                <p className="text-2xl font-bold">{weeklyAverage}/10</p>
-                <p className="text-sm text-chart-2">+0.5 from last week</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-400">Weekly Average</p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{weeklyAverage}/10</p>
+                <p className="text-xs sm:text-sm text-yellow-400">+0.5 from last week</p>
               </div>
-              <div className="w-12 h-12 bg-chart-2/20 rounded-full flex items-center justify-center">
-                <TrendingUp className="h-6 w-6 text-chart-2" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700/30 rounded-full flex items-center justify-center">
+                <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-chart-3/10 to-chart-3/5 border-chart-3/20">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/30 border-gray-700/50 hover:border-yellow-500/50 transition-all duration-200">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Sessions This Week</p>
-                <p className="text-2xl font-bold">5</p>
-                <p className="text-sm text-chart-3">2 more than last week</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-400">Sessions This Week</p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-white">5</p>
+                <p className="text-xs sm:text-sm text-yellow-400">2 more than last week</p>
               </div>
-              <div className="w-12 h-12 bg-chart-3/20 rounded-full flex items-center justify-center">
-                <Calendar className="h-6 w-6 text-chart-3" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700/30 rounded-full flex items-center justify-center">
+                <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-chart-4/10 to-chart-4/5 border-chart-4/20">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/30 border-gray-700/50 hover:border-yellow-500/50 transition-all duration-200">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Goals Completed</p>
-                <p className="text-2xl font-bold">3/5</p>
-                <p className="text-sm text-chart-4">60% completion</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-400">Goals Completed</p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-white">3/5</p>
+                <p className="text-xs sm:text-sm text-yellow-400">60% completion</p>
               </div>
-              <div className="w-12 h-12 bg-chart-4/20 rounded-full flex items-center justify-center">
-                <Target className="h-6 w-6 text-chart-4" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700/30 rounded-full flex items-center justify-center">
+                <Target className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
               </div>
             </div>
           </CardContent>
@@ -224,7 +234,7 @@ export function DashboardOverview() {
       </motion.div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {/* Mood Tracking */}
         <motion.div variants={itemVariants} className="lg:col-span-2">
           <Card>
@@ -259,30 +269,34 @@ export function DashboardOverview() {
                 ))}
               </div>
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                <Button className="flex-1 sm:flex-[1_1_auto]">
+                <Button className="flex-1 sm:flex-[1_1_auto] min-h-11">
                   <Heart className="h-4 w-4 mr-2" />
                   Log Today's Mood
                 </Button>
-                <Button variant="outline" className="flex-1 sm:flex-[1_1_auto]">View Detailed Analytics</Button>
+                <Button variant="outline" className="flex-1 sm:flex-[1_1_auto] min-h-11">View Detailed Analytics</Button>
               </div>
             </CardContent>
           </Card>
         </motion.div>
 
         {/* Sidebar Content */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Daily Motivation */}
           <motion.div variants={itemVariants}>
-            <Card className="bg-gradient-to-br from-accent/10 to-primary/5 border-accent/20">
+            <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/30 border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Zap className="h-5 w-5 text-accent" />
-                  <span>Daily Inspiration</span>
+                <CardTitle className="flex items-center space-x-3">
+                  <div className="p-2 bg-gray-700/30 rounded-full">
+                    <Zap className="h-5 w-5 text-yellow-400" />
+                  </div>
+                  <span className="text-white font-semibold">Daily Inspiration</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <blockquote className="text-lg font-medium text-foreground mb-4 italic">"{todayQuote}"</blockquote>
-                <Button variant="outline" size="sm" className="w-full bg-transparent">
+                <blockquote className="text-base sm:text-lg font-medium text-gray-200 mb-6 italic border-l-4 border-yellow-500/50 pl-4">
+                  "{todayQuote}"
+                </blockquote>
+                <Button variant="outline" size="sm" className="w-full bg-transparent border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400/80 transition-all duration-200 min-h-11">
                   Share This Quote
                 </Button>
               </CardContent>
@@ -291,26 +305,31 @@ export function DashboardOverview() {
 
           {/* Quick Actions */}
           <motion.div variants={itemVariants}>
-            <Card>
+            <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/30 border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300">
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Jump into your wellness activities</CardDescription>
+                <CardTitle className="flex items-center space-x-3">
+                  <div className="p-2 bg-gray-700/30 rounded-full">
+                    <Target className="h-5 w-5 text-yellow-400" />
+                  </div>
+                  <span className="text-white font-semibold">Quick Actions</span>
+                </CardTitle>
+                <CardDescription className="text-gray-400 ml-11">Jump into your wellness activities</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <MessageCircle className="h-4 w-4 mr-2" />
+                <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-yellow-500/20 hover:border-yellow-400/80 transition-colors duration-200 min-h-11 border-yellow-500/50 text-yellow-200">
+                  <MessageCircle className="h-4 w-4 mr-3" />
                   Chat with Melify
                 </Button>
-                <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <BookOpen className="h-4 w-4 mr-2" />
+                <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-yellow-500/20 hover:border-yellow-400/80 transition-colors duration-200 min-h-11 border-yellow-500/50 text-yellow-200">
+                  <BookOpen className="h-4 w-4 mr-3" />
                   Read Articles
                 </Button>
-                <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <Brain className="h-4 w-4 mr-2" />
+                <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-yellow-500/20 hover:border-yellow-400/80 transition-colors duration-200 min-h-11 border-yellow-500/50 text-yellow-200">
+                  <Brain className="h-4 w-4 mr-3" />
                   Meditation Session
                 </Button>
-                <Button variant="outline" className="w-full justify-start bg-transparent">
-                  <Award className="h-4 w-4 mr-2" />
+                <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-yellow-500/20 hover:border-yellow-400/80 transition-colors duration-200 min-h-11 border-yellow-500/50 text-yellow-200">
+                  <Award className="h-4 w-4 mr-3" />
                   View Achievements
                 </Button>
               </CardContent>
@@ -319,24 +338,22 @@ export function DashboardOverview() {
 
           {/* Melify Status */}
           <motion.div variants={itemVariants}>
-            <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                    <Heart className="h-6 w-6 text-primary-foreground" />
+            <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/30 border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex items-center space-x-4 mb-5">
+                  <div className="w-14 h-14 bg-gradient-to-br from-yellow-900 to-yellow-700 rounded-full flex items-center justify-center shadow-lg">
+                    <Heart className="h-7 w-7 text-yellow-300" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold">Melify</h3>
-                    <p className="text-sm text-muted-foreground">Your AI Companion</p>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-white text-lg">Melify</h3>
+                    <p className="text-sm text-gray-400">Your AI Companion</p>
                   </div>
-                  <div className="ml-auto">
-                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  </div>
+                  <div className="w-4 h-4 bg-yellow-400 rounded-full animate-pulse shadow-lg"></div>
                 </div>
-                <p className="text-sm text-muted-foreground mb-4">
-                  "I'm here whenever you need support or just want to chat!"
+                <p className="text-sm text-gray-300 mb-6 italic leading-relaxed">
+                  I'm here whenever you need support or just want to chat!
                 </p>
-                <Button size="sm" className="w-full">
+                <Button size="sm" className="w-full bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-semibold min-h-11 shadow-lg">
                   Connect with Melify
                 </Button>
               </CardContent>

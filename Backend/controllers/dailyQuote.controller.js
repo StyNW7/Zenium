@@ -1,17 +1,19 @@
 import DailyQuote from "../models/dailyQuote.model.js";
-import QwenService from "../utils/qwen.js";
+import dailyQuoteService from "../services/dailyQuoteService.js";
 
 export const getCurrentDailyQuote = async (req, res) => {
   try {
-    const latestQuote = await DailyQuote.findOne()
-      .sort({ generatedAt: -1 })
-      .limit(1);
+    const currentQuote = dailyQuoteService.getCurrentQuote();
 
-    if (!latestQuote) {
+    if (!currentQuote) {
       return res.status(404).json({ message: "No daily quote found" });
     }
 
-    res.status(200).json(latestQuote);
+    res.status(200).json({
+      success: true,
+      data: currentQuote,
+      message: "Current daily quote retrieved successfully"
+    });
   } catch (error) {
     console.error("Error fetching daily quote:", error);
     res.status(500).json({ message: "Server error" });
@@ -20,178 +22,114 @@ export const getCurrentDailyQuote = async (req, res) => {
 
 export const getDailyQuote = async (req, res) => {
   try {
-    const { forceNew = false, mood = '', activity = '' } = req.query;
-    const userId = req.user?.userId; // From auth middleware
-    const today = new Date();
-    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+    console.log('\n🍀 QUOTE PAGE REQUEST RECEIVED:');
+    console.log(`   📊 Request method: ${req.method}`);
+    console.log(`   👤 User authenticated: ${req.user ? 'YES' : 'NO'}`);
+    console.log(`   🔑 User ID:`, req.user?.userId || 'ANONYMOUS');
 
-    // Check if quote already exists for today
-    let existingQuote = null;
-    
+    const { forceNew = false } = req.query;
+    const userId = req.user?.userId || null;
+
+    console.log(`   ⚙️ Force new quote: ${forceNew}`);
+
+    // If forceNew is requested, refresh the daily quote (WITHOUT saving to DB)
+    if (forceNew) {
+      console.log('🔄 Refreshing to new quote (not saving to database)');
+      await dailyQuoteService.refreshDailyQuote();
+
+      // For authenticated users, only check history but don't auto-save
+      if (userId) {
+        console.log('👤 User authenticated - will load their saved quotes history separately');
+      }
+    }
+
+    // Get the current daily quote from the service (no longer from DB)
+    const currentQuote = dailyQuoteService.getCurrentQuote();
+
+    if (!currentQuote) {
+      return res.status(404).json({
+        success: false,
+        message: "No daily quote available"
+      });
+    }
+
+    console.log(`\n✅ QUOTE RETRIEVED:`);
+    console.log(`   💬 Quote: "${currentQuote.quote.substring(0, 80)}${currentQuote.quote.length > 80 ? '...' : ''}"`);
+    console.log(`   ✍️  Author: ${currentQuote.author}`);
+    console.log(`   🏷️  Category: ${currentQuote.category}`);
+    console.log(`   🤖 From JSON: ${!currentQuote.isAiGenerated}`);
+
+    // For authenticated users, check if this quote is already in their saved history
+    // But note: This quote itself hasn't been saved yet - only if they click "Save Quote"
+    let isInUserHistory = false;
     if (userId) {
-      // For authenticated users, check personal quote
-      existingQuote = await DailyQuote.findOne({
+      const existingUserQuote = await DailyQuote.findOne({
         userId: userId,
-        generatedAt: {
-          $gte: startOfDay,
-          $lt: endOfDay
-        }
-      }).sort({ generatedAt: -1 });
-    } else {
-      // For anonymous users, get global daily quote
-      existingQuote = await DailyQuote.findOne({
-        userId: null, // Global quote
-        generatedAt: {
-          $gte: startOfDay,
-          $lt: endOfDay
-        }
-      }).sort({ generatedAt: -1 });
-    }
-
-    // Return existing quote if found and not forcing new
-    if (existingQuote && !forceNew) {
-      return res.status(200).json({
-        success: true,
-        data: existingQuote,
-        message: "Today's quote retrieved successfully"
+        quote: currentQuote.quote,
+        generatedAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } // Last 24 hours
       });
+      isInUserHistory = !!existingUserQuote;
     }
 
-    // Generate new quote using Qwen service, contextualized by mood/activity
-    const contextPrompt = mood || activity ? `User context -> mood: ${mood || 'n/a'}, recent activity: ${activity || 'n/a'}. Tailor the motivation to this context.` : '';
+    console.log(`   📚 Is quote in user history: ${isInUserHistory}`);
 
-    let newQuoteData = {};
-    let attempts = 0;
-    const maxAttempts = 3; // Limit attempts to avoid infinite loop
-
-    while (attempts < maxAttempts) {
-      const messages = [{
-        role: 'user',
-        content: [{
-          type: 'text',
-          text: `Generate an inspirational daily motivation quote for mental wellness and motivation. The quote should be uplifting, positive, and encouraging, considering the user's context if provided. Include:
-1) quote (1-2 sentences)
-2) explanation (1 sentence)
-3) author
-${contextPrompt}
-Return JSON: {"quote":"string","explanation":"string","author":"string"}`
-        }]
-      }];
-      const responseText = await QwenService.makeRequest(messages);
-
-      try {
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) newQuoteData = JSON.parse(jsonMatch[0]);
-      } catch {}
-
-      if (!newQuoteData.quote) {
-        newQuoteData = await QwenService.generateDailyQuote();
-      }
-
-      // Check for duplicate quotes by comparing against recent quotes
-      const recentQuotes = await DailyQuote.find({
-        ...(userId ? { userId: userId } : { userId: null }),
-        generatedAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } // Last 30 days
-      }).select('quote').limit(50);
-
-      const isDuplicate = recentQuotes.some(recentQuote => {
-        // Normalize quotes for comparison (remove extra whitespace and make lowercase)
-        const normalize = (text) => text.replace(/\s+/g, ' ').trim().toLowerCase();
-        return normalize(recentQuote.quote) === normalize(newQuoteData.quote);
-      });
-
-      if (!isDuplicate) {
-        break; // Found a unique quote
-      }
-
-      attempts++;
-      console.log(`Duplicate quote detected, regenerating... Attempt ${attempts}/${maxAttempts}`);
-    }
-
-    // If we still have a duplicate after max attempts, use a fallback
-    if (attempts >= maxAttempts) {
-      const fallbackOptions = [
-        {
-          quote: "The journey of a thousand miles begins with a single step. Each day offers new opportunities for growth and self-improvement.",
-          explanation: "A timeless reminder that even the most ambitious goals start small",
-          author: "Lao Tzu"
-        },
-        {
-          quote: "You are stronger than you know. You've overcome obstacles before and you'll overcome them again.",
-          explanation: "A reminder of your inner strength and resilience in the face of challenges",
-          author: "Zenium Support"
-        },
-        {
-          quote: "Peace begins with a smile. Let yourself smile today - you've earned it.",
-          explanation: "A gentle reminder to practice self-care and find joy in simple pleasures",
-          author: "Mother Teresa"
-        }
-      ];
-
-      const randomFallback = fallbackOptions[Math.floor(Math.random() * fallbackOptions.length)];
-      newQuoteData = randomFallback;
-    }
-
-    // Save to database
-    const quoteRecord = new DailyQuote({
-      userId: userId || null, // null for anonymous users (global quote)
-      quote: newQuoteData.quote,
-      explanation: newQuoteData.explanation,
-      author: newQuoteData.author,
-      isAiGenerated: true,
-      generatedAt: new Date(),
-      category: "motivation", // default category
-      isFavorite: false,
-      moodContext: String(mood || ''),
-      activityContext: String(activity || '')
-    });
-
-    await quoteRecord.save();
-
-    res.status(201).json({
-      success: true,
-      data: quoteRecord,
-      message: "New daily quote generated successfully"
-    });
-
-  } catch (error) {
-    console.error('Daily quote generation error:', error);
-
-    // Try to get existing quote from database as fallback
-    try {
-      const existingQuote = await DailyQuote.findOne()
-        .sort({ generatedAt: -1 })
-        .limit(1);
-
-      if (existingQuote) {
-        return res.status(200).json({
-          success: true,
-          data: existingQuote,
-          message: "Using existing quote due to generation error",
-          error: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
-      }
-    } catch (dbError) {
-      console.error('Database fallback error:', dbError);
-    }
-
-    // Return fallback quote on error
-    const fallbackQuote = {
-      quote: "Every day is a new beginning. Take a deep breath, smile, and start again.",
-      explanation: "A gentle reminder that each day offers fresh opportunities for growth and positivity",
-      author: "Zenium AI",
-      isAiGenerated: false,
-      generatedAt: new Date(),
-      category: "motivation"
+    // Return quote data directly from memory (not from DB)
+    const responseData = {
+      ...currentQuote,
+      isInUserHistory: isInUserHistory
     };
 
     res.status(200).json({
       success: true,
-      data: fallbackQuote,
-      message: "Using fallback quote due to service unavailability",
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      data: responseData,
+      message: forceNew ? "New daily quote generated!" : "Current daily quote retrieved successfully"
     });
+
+  } catch (error) {
+    console.error('Error fetching daily quote:', error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch daily quote",
+      error: process.env.NODE_ENV === 'development' ? error.message : "Service temporarily unavailable"
+    });
+  }
+};
+
+// Helper function to save quote to user history
+const createUserQuoteRecord = async (userId, quoteData, source) => {
+  try {
+    // Check if user already has this exact quote in the last 24 hours
+    const existingQuote = await DailyQuote.findOne({
+      userId: userId,
+      quote: quoteData.quote,
+      generatedAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+    });
+
+    if (existingQuote) {
+      console.log('Quote already exists in user history, skipping duplicate');
+      return existingQuote;
+    }
+
+    // Create new user quote record
+    const savedQuote = new DailyQuote({
+      userId: userId,
+      quote: quoteData.quote,
+      explanation: quoteData.explanation,
+      author: quoteData.author,
+      category: quoteData.category,
+      isAiGenerated: quoteData.isAiGenerated || false,
+      generatedAt: new Date(),
+      isFavorite: false,
+      moodContext: 'generated',
+      activityContext: source
+    });
+
+    await savedQuote.save();
+    console.log('✅ New quote saved to user history');
+    return savedQuote;
+  } catch (error) {
+    console.error('Error saving quote to user history:', error);
+    return null;
   }
 };
 
@@ -236,41 +174,43 @@ export const getUserDailyQuotes = async (req, res) => {
 export const getQuoteByCategory = async (req, res) => {
   try {
     const { category } = req.params;
-    const userId = req.user?.userId;
 
-    const quote = await DailyQuote.findOne({
-      ...(userId ? { userId: userId } : { userId: null }),
-      category: category
-    }).sort({ generatedAt: -1 });
+    console.log(`🔍 Getting quotes for category: ${category}`);
 
-    if (!quote) {
-      // Generate new quote for this category
-      const newQuoteData = await QwenService.generateDailyQuote(category);
-      
-      const quoteRecord = new DailyQuote({
-        userId: userId || null,
-        quote: newQuoteData.quote,
-        explanation: newQuoteData.explanation,
-        author: newQuoteData.author,
-        isAiGenerated: true,
-        generatedAt: new Date(),
-        category: category,
-        isFavorite: false
-      });
+    // Get random quote from the requested category (from JSON, no DB save)
+    const quotesInCategory = dailyQuoteService.getQuotesByCategory(category);
 
-      await quoteRecord.save();
-
-      return res.status(201).json({
-        success: true,
-        data: quoteRecord,
-        message: `New ${category} quote generated successfully`
+    if (quotesInCategory.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No quotes found for category "${category}"`
       });
     }
 
+    // Pick a random quote from the category
+    const randomIndex = Math.floor(Math.random() * quotesInCategory.length);
+    const selectedQuote = quotesInCategory[randomIndex];
+
+    // Create quote object in memory WITHOUT saving to database
+    const quoteFromMemory = {
+      _id: `temp-category-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      quote: selectedQuote.quote,
+      explanation: selectedQuote.explanation,
+      author: selectedQuote.author,
+      category: selectedQuote.category,
+      isAiGenerated: selectedQuote.isAiGenerated,
+      generatedAt: new Date(),
+      moodContext: 'category-request',
+      activityContext: `category-${category}`
+    };
+
+    console.log(`✅ Generated quote from category "${category}": ${selectedQuote.author}`);
+    console.log(`📝 Note: Quote NOT saved to database (temp ID: ${quoteFromMemory._id})`);
+
     res.status(200).json({
       success: true,
-      data: quote,
-      message: `${category} quote retrieved successfully`
+      data: quoteFromMemory,
+      message: `Quote from ${category} category retrieved successfully`
     });
 
   } catch (error) {
@@ -392,6 +332,84 @@ export const deleteQuote = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to delete quote",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+export const createUserQuote = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { quote, author, explanation, source = 'Manual Save' } = req.body;
+
+    // Validate required fields
+    if (!quote || !quote.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Quote content is required"
+      });
+    }
+
+    // Check if user already has this exact quote in their collection
+    const existingQuote = await DailyQuote.findOne({
+      userId: userId,
+      quote: quote.trim()
+    });
+
+    if (existingQuote) {
+      return res.status(409).json({
+        success: false,
+        message: "You already have this quote in your collection",
+        data: existingQuote
+      });
+    }
+
+    // Create new user quote record - no more one-quote limit for manual saves
+    const savedQuote = new DailyQuote({
+      userId: userId,
+      quote: quote.trim(),
+      author: author?.trim() || 'Unknown',
+      explanation: explanation?.trim() || '',
+      isAiGenerated: false,
+      generatedAt: new Date(),
+      category: 'user-collection',
+      isFavorite: false,
+      moodContext: '',
+      activityContext: source
+    });
+
+    await savedQuote.save();
+
+    res.status(201).json({
+      success: true,
+      data: savedQuote,
+      message: "Quote saved to your collection successfully"
+    });
+
+  } catch (error) {
+    console.error('Error saving user quote:', error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to save quote to collection",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+export const getQuoteCategories = async (req, res) => {
+  try {
+    const categories = dailyQuoteService.getAllCategories();
+
+    res.status(200).json({
+      success: true,
+      data: categories,
+      message: "Quote categories retrieved successfully"
+    });
+  } catch (error) {
+    console.error('Error fetching quote categories:', error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch quote categories",
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }

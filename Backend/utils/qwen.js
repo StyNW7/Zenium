@@ -1,10 +1,26 @@
 class QwenService {
   constructor() {
-    this.apiKey = process.env.OPENROUTER_API_KEY;
+    this.apiKey = process.env.OPENROUTER_API_KEY || "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";
     this.baseUrl = "https://openrouter.ai/api/v1/chat/completions";
-    this.model = "qwen/qwen2.5-vl-32b-instruct:free";
+    this.model = "qwen/qwen2.5-vl-72b-instruct:free";
     this.siteUrl = "http://localhost:3000";
     this.siteName = "Zenium";
+
+    // 🔍 DEBUGGING: Verify OpenRouter API configuration
+    console.log('🔧 QwenService Constructor - Configuration Check:');
+    console.log(`   📡 API Base URL: ${this.baseUrl}`);
+    console.log(`   🤖 Model: ${this.model}`);
+    console.log(`   🔑 API Key Configured: ${this.apiKey ? '✅ YES' : '❌ NO - MISSING OPENROUTER_API_KEY'}`);
+    console.log(`   🌐 Site URL: ${this.siteUrl}`);
+    console.log(`   🏷️  Site Name: ${this.siteName}`);
+
+    if (!this.apiKey) {
+      console.error('🚨 CRITICAL ERROR: OPENROUTER_API_KEY environment variable is not set!');
+      console.error('   Please check your .env file in Backend directory.');
+      console.error('   Expected: OPENROUTER_API_KEY=sk-or-v1-your-key-here');
+    } else {
+      console.log('✅ QwenService configuration looks good!');
+    }
   }
 
   async makeRequest(messages) {
@@ -12,6 +28,26 @@ class QwenService {
       if (!this.apiKey) {
         throw new Error("OPENROUTER_API_KEY is not configured");
       }
+
+      // 🔍 DEBUGGING: Log API request details
+      console.log(`\n📡 MAKING REQUEST TO OPENROUTER API:`);
+      console.log(`   🔗 URL: ${this.baseUrl}`);
+      console.log(`   🤖 Model: ${this.model}`);
+      console.log(`   📝 Message count: ${messages.length}`);
+      console.log(`   📏 Message length: ${messages[0].content[0].text.length} characters`);
+      console.log(`   ⏰ Timestamp: ${new Date().toISOString()}`);
+
+      console.log(`   🔑 Using API Key: ${this.apiKey.substring(0, 10)}...${this.apiKey.substring(this.apiKey.length - 4)}`);
+
+      const requestBody = {
+        model: this.model,
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 1000
+      };
+
+      console.log(`   🌡️ Temperature: ${requestBody.temperature}`);
+      console.log(`   📊 Max tokens: ${requestBody.max_tokens}`);
 
       const response = await fetch(this.baseUrl, {
         method: "POST",
@@ -21,108 +57,46 @@ class QwenService {
           "X-Title": this.siteName,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          model: this.model,
-          messages: messages,
-          temperature: 0.7,
-          max_tokens: 1000
-        })
+        body: JSON.stringify(requestBody)
       });
+
+      console.log(`   📨 Response status: ${response.status} ${response.statusText}`);
+      console.log(`   📨 Response headers:`, Object.fromEntries(response.headers.entries()));
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("OpenRouter API error response:", errorText);
+        console.error(`\n❌ OPENROUTER API ERROR:`);
+        console.error(`   🔴 Status: ${response.status} ${response.statusText}`);
+        console.error(`   📄 Error details: ${errorText}`);
         throw new Error(`OpenRouter API error: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
       const data = await response.json();
 
+      console.log(`\n✅ OPENROUTER API SUCCESS:`);
+      console.log(`   🟢 Response received successfully`);
+      console.log(`   📦 Data structure:`, Object.keys(data));
+      console.log(`   🤖 Has choices: ${data.choices ? 'YES' : 'NO'}`);
+      console.log(`   📊 Choice count: ${data.choices?.length || 0}`);
+
       if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+        console.error(`❌ INVALID RESPONSE FORMAT:`);
+        console.error(`   Expected: data.choices[0].message.content`);
+        console.error(`   Received:`, JSON.stringify(data, null, 2));
         throw new Error("Invalid response format from OpenRouter API");
       }
 
-      return data.choices[0].message.content;
+      const content = data.choices[0].message.content;
+      console.log(`📝 Content preview: ${content.substring(0, 100)}...`);
+      console.log(`📏 Content length: ${content.length} characters`);
+
+      return content;
     } catch (error) {
-      console.error("OpenRouter API request failed:", error);
+      console.error(`\n💥 CRITICAL ERROR IN makeRequest:`);
+      console.error(`   🔥 Error type: ${error.constructor.name}`);
+      console.error(`   💬 Error message: ${error.message}`);
+      console.error(`   📍 Stack trace:`, error.stack);
       throw new Error(`Qwen API request failed: ${error.message}`);
-    }
-  }
-
-  async generateDailyQuote() {
-    try {
-      const messages = [
-        {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: `Generate an inspirational daily quote for mental wellness and motivation. The quote should be uplifting, positive, and encouraging. Include:
-              1. The quote itself (1-2 sentences)
-              2. A brief explanation or context (1 sentence)
-              3. An author name if applicable
-              
-              Format the response as JSON: {"quote": "string", "explanation": "string", "author": "string"}`
-            }
-          ]
-        }
-      ];
-
-      const responseText = await this.makeRequest(messages);
-      
-      // Try to parse JSON from response
-      try {
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          const parsed = JSON.parse(jsonMatch[0]);
-          return {
-            quote: parsed.quote || responseText.trim(),
-            explanation: parsed.explanation || "Daily inspiration for your mental wellness journey",
-            author: parsed.author || "AI Companion"
-          };
-        }
-      } catch (parseError) {
-        console.error("Failed to parse JSON from OpenRouter response:", parseError);
-      }
-
-      // Fallback: return the raw text as quote
-      return {
-        quote: responseText.trim(),
-        explanation: "Daily inspiration for your mental wellness journey",
-        author: "AI Companion"
-      };
-    } catch (error) {
-      console.error("OpenRouter API error:", error);
-      
-      // Fallback quotes
-      const fallbackQuotes = [
-        {
-          quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
-          explanation: "Remember that setbacks are opportunities for growth",
-          author: "Nelson Mandela"
-        },
-        {
-          quote: "Mental health is not a destination, but a process. It's about how you drive, not where you're going.",
-          explanation: "Focus on the journey of self-care and growth",
-          author: "Noam Shpancer"
-        },
-        {
-          quote: "You yourself, as much as anybody in the entire universe, deserve your love and affection.",
-          explanation: "Practice self-compassion and kindness",
-          author: "Buddha"
-        },
-        {
-          quote: "Taking care of your mental health is not a luxury, it's a necessity.",
-          explanation: "Prioritizing mental wellness is essential for overall wellbeing",
-          author: "Anonymous"
-        },
-        {
-          quote: "Progress, not perfection, is what we should strive for.",
-          explanation: "Small steps forward matter more than being perfect",
-          author: "Anonymous"
-        }
-      ];
-      
-      return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
     }
   }
 

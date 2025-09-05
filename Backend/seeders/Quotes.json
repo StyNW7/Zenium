@@ -1,0 +1,1143 @@
+[
+  {
+    "quote": "The journey of a thousand miles begins with a single step.",
+    "explanation": "Start small to achieve big things. Every major accomplishment starts with that first, often difficult, action.",
+    "author": "Lao Tzu",
+    "category": "motivation",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Change the way you look at things and the things you look at change.",
+    "explanation": "Your perspective shapes your reality. Shift your mindset to find new possibilities in everyday situations.",
+    "author": "Wayne Dyer",
+    "category": "mindfulness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Believe you can and you're halfway there.",
+    "explanation": "Self-confidence is the foundation of success. Trusting in your abilities opens doors of opportunity.",
+    "author": "Theodore Roosevelt",
+    "category": "self-confidence",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The only way to do great work is to love what you do.",
+    "explanation": "Passion fuels excellence. When you care deeply about your work, the results naturally become exceptional.",
+    "author": "Steve Jobs",
+    "category": "career",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Take time to breathe. It's the first step to cultivating mindfulness.",
+    "explanation": "Conscious breathing helps you stay present and calm during moments of stress and uncertainty.",
+    "author": "Unknown",
+    "category": "mindfulness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "You miss 100% of the shots you don't take.",
+    "explanation": "Fear of failure should never prevent you from trying. Every great success began with someone taking a risk.",
+    "author": "Wayne Gretzky",
+    "category": "risk-taking",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The mind is everything. What you think you become.",
+    "explanation": "Your thoughts shape your reality. Cultivate positive thinking to create a positive life experience.",
+    "author": "Buddha",
+    "category": "positivity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Gratitude turns what we have into enough.",
+    "explanation": "Appreciation for what you have eliminates feelings of lack and scarcity.",
+    "author": "Anonymous",
+    "category": "gratitude",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Peace begins with a smile.",
+    "explanation": "Small acts of kindness can create ripples of peace in your life and the lives of others.",
+    "author": "Mother Teresa",
+    "category": "peace",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Your time is limited, don't waste it living someone else's life.",
+    "explanation": "Authenticity is more important than pleasing others. Live according to your own values and dreams.",
+    "author": "Steve Jobs",
+    "category": "authenticity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The best way to predict the future is to create it.",
+    "explanation": "Don't wait for opportunities—actively shape your path to achieve the life you want.",
+    "author": "Peter Drucker",
+    "category": "proactive",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Kindness is a language which the deaf can hear and the blind can see.",
+    "explanation": "Compassion transcends all barriers and can make a profound difference in someone's life.",
+    "author": "Mark Twain",
+    "category": "kindness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "In the middle of difficulty lies opportunity.",
+    "explanation": "Challenges are often hidden opportunities for growth and learning.",
+    "author": "Albert Einstein",
+    "category": "resilience",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "What you get by achieving your goals is not as important as what you become by achieving your goals.",
+    "explanation": "Personal growth and character development are far more valuable than external achievements.",
+    "author": "Zig Ziglar",
+    "category": "growth",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The greatest glory in living lies not in never falling, but in rising every time we fall.",
+    "explanation": "Courage comes from facing defeats and learning from them, not avoiding them entirely.",
+    "author": "Nelson Mandela",
+    "category": "resilience",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "When we strive to become better than we are, everything around us becomes better too.",
+    "explanation": "Personal improvement creates positive circumstances and inspires others around you.",
+    "author": "Paulo Coelho",
+    "category": "growth",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Happiness is not something ready made. It comes from your own actions.",
+    "explanation": "True happiness is cultivated through intentional choices and meaningful actions.",
+    "author": "Dalai Lama XIV",
+    "category": "happiness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Every moment is a fresh beginning.",
+    "explanation": "Each moment offers a new opportunity to choose again and start fresh.",
+    "author": "T.S. Eliot",
+    "category": "renewal",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Courage doesn't always roar. Sometimes courage is the quiet voice at the end of the day saying, 'I will try again tomorrow.'",
+    "explanation": "Bravery isn't always dramatic—it can be the quiet persistence to keep going despite setbacks.",
+    "author": "Mary Anne Radmacher",
+    "category": "courage",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The way to get started is to quit talking and begin doing.",
+    "explanation": "Action is more important than endless planning. Sometimes you just need to start.",
+    "author": "Walt Disney",
+    "category": "action",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work.",
+    "explanation": "Life satisfaction comes from meaningful work that aligns with your values and talents.",
+    "author": "Steve Jobs",
+    "category": "purpose",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "You become what you believe.",
+    "explanation": "Your beliefs shape your reality. Choose empowering beliefs to create empowering results.",
+    "author": "Oprah Winfrey",
+    "category": "beliefs",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.",
+    "explanation": "True beauty and meaning come from emotional connections and heartfelt experiences.",
+    "author": "Helen Keller",
+    "category": "heart",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Keep your face always toward the sunshine—and shadows will fall behind you.",
+    "explanation": "Focus on the positive aspects of life and the negative will eventually fade into the background.",
+    "author": "Walt Whitman",
+    "category": "positivity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Nobody can go back and start a new beginning, but anyone can start today and make a new ending.",
+    "explanation": "It's never too late to create positive change and rewrite your story going forward.",
+    "author": "Maria Robinson",
+    "category": "renewal",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The only impossible journey is the one you never begin.",
+    "explanation": "Every significant accomplishment requires taking that first step, no matter how daunting it seems.",
+    "author": "Tony Robbins",
+    "category": "action",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+    "explanation": "Internal strength and character matter infinitely more than external circumstances.",
+    "author": "Ralph Waldo Emerson",
+    "category": "inner-strength",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Happiness is when what you think, what you say, and what you do are in harmony.",
+    "explanation": "True contentment comes when your thoughts, words, and actions are aligned and authentic.",
+    "author": "Mahatma Gandhi",
+    "category": "authenticity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The most wasted of all days is one without laughter.",
+    "explanation": "Laughter brings joy and lightness to daily life—don't underestimate its importance.",
+    "author": "e.e. cummings",
+    "category": "joy",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Your life does not get better by chance, it gets better by change.",
+    "explanation": "Positive transformation requires intentional effort and willingness to adapt.",
+    "author": "Jim Rohn",
+    "category": "change",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Strength does not come from physical capacity. It comes from an indomitable will.",
+    "explanation": "True strength originates from mental resilience and determination, not just physical ability.",
+    "author": "Mahatma Gandhi",
+    "category": "strength",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Live out of your imagination, not your history.",
+    "explanation": "Create your future based on possibility and vision, not past limitations.",
+    "author": "Stephen Covey",
+    "category": "future",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Two roads diverged in a wood, and I took the one less traveled by, and that has made all the difference.",
+    "explanation": "Choosing unconventional paths often leads to unique and fulfilling experiences.",
+    "author": "Robert Frost",
+    "category": "choice",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+    "explanation": "Keep moving forward regardless of temporary setbacks or individual victories.",
+    "author": "Winston Churchill",
+    "category": "perseverance",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "You can't use up creativity. The more you use, the more you have.",
+    "explanation": "Creativity is unlimited—the more you express it, the more it grows within you.",
+    "author": "Maya Angelou",
+    "category": "creativity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "It is during our darkest moments that we must focus to see the light.",
+    "explanation": "In challenging times, look for opportunities for growth and renewal.",
+    "author": "Aristotle",
+    "category": "hope",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The way to develop self-confidence is to do the thing you fear and get a record of successful experiences behind you.",
+    "explanation": "Confidence builds through consistent action despite fear, creating a foundation of positive experiences.",
+    "author": "William Jennings Bryan",
+    "category": "confidence",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Try to be a rainbow in someone's cloud.",
+    "explanation": "Be a source of light and joy for others, especially during their difficult moments.",
+    "author": "Maya Angelou",
+    "category": "kindness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "If you are working on something that you really care about, you don't have to be pushed. The vision pulls you.",
+    "explanation": "True passion inspires consistent effort without external motivation.",
+    "author": "Steve Jobs",
+    "category": "passion",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Everything you can imagine is real.",
+    "explanation": "The power of imagination can bring ideas and dreams into tangible reality.",
+    "author": "Pablo Picasso",
+    "category": "imagination",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Your big opportunity may be right where you are now.",
+    "explanation": "Look for possibility in your current circumstances rather than waiting for perfect conditions.",
+    "author": "Napoleon Hill",
+    "category": "opportunity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The art of living lies less in eliminating our troubles than in growing with them.",
+    "explanation": "Life's challenges are opportunities for personal development and wisdom.",
+    "author": "Bernard M. Baruch",
+    "category": "growth",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "A hero is an ordinary individual who finds the strength to persevere and endure in spite of overwhelming obstacles.",
+    "explanation": "Courage comes from everyday people who refuse to give up despite great challenges.",
+    "author": "Christopher Reeve",
+    "category": "heroism",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Trust yourself. You know more than you think you do.",
+    "explanation": "Your intuition and inner wisdom are more reliable than you might realize.",
+    "author": "Benjamin Spock",
+    "category": "self-trust",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The future belongs to those who believe in the beauty of their dreams.",
+    "explanation": "Pursue your vision with conviction, and you will create the future you desire.",
+    "author": "Eleanor Roosevelt",
+    "category": "dreams",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Don't watch the clock; do what it does. Keep going.",
+    "explanation": "Focus on progress rather than time—maintain consistent forward motion.",
+    "author": "Sam Levenson",
+    "category": "consistency",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The supreme art of war is to subdue the enemy without fighting.",
+    "explanation": "True wisdom comes from resolving conflicts through understanding rather than confrontation.",
+    "author": "Sun Tzu",
+    "category": "wisdom",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Life isn't about finding yourself. Life is about creating yourself.",
+    "explanation": "Be intentional about shaping your character and life experiences.",
+    "author": "George Bernard Shaw",
+    "category": "creation",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Sometimes you win, sometimes you learn.",
+    "explanation": "Every experience, even setbacks, contains valuable lessons for growth.",
+    "author": "John C. Maxwell",
+    "category": "learning",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The difference between ordinary and extraordinary is that little extra.",
+    "explanation": "Small efforts can create extraordinary results when applied consistently.",
+    "author": "Jimmy Johnson",
+    "category": "extraordinary",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Calm mind brings inner strength and self-confidence.",
+    "explanation": "Mental peace and clarity are the foundations of true strength and self-assurance.",
+    "author": "Anonymous",
+    "category": "calm",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "When one door closes, another opens; but we often look so long and so regretfully upon the closed door that we do not see the one which has opened for us.",
+    "explanation": "Focus on new opportunities rather than regretting what has passed.",
+    "author": "Alexander Graham Bell",
+    "category": "opportunity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The secret of getting ahead is getting started.",
+    "explanation": "Overcome procrastination by taking that first crucial step forward.",
+    "author": "Mark Twain",
+    "category": "action",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Whatever you do, do it with all your might.",
+    "explanation": "Complete commitment in all endeavors maximizes your impact and satisfaction.",
+    "author": "Marcus Tullius Cicero",
+    "category": "commitment",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Challenges are what make life interesting and overcoming them is what makes life meaningful.",
+    "explanation": "Difficulties provide opportunities for growth and give life profound purpose.",
+    "author": "Joshua J. Marine",
+    "category": "meaning",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The best preparation for tomorrow is doing your best today.",
+    "explanation": "Consistent daily effort creates optimal conditions for future success.",
+    "author": "H. Jackson Brown, Jr.",
+    "category": "preparation",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Circumstances don't make the man, they reveal him.",
+    "explanation": "Your true character emerges during challenging situations.",
+    "author": "James Allen",
+    "category": "character",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Go confidently in the direction of your dreams. Live the life you have imagined.",
+    "explanation": "Pursue your aspirations with bold faith and live with intent and purpose.",
+    "author": "Henry David Thoreau",
+    "category": "dreams",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The quality of your life is the quality of your relationships.",
+    "explanation": "Deep, meaningful connections with others fundamentally enrich your life experience.",
+    "author": "Anthony Robbins",
+    "category": "relationships",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Dream big and dare to fail.",
+    "explanation": "Be ambitious but understand that failure is often part of achieving greatness.",
+    "author": "Norman Vaughan",
+    "category": "dreams",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Sometimes the smallest step in the right direction ends up being the biggest step of your life.",
+    "explanation": "Don't underestimate the power of seemingly small actions toward meaningful change.",
+    "author": "Naeem Callaway",
+    "category": "progress",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Your attitude, not your aptitude, will determine your altitude.",
+    "explanation": "Your mindset and approach are more important than natural talent for achieving success.",
+    "author": "Zig Ziglar",
+    "category": "attitude",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "We become what we think about most of the time.",
+    "explanation": "Your dominant thoughts shape your reality and determine the direction of your life.",
+    "author": "Earl Nightingale",
+    "category": "thoughts",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The greatest pleasure in life is doing what people say you cannot do.",
+    "explanation": "Proving doubters wrong creates immense satisfaction and self-confidence.",
+    "author": "Walter Bagehot",
+    "category": "achievement",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Be curious, not judgmental.",
+    "explanation": "Approach life with wonder and openness rather than criticism and assumptions.",
+    "author": "Walt Whitman",
+    "category": "curiosity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The function of leadership is to produce more leaders, not more followers.",
+    "explanation": "True leadership empowers and develops others rather than creating dependency.",
+    "author": "Ralph Nader",
+    "category": "leadership",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Somewhere, something incredible is waiting to be known.",
+    "explanation": "The world holds mysteries and possibilities beyond your current understanding.",
+    "author": "Carl Sagan",
+    "category": "discovery",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "A goal without a plan is just a wish.",
+    "explanation": "Intentions become reality only when paired with concrete action steps.",
+    "author": "Antoine de Saint-Exupéry",
+    "category": "planning",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Experience is not what happens to you; it's what you do with what happens to you.",
+    "explanation": "How you interpret and respond to life's events determines your growth and wisdom.",
+    "author": "Aldous Huxley",
+    "category": "experience",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Success usually comes to those who are too busy to be looking for it.",
+    "explanation": "Focus on meaningful work rather than obsessing over achievement and success will follow.",
+    "author": "Henry David Thoreau",
+    "category": "focus",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "What you can do, or dream you can, begin it. Boldness has genius and magic in it.",
+    "explanation": "Begin what you believe is possible—courage leads to extraordinary outcomes.",
+    "author": "Johann Wolfgang von Goethe",
+    "category": "boldness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The only real mistake is the one from which we learn nothing.",
+    "explanation": "Failure becomes meaningless if it doesn't contribute to your personal growth.",
+    "author": "Henry Ford",
+    "category": "learning",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Do not wait to strike till the iron is hot; but make it hot by striking.",
+    "explanation": "Take initiative to create the perfect conditions for success rather than waiting passively.",
+    "author": "William Butler Yeats",
+    "category": "initiative",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "People often say that motivation doesn't last. Well, neither does bathing—that's why we recommend it daily.",
+    "explanation": "Consistent daily practices, even basic ones, maintain our progress and development.",
+    "author": "Zig Ziglar",
+    "category": "consistency",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Your time is precious, so don't waste it living someone else's life.",
+    "explanation": "Spend your limited time on what truly matters to you, not others' expectations.",
+    "author": "Steve Jobs",
+    "category": "purpose",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "I find that the harder I work, the more luck I seem to have.",
+    "explanation": "Effort and preparation position you perfectly for favorable 'luck' to find you.",
+    "author": "Thomas Jefferson",
+    "category": "hard-work",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "To handle yourself, use your head; to handle others, use your heart.",
+    "explanation": "Self-management requires intellect, while dealing with others requires empathy.",
+    "author": "Eleanor Roosevelt",
+    "category": "wisdom",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Opportunities don't happen. You create them.",
+    "explanation": "Be proactive in generating your own possibilities rather than waiting passively.",
+    "author": "Chris Grosser",
+    "category": "opportunity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The key to happiness is letting each situation be what it is instead of what you think it should be.",
+    "explanation": "Acceptance of reality creates peace, while resistance to it creates suffering.",
+    "author": "Anonymous",
+    "category": "acceptance",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Great things are done by a series of small things brought together.",
+    "explanation": "Major achievements emerge from accumulated small, consistent efforts.",
+    "author": "Vincent van Gogh",
+    "category": "achievement",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Don't count the days, make the days count.",
+    "explanation": "Focus on meaningful progress and impact rather than just marking time.",
+    "author": "Muhammad Ali",
+    "category": "purpose",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "When you are inspired by some great purpose, some extraordinary project, all your thoughts break their bonds.",
+    "explanation": "Meaningful goals liberate your creativity and expand your potential.",
+    "author": "Patanjali",
+    "category": "inspiration",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The more you praise and celebrate your life, the more there is in life to celebrate.",
+    "explanation": "Expressing gratitude amplifies the positive aspects of your life experience.",
+    "author": "Oprah Winfrey",
+    "category": "gratitude",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Success is walking from failure to failure with no loss of enthusiasm.",
+    "explanation": "Maintain passion and energy despite repeated setbacks and learning experiences.",
+    "author": "Winston Churchill",
+    "category": "enthusiasm",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The meaning of life is to find your gift. The purpose of life is to give it away.",
+    "explanation": "Your unique talents exist to serve others and contribute positively to the world.",
+    "author": "Pablo Picasso",
+    "category": "purpose",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "If you want to change the world, change yourself first.",
+    "explanation": "Personal transformation is the foundation for creating broader positive impact.",
+    "author": "Anonymous",
+    "category": "change",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The best way to cheer yourself up is to try to cheer somebody else up.",
+    "explanation": "Helping others creates positive emotions and perspective in your own life.",
+    "author": "Mark Twain",
+    "category": "kindness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "When you have a dream, you've got to grab it and never let go.",
+    "explanation": "Hold tightly to your aspirations and persevere despite challenges and doubters.",
+    "author": "Carol Burnett",
+    "category": "persistence",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Innovation distinguishes between a leader and a follower.",
+    "explanation": "Creative thinking and new approaches separate true leaders from those who follow.",
+    "author": "Steve Jobs",
+    "category": "innovation",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Your life only gets better when you get better.",
+    "explanation": "Personal growth and improvement enhance the quality of all your life experiences.",
+    "author": "Brian Tracy",
+    "category": "growth",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The darkest nights produce the brightest stars.",
+    "explanation": "Great difficulties often precede the most beautiful personal achievements and growth.",
+    "author": "John Green",
+    "category": "hope",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Peace comes from within. Do not seek it without.",
+    "explanation": "Inner tranquility originates from within yourself, not external circumstances.",
+    "author": "Buddha",
+    "category": "peace",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Life is either a daring adventure or nothing at all.",
+    "explanation": "Approach life with courage and openness for it to become truly fulfilling.",
+    "author": "Helen Keller",
+    "category": "adventure",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The purpose of our lives is to be happy.",
+    "explanation": "Happiness is our fundamental human goal and life's ultimate objective.",
+    "author": "Dalai Lama XIV",
+    "category": "happiness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Turn your wounds into wisdom.",
+    "explanation": "Transform painful experiences into valuable life lessons and personal growth.",
+    "author": "Oprah Winfrey",
+    "category": "wisdom",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "You are braver than you believe, stronger than you seem, and smarter than you think.",
+    "explanation": "You possess more inner reserves than you currently recognize or utilize.",
+    "author": "A.A. Milne",
+    "category": "strength",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Everything in the universe has a rhythm, everything dances.",
+    "explanation": "Life flows with natural cycles and rhythms that we can choose to dance with.",
+    "author": "Maya Angelou",
+    "category": "rhythm",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Be the reason someone smiles. Be the reason someone feels loved and believes in the goodness in people.",
+    "explanation": "Spread positivity through small acts that uplift and inspire others.",
+    "author": "Roy T. Bennett",
+    "category": "kindness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Always do your best. What you plant now, you will harvest later.",
+    "explanation": "Consistent effort and quality work create future benefits and rewards.",
+    "author": "Og Mandino",
+    "category": "excellence",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Learning is a gift. Even when pain is your teacher.",
+    "explanation": "Every experience, even painful ones, contains valuable opportunities for learning.",
+    "author": "Maya Angelou",
+    "category": "learning",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The remedy for anything is salt water—sweat, tears or the sea.",
+    "explanation": "Physical and emotional release helps heal and resolve various types of challenges.",
+    "author": "Karen Blixen",
+    "category": "healing",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "All you need is the plan, the road map, and the courage to press on to your destination.",
+    "explanation": "Clear planning combined with bravery will carry you to your goals.",
+    "author": "Earl Nightingale",
+    "category": "planning",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "There is power in vulnerability; there is peace in acceptance; there is purpose in growth.",
+    "explanation": "Embracing vulnerability, accepting reality, and growing through challenges create meaningful life experience.",
+    "author": "Anonymous",
+    "category": "growth",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The butterfly does not look back when it has become a soaring bird.",
+    "explanation": "Transformation and growth make it natural to move forward without regret.",
+    "author": "Rumi",
+    "category": "transformation",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Sometimes, to love someone, we have to be willing to walk away.",
+    "explanation": "True love may require creating space or boundaries that are ultimately best for both parties.",
+    "author": "Anonymous",
+    "category": "love",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Faith is taking the first step even when you can't see the whole staircase.",
+    "explanation": "Trust allows you to move forward with limited information, knowing the path will reveal itself.",
+    "author": "Martin Luther King, Jr.",
+    "category": "faith",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The way you speak to yourself matters the way you speak to someone else.",
+    "explanation": "Be as compassionate and encouraging with yourself as you would be with a beloved friend.",
+    "author": "Anonymous",
+    "category": "self-love",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Keep doing the right thing, even when people believe it's wrong.",
+    "explanation": "Stay committed to your principles even when others disagree or misunderstand.",
+    "author": "Anonymous",
+    "category": "integrity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Sometimes, heart-breaking things become heart-mending things.",
+    "explanation": "Painful experiences often contain seeds for personal healing and growth.",
+    "author": "Anonymous",
+    "category": "healing",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "A wise person once said that family is not an important thing. It's everything.",
+    "explanation": "Strong family relationships form the foundation of meaning and support in life.",
+    "author": "Anonymous",
+    "category": "family",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Stay close to anything that makes you glad you're alive.",
+    "explanation": "Cultivate relationships and activities that bring genuine joy and gratitude.",
+    "author": "Hafez",
+    "category": "joy",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Let yourself be silently drawn by the strange pull of what you really love. It will not lead you astray.",
+    "explanation": "Following your authentic passions will guide you toward your true path.",
+    "author": "Rumi",
+    "category": "passion",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "You came this far and you're still breathing.",
+    "explanation": "Your journey thus far demonstrates incredible resilience and strength.",
+    "author": "Anonymous",
+    "category": "resilience",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "And those who were seen dancing were thought to be crazy by those who couldn't hear the music.",
+    "explanation": "Following your unique path may seem irrational to others, but it brings you authentic joy.",
+    "author": "Friedrich Nietzsche",
+    "category": "authenticity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The world had no idea what it was doing when it made you, but trust me, it did it exactly right.",
+    "explanation": "You are uniquely positioned and perfectly equipped for the specific challenges and purposes of your life.",
+    "author": "Anonymous",
+    "category": "uniqueness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Practice compassion. Always ask yourself—what manner of thoughts and speech and actions will most benefit others?",
+    "explanation": "Consider the impact of your words and actions on others—choose those that create benefit.",
+    "author": "Anonymous",
+    "category": "compassion",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "I lived through it all, and I remember everything, but you can't see any of it. You can't see my blood, sweat, and tears.",
+    "explanation": "The inner work and effort you put in may not be visible to others, but it's what shapes your character.",
+    "author": "Anonymous",
+    "category": "resilience",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "No one is you and that is your superpower.",
+    "explanation": "Your unique combination of experiences, perspectives, and qualities make you irreplaceable.",
+    "author": "The Oatmeal",
+    "category": "uniqueness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Carry it with you, but don't let it weigh you down.",
+    "explanation": "Learn from your past experiences but don't let them burden your present or limit your future.",
+    "author": "Anonymous",
+    "category": "wisdom",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Mindfulness isn't difficult. We just need to remember to do it.",
+    "explanation": "Being present is simple—we just need to consciously choose to practice it regularly.",
+    "author": "Sharon Salzberg",
+    "category": "mindfulness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Be a force for change. Start with your own life.",
+    "explanation": "Create the transformation you wish to see by starting with your own choices and actions.",
+    "author": "Anonymous",
+    "category": "change",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "What you plant now, you will harvest later. Always plant good seeds.",
+    "explanation": "Your current actions and thoughts determine the quality of your future experiences and outcomes.",
+    "author": "Anonymous",
+    "category": "planting",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Just be good. That's all. Nothing fancy.",
+    "explanation": "Simple kindness and basic goodness are profoundly effective at improving the world.",
+    "author": "Anonymous",
+    "category": "goodness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "A warm smile is the universal language of kindness.",
+    "explanation": "Kindness transcends cultural and linguistic barriers, communicated through genuine friendliness.",
+    "author": "William Arthur Ward",
+    "category": "kindness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Every great dream begins with a dreamer. Always remember, you have within you the strength, the patience, and the passion to reach for the stars to change the world.",
+    "explanation": "You possess all the inner resources needed to pursue ambitious dreams and create meaningful change.",
+    "author": "Harriet Tubman",
+    "category": "dreams",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "If you can dream it, you can do it.",
+    "explanation": "Your imagination creates the blueprint for what can become reality through determined effort.",
+    "author": "Walt Disney",
+    "category": "dreams",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The only limit to our realization of tomorrow will be our doubts of today.",
+    "explanation": "Our self-doubt and limiting beliefs are the primary obstacles to achieving our potential.",
+    "author": "Franklin D. Roosevelt",
+    "category": "limiting-beliefs",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Be yourself; everyone else is already taken.",
+    "explanation": "Authenticity distinguishes you and allows your unique qualities to shine through.",
+    "author": "Oscar Wilde",
+    "category": "authenticity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The best way out is always through.",
+    "explanation": "Face challenges directly rather than avoiding them—the path forward often requires persistence.",
+    "author": "Robert Frost",
+    "category": "perseverance",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "In a gentle way, you can shake the world.",
+    "explanation": "Small, compassionate actions can create significant positive change in the world.",
+    "author": "Mahatma Gandhi",
+    "category": "compassion",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The quieter you become, the more you can hear.",
+    "explanation": "Inner silence and stillness reveal insights that are otherwise drowned out by noise.",
+    "author": "Ram Dass",
+    "category": "mindfulness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "What we think, we become.",
+    "explanation": "Our thoughts shape our reality and determine the trajectory of our lives.",
+    "author": "Buddha",
+    "category": "mindset",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The whole is greater than the sum of its parts.",
+    "explanation": "Meaningful relationships and collaborations create outcomes greater than individual efforts.",
+    "author": "Aristotle",
+    "category": "collaboration",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Wherever you stand, be the soul of that place.",
+    "explanation": "Bring your unique essence and highest qualities to every situation you encounter.",
+    "author": "Rumi",
+    "category": "presence",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The purpose of life is a life of purpose.",
+    "explanation": "Living with intention and meaning creates fulfillment and joy in existence.",
+    "author": "Robin Sharma",
+    "category": "purpose",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "He who has a why to live can bear almost any how.",
+    "explanation": "Having purpose and meaning gives you the strength to endure significant challenges.",
+    "author": "Friedrich Nietzsche",
+    "category": "purpose",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Simplicity is the ultimate sophistication.",
+    "explanation": "True elegance and wisdom often come from clarity and removing unnecessary complexity.",
+    "author": "Leonardo da Vinci",
+    "category": "simplicity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Live simply that others may simply live.",
+    "explanation": "Your conscious consumption and mindful living create space for harmony with others.",
+    "author": "Elizabeth Ann Seton",
+    "category": "mindfulness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Our doubts are traitors, and make us lose the good we oft might win, by fearing to attempt.",
+    "explanation": "Self-doubt prevents us from pursuing opportunities that could lead to success.",
+    "author": "William Shakespeare",
+    "category": "courage",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "To be great is to be misunderstood.",
+    "explanation": "Those at the forefront of change often face criticism but create lasting impact.",
+    "author": "Ralph Waldo Emerson",
+    "category": "leadership",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The world is full of magic things, patiently waiting for our senses to grow sharper.",
+    "explanation": "Life holds more beauty and possibilities when we cultivate awareness and appreciation.",
+    "author": "W.B. Yeats",
+    "category": "awareness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "In the presence of eternity, the mountains are as transient as the clouds.",
+    "explanation": "Viewing life's events from a broader perspective helps maintain focus on what truly matters.",
+    "author": "Robert Green Ingersoll",
+    "category": "perspective",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The wise man does at once what the fool does finally.",
+    "explanation": "Wisdom comes from taking timely, proactive steps rather than reactive measures.",
+    "author": "Niccolò Machiavelli",
+    "category": "wisdom",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "All our knowledge has its origins in our perceptions.",
+    "explanation": "Understanding begins with observation and paying attention to our experiences.",
+    "author": "Leonardo da Vinci",
+    "category": "awareness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The soul is dyed the color of its thoughts.",
+    "explanation": "Your consistent thoughts shape your character and emotional state of being.",
+    "author": "Marcus Aurelius",
+    "category": "thoughts",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Do what you can, with what you have, where you are.",
+    "explanation": "Start with your current resources and situation rather than waiting for perfect conditions.",
+    "author": "Theodore Roosevelt",
+    "category": "action",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Seek patience and passion in equal amounts.",
+    "explanation": "Balancing calm persistence with enthusiastic energy creates productive momentum.",
+    "author": "Phil Borges",
+    "category": "balance",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "What you seek is seeking you.",
+    "explanation": "The answers and opportunities you're looking for are often finding their way to you too.",
+    "author": "Rumi",
+    "category": "synchronicity",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The question isn't who is going to let me; it's who is going to stop me.",
+    "explanation": "Focus on overcoming barriers rather than asking permission to pursue your goals.",
+    "author": "Ayn Rand",
+    "category": "determination",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Make your life a masterpiece; imagine no limitations on what you can be, have or do.",
+    "explanation": "Life becomes extraordinary when you remove mental boundaries and embrace unlimited possibility.",
+    "author": "Brian Tracy",
+    "category": "unlimited-potential",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The deeper that sorrow carves into your being, the more joy you can contain.",
+    "explanation": "Experiences of pain and loss create greater capacity for gratitude and happiness.",
+    "author": "Kahlil Gibran",
+    "category": "joy",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "We're all just walking each other home.",
+    "explanation": "Human connection involves supporting one another as we all journey through life.",
+    "author": "Ram Dass",
+    "category": "connection",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "One can have no smaller or greater mastery than mastery of oneself.",
+    "explanation": "Self-mastery is the most significant achievement and skill you can develop.",
+    "author": "Leonardo da Vinci",
+    "category": "self-discipline",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Do not go where the path may lead, go instead where there is no path and leave a trail.",
+    "explanation": "Be willing to blaze new trails rather than following established routes.",
+    "author": "Ralph Waldo Emerson",
+    "category": "leadership",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed.",
+    "explanation": "Meaningful relationships create change and growth in all participants involved.",
+    "author": "Carl Jung",
+    "category": "relationships",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The cave you fear to enter holds the treasure you seek.",
+    "explanation": "The obstacles we're most afraid of often contain the greatest opportunities for growth.",
+    "author": "Joseph Campbell",
+    "category": "transformation",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Love is composed of a single soul inhabiting two bodies.",
+    "explanation": "Deep connection creates a sense of unity while maintaining individual identities.",
+    "author": "Aristotle",
+    "category": "love",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The only journey is the journey within.",
+    "explanation": "True self-discovery and growth come from exploring your inner landscape.",
+    "author": "Rainer Maria Rilke",
+    "category": "self-discovery",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Reality is merely an illusion, albeit a very persistent one.",
+    "explanation": "Our understanding of reality is subjective and shapes our experience of the world.",
+    "author": "Albert Einstein",
+    "category": "perception",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "The unfinished pigment cannot be distinguished from the dark.",
+    "explanation": "Transformation often appears messy before it reveals the beautiful final result.",
+    "author": "Anonymous",
+    "category": "transformation",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Old minds are like old horses; you must exercise them if you wish to keep them in working order.",
+    "explanation": "Continuous learning and mental engagement maintain cognitive abilities and wisdom.",
+    "author": "John Adams",
+    "category": "learning",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "No one remains quite what he was when he recognizes himself.",
+    "explanation": "Self-awareness creates lasting change and prevents treating yourself as static.",
+    "author": "Thomas Mann",
+    "category": "self-awareness",
+    "isAiGenerated": false
+  },
+  {
+    "quote": "Ask for what you want and be prepared to get it.",
+    "explanation": "Stand in your power by clearly announcing your needs and receiving what's available to you.",
+    "author": "Maya Angelou",
+    "category": "personal-power",
+    "isAiGenerated": false
+  }
+]

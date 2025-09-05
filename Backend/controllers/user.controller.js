@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 export const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user.userId).select("-password");
     
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -19,7 +19,7 @@ export const getUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const { username, email } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     // Check if email is already taken by another user
     if (email) {
@@ -57,7 +57,7 @@ export const updateUserProfile = async (req, res) => {
 export const updateUserPassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     // Validate input
     if (!currentPassword || !newPassword) {
@@ -94,7 +94,7 @@ export const updateUserPassword = async (req, res) => {
 
 export const uploadProfilePhoto = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });

@@ -72,15 +72,8 @@ export const createJournal = async (req, res) => {
     });
 
     const savedJournal = await newJournal.save();
-    
-    // Trigger AI workflow automatically after journal creation
-    try {
-      console.log(`🚀 Auto-triggering AI workflow for new journal ${savedJournal._id}`);
-      await AIWorkflowService.processJournalWorkflow(savedJournal._id, userId);
-    } catch (workflowError) {
-      console.error('AI workflow failed for new journal:', workflowError);
-      // Don't fail the journal creation if AI workflow fails
-    }
+
+    // Removed auto-triggering of AI workflow - users can now manually generate quotes from the quote page
 
     res.status(201).json({ success: true, data: savedJournal });
   } catch (error) {

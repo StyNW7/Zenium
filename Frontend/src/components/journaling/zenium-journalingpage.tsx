@@ -238,10 +238,6 @@ export function ZeniumJournalingPage() {
     setFilteredEntries(filtered);
   }, [entries, searchQuery, sortOrder]);
 
-
-
-
-
   function resetForm() {
     setTitle('');
     setContent('');
@@ -283,25 +279,23 @@ export function ZeniumJournalingPage() {
       };
       setEntries(prev => [created, ...prev]);
 
-      // Analyze and attach, then generate personalized quote
+      // Analyze and attach (no quote generation for journal saves)
       try {
         await axios.post(`${apiUrl}/journals/${j._id}/analyze-attach`, {}, { headers: authHeaders });
-        await axios.get(`${apiUrl}/daily-quote`, { headers: authHeaders, params: { forceNew: true, mood } });
         await fetchEntries();
+        await fetchRecommendations();
       } catch (error) {
-        console.error('Post-save analyze+quote failed', error);
+        console.error('Post-save analyze failed', error);
       }
 
-      const go = await Swal.fire({
-        title: 'Journal saved',
-        text: 'A personalized quote has been generated. Open Quote page?',
+      await Swal.fire({
+        title: 'Journal saved successfully',
+        text: 'Your journal has been analyzed and personalized recommendations have been generated.',
         icon: 'success',
-        showCancelButton: true,
-        confirmButtonText: 'Go to Quotes'
+        confirmButtonText: 'Great!',
+        timer: 2000,
+        timerProgressBar: true
       });
-      if (go.isConfirmed) {
-        navigate('/quote');
-      }
       resetForm();
       setIsCreating(false);
     } catch (e) {
@@ -324,24 +318,24 @@ export function ZeniumJournalingPage() {
         privacy: 'private'
       };
       await axios.put(`${apiUrl}/journals/${currentEntry.id}`, body, { headers: authHeaders });
-      // Analyze and attach, then generate personalized quote
+      // Analyze and attach (no quote generation for journal updates)
       try {
         await axios.post(`${apiUrl}/journals/${currentEntry.id}/analyze-attach`, {}, { headers: authHeaders });
-        await axios.get(`${apiUrl}/daily-quote`, { headers: authHeaders, params: { forceNew: true, mood: currentEntry.mood } });
+        await fetchEntries();
+        await fetchRecommendations();
       } catch (error) {
-        console.error('Post-update analyze+quote failed', error);
+        console.error('Post-update analyze failed', error);
       }
-      await fetchEntries();
       setIsEditing(false);
       setCurrentEntry(null);
-      const go2 = await Swal.fire({
-        title: 'Journal updated',
-        text: 'A personalized quote has been generated. Open Quote page?',
+      await Swal.fire({
+        title: 'Journal updated successfully',
+        text: 'Your journal has been re-analyzed and personalized recommendations have been updated.',
         icon: 'success',
-        showCancelButton: true,
-        confirmButtonText: 'Go to Quotes'
+        confirmButtonText: 'Great!',
+        timer: 2000,
+        timerProgressBar: true
       });
-      if (go2.isConfirmed) navigate('/quote');
     } catch (e) {
       console.error('Update journal failed', e);
       Swal.fire('Error', 'Failed to update journal.', 'error');
@@ -428,15 +422,18 @@ export function ZeniumJournalingPage() {
         console.warn('Quote generation after analyze failed', qe);
       }
 
-      // 3) Notify and optionally navigate to Quote page
-      const go = await Swal.fire({
+      // 3) Simply notify that analysis is complete (no quote generation) and recommendations are ready
+      await Swal.fire({
         title: 'Analysis complete',
-        text: 'Personalized quote generated. Open Quote page?',
+        text: 'AI analysis finished and personalized recommendations have been generated.',
         icon: 'success',
-        showCancelButton: true,
-        confirmButtonText: 'Go to Quotes'
+        confirmButtonText: 'Great!',
+        timer: 2000,
+        timerProgressBar: true
       });
-      if (go.isConfirmed) navigate('/quote');
+
+      // Refresh recommendations to show newly generated ones
+      await fetchRecommendations();
     } catch (e: any) {
       if (e?.response?.status === 401) {
         localStorage.removeItem('authToken');
@@ -743,7 +740,7 @@ export function ZeniumJournalingPage() {
                       <span className="text-sm font-medium text-blue-300">AI Workflow Status</span>
                     </div>
                     <div className="text-xs text-blue-200">
-                      ✓ Journal analyzed • ✓ Quote generated • ✓ Recommendations created
+                      ✓ Journal analyzed • ✓ Recommendations created
                     </div>
                     <div className="mt-2 flex gap-2">
                       <button

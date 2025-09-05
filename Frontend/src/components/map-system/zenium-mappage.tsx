@@ -12,8 +12,8 @@ import Swal from 'sweetalert2';
 
 // Helpers
 const getAuthToken = (): string | null => {
-  // Ambil dari localStorage dan sanitasi
-  const raw = localStorage.getItem('token') ?? localStorage.getItem('authToken');
+  // Ambil dari localStorage dan sanitasi - prioritasi authToken dari context
+  const raw = localStorage.getItem('authToken') ?? localStorage.getItem('token');
   if (!raw) return null;
   let t = raw.trim();
   // Jika token tersimpan pakai tanda kutip (mis. JSON.stringify token string)
@@ -242,26 +242,6 @@ export function ZeniumMapPage() {
 
     const onSuccess = async (data: AnalysisResult) => {
       setAnalysisResult(data);
-      // Auto-save analysis to DB if user is authenticated
-      try {
-        const token2 = getAuthToken();
-        if (token2) {
-          const saveRes = await axios.post(`${apiUrl}/analysis/save`, data, {
-            headers: { Authorization: `Bearer ${token2}` },
-          });
-          if (saveRes.data?.success && saveRes.data?.data) {
-            setSavedAnalyses((prev) => [saveRes.data.data, ...prev]);
-            await notify(
-              'success',
-              'Analysis complete',
-              `Saved to your history. Peacefulness: ${data.peacefulnessScore}/100 - ${data.peacefulnessLabel}`
-            );
-            return;
-          }
-        }
-      } catch (err) {
-        // ignore auto-save errors and show default success message
-      }
       await notify(
         'success',
         'Analysis complete',
@@ -318,9 +298,15 @@ export function ZeniumMapPage() {
         await notify('warning', 'Login required', 'Please login to save analysis.');
         return;
       }
+
+      // Debug: Log what we're sending
+      console.log('🔍 Save Analysis - Token present:', !!token);
+      console.log('📦 Data to save:', JSON.stringify(analysisResult, null, 2));
+
       const res = await axios.post(`${apiUrl}/analysis/save`, analysisResult, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (res.data?.success) {
         await notify('success', 'Saved', 'Analysis has been added to your history.');
         // reload history
@@ -329,10 +315,14 @@ export function ZeniumMapPage() {
         });
         if (h.data?.success) setSavedAnalyses(h.data.data);
       } else {
+        console.error('❌ Save failed - Response:', res.data);
         await notify('error', 'Failed to save analysis', res.data?.message || 'Please try again.');
       }
     } catch (e: any) {
-      await notify('error', 'Failed to save analysis', e?.response?.data?.message || 'Please try again.');
+      console.error('❌ Save error - Full response:', e.response);
+      console.error('❌ Save error - Request data:', e.config?.data);
+      const errorMessage = e?.response?.data?.message || e?.response?.data?.error || e?.message || 'Please try again.';
+      await notify('error', 'Failed to save analysis', errorMessage);
     } finally {
       setIsSaving(false);
     }
