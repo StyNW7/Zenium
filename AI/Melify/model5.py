@@ -30,9 +30,9 @@ from sklearn.linear_model import LogisticRegression
 
 # Transformers/OpenAI
 try:
-    import openai
+    from openai import OpenAI
 except Exception:
-    openai = None
+    OpenAI = None
 
 try:
     from transformers import AutoTokenizer, AutoModelForCausalLM, set_seed
@@ -57,9 +57,10 @@ CLASSIFIER_PATH = "theme_classifier.joblib"
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
-USE_OPENAI = (openai is not None and OPENAI_API_KEY is not None)
+USE_OPENAI = (OpenAI is not None and OPENAI_API_KEY is not None)
+client = None
 if USE_OPENAI:
-    openai.api_key = OPENAI_API_KEY
+    client = OpenAI(api_key=OPENAI_API_KEY)
 
 HF_MODEL_NAME = os.environ.get("HF_CASUAL_MODEL", "microsoft/DialoGPT-medium")  # fallback causal
 SEED = 42
@@ -244,8 +245,8 @@ def openai_chat_completion(system:str, user:str, max_tokens:int=200, temperature
     try:
         messages = [{"role":"system","content":system},
                     {"role":"user","content":user}]
-        resp = openai.ChatCompletion.create(model=OPENAI_MODEL, messages=messages, max_tokens=max_tokens, temperature=temperature)
-        text = resp["choices"][0]["message"]["content"].strip()
+        resp = client.chat.completions.create(model=OPENAI_MODEL, messages=messages, max_tokens=max_tokens, temperature=temperature)
+        text = resp.choices[0].message.content.strip()
         return text
     except Exception as e:
         print("[openai error]", e)

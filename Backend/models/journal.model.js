@@ -13,7 +13,7 @@ const journalSchema = new mongoose.Schema({
   },
   content: {
     type: String,
-    required: true,
+    required: false, // Remove minimum requirement
     maxlength: 2000,
   },
   mood: {
@@ -75,6 +75,17 @@ const journalSchema = new mongoose.Schema({
     type: Number,
     min: 0,
     max: 1
+  },
+  // AI Recommendation (single recommendation per journal)
+  aiRecommendation: {
+    title: { type: String },
+    description: { type: String },
+    reason: { type: String },
+    timeEstimate: { type: String },
+    type: { type: String },
+    isCompleted: { type: Boolean, default: false },
+    completedAt: { type: Date },
+    generatedAt: { type: Date, default: Date.now }
   },
   // Optional: attached PDF of this journal (generated client-side)
   pdf: {
