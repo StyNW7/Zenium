@@ -30,7 +30,7 @@ if (isDevelopment) {
   corsOptions = {
     origin: ["http://localhost:5173", "http://localhost:3000"], // Explicitly allow frontend and backend for local dev
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -46,7 +46,7 @@ if (isDevelopment) {
   corsOptions = {
     credentials: true,
     origin: ["https://zenium-frontend.vercel.app", "https://www.zenium-melify.id"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",

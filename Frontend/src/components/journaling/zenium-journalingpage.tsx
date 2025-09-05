@@ -59,6 +59,15 @@ interface JournalEntry {
   mentalHealthClassification?: 'safe' | 'needs_attention' | 'high_risk';
   riskScore?: number;
   aiInsights?: AIInsights;
+  aiRecommendation?: {
+    title: string;
+    description: string;
+    reason: string;
+    timeEstimate: string;
+    type: string;
+    isCompleted: boolean;
+    generatedAt: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -101,6 +110,37 @@ export function ZeniumJournalingPage() {
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
+  // Add custom styles for animations
+  const customStyles = `
+    <style>
+      @keyframes bounce-in {
+        0% { transform: scale(0.3); opacity: 0; }
+        50% { transform: scale(1.05); }
+        70% { transform: scale(0.9); }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+        50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.8); }
+      }
+      .animate-bounce-in {
+        animation: bounce-in 0.6s ease-out;
+      }
+      .checkbox-glow {
+        transition: all 0.3s ease;
+      }
+      .checkbox-glow:checked {
+        animation: pulse-glow 2s infinite;
+      }
+      .hover-lift {
+        transition: transform 0.2s ease;
+      }
+      .hover-lift:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  `;
+
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<JournalEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -132,6 +172,9 @@ export function ZeniumJournalingPage() {
     riskScore: number;
   } | null>(null);
 
+  // Completion status state
+  const [completedRecommendations, setCompletedRecommendations] = useState<Set<string>>(new Set());
+
   // Voice recognition
   const [recording, setRecording] = useState(false);
   const recognitionRef = useRef<any>(null);
@@ -139,6 +182,28 @@ export function ZeniumJournalingPage() {
   const token = useMemo(() => getAuthToken(), []);
 
   const authHeaders = useMemo(() => (token ? { Authorization: `Bearer ${token}` } : {}), [token]);
+
+  // Load completion status from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('completedRecommendations');
+    if (saved) {
+      try {
+        const completedIds = JSON.parse(saved);
+        setCompletedRecommendations(new Set(completedIds));
+      } catch (e) {
+        console.error('Error loading completion status:', e);
+      }
+    }
+  }, []);
+
+  // Save completion status to localStorage
+  const saveCompletionStatus = (completedSet: Set<string>) => {
+    try {
+      localStorage.setItem('completedRecommendations', JSON.stringify(Array.from(completedSet)));
+    } catch (e) {
+      console.error('Error saving completion status:', e);
+    }
+  };
 
   // Fetch entries and recommendations on mount
   useEffect(() => {
@@ -172,19 +237,28 @@ export function ZeniumJournalingPage() {
   const res = await axios.get(`${apiUrl}/journals`, { headers: authHeaders });
   const apiResponse: any = res.data?.data || [];
   const list = apiResponse.map((j: any): JournalEntry => ({
-        id: j._id,
-        title: j.title,
-        content: j.content,
-        mood: j.mood,
-        moodRating: j.moodRating,
-        guidedQuestions: j.guidedQuestions || [],
-        voiceTranscript: j.voiceTranscript || '',
-        mentalHealthClassification: j.mentalHealthClassification,
-        riskScore: j.riskScore,
-        aiInsights: j.aiInsights || {},
-        createdAt: j.createdAt,
-        updatedAt: j.updatedAt,
-      }));
+       id: j._id,
+       title: j.title,
+       content: j.content,
+       mood: j.mood,
+       moodRating: j.moodRating,
+       guidedQuestions: j.guidedQuestions || [],
+       voiceTranscript: j.voiceTranscript || '',
+       mentalHealthClassification: j.mentalHealthClassification,
+       riskScore: j.riskScore,
+       aiInsights: j.aiInsights || {},
+       aiRecommendation: j.aiRecommendation ? {
+         title: j.aiRecommendation.title,
+         description: j.aiRecommendation.description,
+         reason: j.aiRecommendation.reason,
+         timeEstimate: j.aiRecommendation.timeEstimate,
+         type: j.aiRecommendation.type,
+         isCompleted: j.aiRecommendation.isCompleted,
+         generatedAt: j.aiRecommendation.generatedAt,
+       } : undefined,
+       createdAt: j.createdAt,
+       updatedAt: j.updatedAt,
+     }));
       setEntries(list);
     } catch (e) {
       console.error('Fetch journals failed', e);
@@ -206,19 +280,57 @@ export function ZeniumJournalingPage() {
     }
   }
 
-
   async function fetchRecommendations() {
     try {
       if (!token) return;
       setRecommendationsLoading(true);
-      const res = await axios.get(`${apiUrl}/recommendations`, { headers: authHeaders, params: { limit: 10, page: 1 } });
-      setRecommendations(res.data?.data || []);
+
+      // Get all journals that have AI recommendations
+      const journalsRes = await axios.get(`${apiUrl}/journals`, { headers: authHeaders });
+      const journals = journalsRes.data?.data || [];
+
+      // Filter journals that have AI recommendations and extract them
+      const aiRecommendations = journals
+        .filter((journal: any) => journal.aiRecommendation)
+        .map((journal: any) => ({
+          _id: journal._id, // Use journal ID as recommendation ID
+          title: journal.aiRecommendation.title,
+          description: journal.aiRecommendation.description,
+          reason: journal.aiRecommendation.reason,
+          timeEstimate: journal.aiRecommendation.timeEstimate,
+          type: journal.aiRecommendation.type,
+          isCompleted: journal.aiRecommendation.isCompleted,
+          generatedAt: journal.aiRecommendation.generatedAt,
+          priority: 'medium', // Default priority
+          category: 'short_term', // Default category
+          tags: ['personalized', 'ai-generated'],
+          aiGenerated: true,
+          journalId: {
+            _id: journal._id,
+            title: journal.title,
+            content: journal.content.substring(0, 100) + '...', // Truncate content
+            mood: journal.mood,
+            createdAt: journal.createdAt
+          },
+          context: {
+            mood: journal.mood,
+            sentiment: journal.mentalHealthClassification || 'neutral',
+            keywords: [],
+            riskScore: journal.riskScore || 0
+          },
+          createdAt: journal.aiRecommendation.generatedAt
+        }))
+        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Sort by newest first
+
+      setRecommendations(aiRecommendations);
     } catch (e) {
       console.error('Fetch recommendations failed', e);
     } finally {
       setRecommendationsLoading(false);
     }
   }
+
+
 
   // Filter + sort
   useEffect(() => {
@@ -386,7 +498,7 @@ export function ZeniumJournalingPage() {
   }
 
   // Analyze (AI): process with backend (Qwen) and generate a personalized quote
-  async function analyzeCurrent(contentText: string, moodVal: Mood, moodRatingVal: number) {
+  async function analyzeCurrent(contentText: string, moodVal: Mood, moodRatingVal: number, journalId?: string) {
     try {
       if (!contentText || contentText.trim().length < 10) {
         await Swal.fire('Add more detail', 'Please write a bit more (at least 10 characters) before analyzing.', 'info');
@@ -403,10 +515,11 @@ export function ZeniumJournalingPage() {
       }
 
       // 1) Analyze with backend (uses Qwen under the hood)
-      const res = await axios.post(`${apiUrl}/journals/analyze`, {
+      const res = await axios.post(`${apiUrl}/journals/analyze-my-journal`, {
         content: contentText,
         mood: moodVal,
-        moodRating: moodRatingVal
+        moodRating: moodRatingVal,
+        journalId: journalId || (isEditing ? currentEntry?.id : null)
       }, { headers: { Authorization: `Bearer ${t}` } });
       const data = res.data?.data || null;
       setAnalysis(data);
@@ -432,7 +545,8 @@ export function ZeniumJournalingPage() {
         timerProgressBar: true
       });
 
-      // Refresh recommendations to show newly generated ones
+      // Refresh both journal entries and recommendations to show newly generated ones
+      await fetchEntries();
       await fetchRecommendations();
     } catch (e: any) {
       if (e?.response?.status === 401) {
@@ -553,7 +667,9 @@ export function ZeniumJournalingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <>
+      <div dangerouslySetInnerHTML={{ __html: customStyles }} />
+      <div className="min-h-screen bg-black text-white">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-10 bg-black/80 backdrop-blur-md border-b border-yellow-500/20 px-4 py-4">
         <div className="flex items-center justify-between">
@@ -708,11 +824,21 @@ export function ZeniumJournalingPage() {
                 {/* Actions */}
                 <div className="flex flex-wrap gap-2 justify-end">
                   <button
-                    onClick={() => analyzeCurrent(isEditing ? (currentEntry?.content ?? '') : content, isEditing ? (currentEntry?.mood ?? 'neutral') : mood, isEditing ? (currentEntry?.moodRating ?? 5) : moodRating)}
+                    onClick={() => analyzeCurrent(isEditing ? (currentEntry?.content ?? '') : content, isEditing ? (currentEntry?.mood ?? 'neutral') : mood, isEditing ? (currentEntry?.moodRating ?? 5) : moodRating, isEditing ? currentEntry?.id : undefined)}
                     disabled={analysisLoading || !(isEditing ? currentEntry?.content : content)}
-                    className="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/20 rounded-lg transition-colors duration-300 disabled:opacity-50"
+                    className="px-6 py-3 bg-gradient-to-r from-blue-600/30 to-purple-600/30 hover:from-blue-600/40 hover:to-purple-600/40 border border-blue-500/30 rounded-lg transition-all duration-300 disabled:opacity-50 hover:shadow-lg hover:shadow-blue-500/20 disabled:hover:shadow-none"
                   >
-                    {analysisLoading ? 'Analyzing...' : (<span className="inline-flex items-center gap-2"><Brain className="w-4 h-4" /> Analyze</span>)}
+                    {analysisLoading ? (
+                      <span className="inline-flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                        Analyzing...
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-2 font-medium">
+                        <Brain className="w-5 h-5" />
+                        AI Analyze Journal
+                      </span>
+                    )}
                   </button>
 
                   <button
@@ -832,6 +958,14 @@ export function ZeniumJournalingPage() {
                   </div>
                   <div className="flex space-x-1">
                     <button
+                      onClick={() => analyzeCurrent(entry.content, entry.mood, entry.moodRating, entry.id)}
+                      className="p-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 transition-colors duration-300"
+                      title="AI Analyze"
+                      disabled={analysisLoading}
+                    >
+                      <Brain className="w-4 h-4" />
+                    </button>
+                    <button
                       onClick={() => { setIsEditing(true); setCurrentEntry(entry); setAnalysis(null); setGuidedQuestions(entry.guidedQuestions || []); setVoiceTranscript(entry.voiceTranscript || ''); }}
                       className="p-1.5 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300"
                       title="Edit"
@@ -851,14 +985,81 @@ export function ZeniumJournalingPage() {
                   <p className="text-gray-300 whitespace-pre-line">{entry.content}</p>
                 </div>
 
+                {/* AI Recommendation - Actionable List Item */}
+                {entry.aiRecommendation && (
+                  <div className="mt-3 bg-blue-500/10 border border-blue-500/20 rounded-lg overflow-hidden">
+                    <div className="flex items-start gap-3 p-3">
+                      {/* Checkbox */}
+                      <div className="flex-shrink-0 mt-0.5">
+                        <input
+                          type="checkbox"
+                          id={`complete-journal-${entry.id}`}
+                          checked={completedRecommendations.has(entry.id)}
+                          disabled={completedRecommendations.has(entry.id)}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            if (isChecked) {
+                              const newCompleted = new Set(completedRecommendations);
+                              newCompleted.add(entry.id);
+                              setCompletedRecommendations(newCompleted);
+                              saveCompletionStatus(newCompleted);
+                            }
+                          }}
+                          className="w-5 h-5 rounded border-2 border-blue-400 hover:border-blue-300 bg-gray-800/50 cursor-pointer transition-all duration-300 checked:bg-gradient-to-r checked:from-green-500 checked:to-emerald-500 checked:border-green-500 checked:shadow-lg checked:shadow-green-500/50 hover:scale-110 active:scale-95 checkbox-glow hover-lift disabled:opacity-75 disabled:cursor-not-allowed"
+                        />
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Brain className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                          <span className="text-xs font-medium text-blue-300">AI Recommendation</span>
+                          {entry.aiRecommendation.isCompleted && (
+                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-0.5 rounded-full border border-green-500/30">
+                              ✅ Completed
+                            </span>
+                          )}
+                        </div>
+
+                        <h4 className={`text-sm font-semibold mb-1 ${
+                          entry.aiRecommendation.isCompleted
+                            ? 'text-green-300 line-through opacity-75'
+                            : 'text-white'
+                        }`}>
+                          {entry.aiRecommendation.title}
+                        </h4>
+
+                        <p className={`text-xs leading-relaxed ${
+                          entry.aiRecommendation.isCompleted
+                            ? 'text-gray-400 line-through opacity-75'
+                            : 'text-gray-300'
+                        }`}>
+                          {entry.aiRecommendation.description}
+                        </p>
+
+                        <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
+                          <span className="flex items-center gap-1">
+                            <span className="text-gray-500">Type:</span>
+                            <span className="text-blue-300">{entry.aiRecommendation.type}</span>
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <span className="text-gray-500">Duration:</span>
+                            <span className="text-blue-300">{entry.aiRecommendation.timeEstimate}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* PDF History */}
-      <div className="px-4 pb-12">
+      {/* PDF History - Moved between journals and AI recommendations */}
+      <div className="px-4 pb-6">
         <div className="bg-gray-900/50 rounded-lg border border-yellow-500/20 p-4">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-lg font-medium text-yellow-400">PDF History</h2>
@@ -891,17 +1092,24 @@ export function ZeniumJournalingPage() {
 
       {/* AI Recommendations */}
       <div className="px-4 pb-6">
-        <div className="bg-gray-900/50 rounded-lg border border-yellow-500/20 p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-yellow-400 flex items-center gap-2">
-              <Sparkles className="w-5 h-5" />
+        <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 rounded-lg border border-yellow-500/30 p-6 shadow-lg">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-yellow-400 flex items-center gap-3">
+              <div className="p-2 bg-yellow-500/20 rounded-full">
+                <Sparkles className="w-6 h-6" />
+              </div>
               AI Recommendations
+              {recommendations.length > 0 && (
+                <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">
+                  {recommendations.length} available
+                </span>
+              )}
             </h2>
             <button
               onClick={fetchRecommendations}
-              className="px-3 py-1 rounded-md bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 text-sm transition-colors duration-300"
+              className="px-4 py-2 rounded-lg bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 text-sm transition-all duration-300 hover:shadow-md"
             >
-              Refresh
+              🔄 Refresh
             </button>
           </div>
 
@@ -958,41 +1166,24 @@ export function ZeniumJournalingPage() {
                     </div>
 
                     <div className="flex flex-col gap-2 ml-4">
-                      <button
-                        onClick={async () => {
-                          const result = await Swal.fire({
-                            title: rec.isCompleted ? 'Mark as incomplete?' : 'Mark as completed?',
-                            text: rec.isCompleted ? 'This will move the recommendation back to active.' : 'Great job! This will help track your progress.',
-                            icon: rec.isCompleted ? 'question' : 'success',
-                            showCancelButton: true,
-                            confirmButtonText: rec.isCompleted ? 'Mark Incomplete' : 'Mark Complete',
-                            cancelButtonText: 'Cancel'
-                          });
-
-                          if (result.isConfirmed) {
-                            try {
-                              await axios.patch(`${apiUrl}/recommendations/${rec._id}/complete`, {
-                                completed: !rec.isCompleted
-                              }, { headers: authHeaders });
-                              await fetchRecommendations();
-                              Swal.fire({
-                                title: rec.isCompleted ? 'Marked as incomplete' : 'Marked as complete!',
-                                text: rec.isCompleted ? 'Recommendation moved back to active.' : 'Keep up the great work!',
-                                icon: rec.isCompleted ? 'info' : 'success',
-                                timer: 2000
-                              });
-                            } catch (error) {
-                              console.error('Failed to update recommendation:', error);
-                              Swal.fire('Error', 'Failed to update recommendation status.', 'error');
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          id={`complete-${rec._id}`}
+                          checked={completedRecommendations.has(rec._id)}
+                          disabled={completedRecommendations.has(rec._id)}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            if (isChecked) {
+                              const newCompleted = new Set(completedRecommendations);
+                              newCompleted.add(rec._id);
+                              setCompletedRecommendations(newCompleted);
+                              saveCompletionStatus(newCompleted);
                             }
-                          }
-                        }}
-                        className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-300 ${rec.isCompleted
-                          ? 'bg-gray-600/20 hover:bg-gray-600/30 border border-gray-500/20 text-gray-300'
-                          : 'bg-yellow-500 hover:bg-yellow-600 text-black'}`}
-                      >
-                        {rec.isCompleted ? '✓ Completed' : 'Mark Complete'}
-                      </button>
+                          }}
+                          className="w-4 h-4 rounded border-2 border-yellow-400 hover:border-yellow-300 bg-gray-800/50 cursor-pointer transition-all duration-300 checked:bg-gradient-to-r checked:from-green-500 checked:to-emerald-500 checked:border-green-500 checked:shadow-lg checked:shadow-green-500/50 hover:scale-110 active:scale-95 checkbox-glow hover-lift disabled:opacity-75 disabled:cursor-not-allowed"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -1010,6 +1201,8 @@ export function ZeniumJournalingPage() {
           )}
         </div>
       </div>
+
     </div>
-  );
+  </>
+);
 }

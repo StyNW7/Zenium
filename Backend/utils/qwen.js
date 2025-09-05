@@ -295,6 +295,297 @@ class QwenService {
       return "Unable to analyze the image at this time.";
     }
   }
+
+  // Enhanced method using comprehensive recommendations database
+  async analyzeMentalHealthJournal(content) {
+    try {
+      // Load recommendations from JSON file
+      const fs = await import('fs');
+      const path = await import('path');
+      const filePath = path.join(process.cwd(), 'Backend', 'utils', 'mentalHealthRecommendations.json');
+
+      console.log('Looking for recommendations file at:', filePath);
+      console.log('Current working directory:', process.cwd());
+
+      if (!fs.existsSync(filePath)) {
+        console.log('File not found, trying alternative path...');
+        // Try alternative path
+        const altFilePath = path.join(process.cwd(), 'utils', 'mentalHealthRecommendations.json');
+        console.log('Trying alternative path:', altFilePath);
+
+        if (!fs.existsSync(altFilePath)) {
+          console.log('Alternative path also not found, using fallback recommendations');
+          // Use fallback recommendations
+          return this.getFallbackRecommendation(content);
+        }
+
+        const recommendationsData = JSON.parse(fs.readFileSync(altFilePath, 'utf8'));
+        return this.processRecommendations(content, recommendationsData);
+      }
+
+      const recommendationsData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      return this.processRecommendations(content, recommendationsData);
+
+      // Analyze content to determine emotion category
+      const contentLower = content.toLowerCase();
+      let detectedCategory = 'general';
+      let highestMatchCount = 0;
+
+      // Check each emotion category for keyword matches
+      for (const [category, keywords] of Object.entries(recommendationsData.emotion_keywords)) {
+        let matchCount = 0;
+        for (const keyword of keywords) {
+          if (contentLower.includes(keyword.toLowerCase())) {
+            matchCount++;
+          }
+        }
+
+        if (matchCount > highestMatchCount) {
+          highestMatchCount = matchCount;
+          detectedCategory = category;
+        }
+      }
+
+      // Get recommendations for detected category
+      const categoryRecommendations = recommendationsData.recommendations[detectedCategory] ||
+                                     recommendationsData.recommendations['general'];
+
+      if (!categoryRecommendations || categoryRecommendations.length === 0) {
+        throw new Error('No recommendations found for category');
+      }
+
+      // Randomly select one recommendation from the category
+      const randomIndex = Math.floor(Math.random() * categoryRecommendations.length);
+      const selectedRecommendation = categoryRecommendations[randomIndex];
+
+      // Create empathetic response based on detected category
+      const empatheticResponses = {
+        bullying: `🌿 Aku dengar ceritamu tentang situasi bullying. Itu pasti sangat menyakitkan dan membuatmu merasa tidak aman. Kamu nggak pantas diperlakukan seperti itu, dan perasaanmu itu sangat valid.`,
+        stress: `🌿 Aku bisa merasakan kalau kamu sedang mengalami banyak tekanan dan stres. Itu wajar merasa overwhelmed, dan kamu sudah berusaha baik dengan menulis ini.`,
+        anxiety: `🌿 Kecemasan bisa terasa sangat berat dan menguras energi. Aku mengerti kalau saat ini terasa sulit, tapi kamu nggak sendirian dalam menghadapinya.`,
+        depression: `🌿 Perasaan sedih dan murung bisa terasa sangat berat. Kamu sudah berani mengakui perasaanmu, dan itu langkah yang sangat penting.`,
+        loneliness: `🌿 Kesepian bisa terasa sangat menyakitkan. Aku mengerti kalau kamu merasa terisolasi, dan perasaan itu valid serta manusiawi.`,
+        anger: `🌿 Kemarahan adalah emosi yang normal dan valid. Yang penting adalah bagaimana kita menanganinya dengan cara yang sehat.`,
+        general: `🌿 Terima kasih sudah berbagi perasaanmu. Aku mengerti kalau saat ini terasa berat, dan kamu sudah melakukan hal yang baik dengan mengekspresikannya.`
+      };
+
+      const empatheticResponse = empatheticResponses[detectedCategory] || empatheticResponses.general;
+
+      const fullResponse = `${empatheticResponse}
+
+**Rekomendasi untuk hari ini:**
+**${selectedRecommendation.title}** → ${selectedRecommendation.description}
+*${selectedRecommendation.reason}* ⏱️ ${selectedRecommendation.timeEstimate}
+
+Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut atau terasa sangat berat, pertimbangkan untuk berbicara dengan orang terpercaya atau profesional. 💙`;
+
+      return {
+        success: true,
+        recommendation: {
+          title: selectedRecommendation.title,
+          description: selectedRecommendation.description,
+          reason: selectedRecommendation.reason,
+          timeEstimate: selectedRecommendation.timeEstimate,
+          type: selectedRecommendation.type,
+          isCompleted: false,
+          generatedAt: new Date().toISOString()
+        },
+        empatheticResponse: fullResponse,
+        sentiment: detectedCategory,
+        analyzedAt: new Date().toISOString()
+      };
+
+    } catch (error) {
+      console.error("Mental health analysis error:", error);
+      return this.getFallbackRecommendation(content);
+    }
+  }
+
+  // Helper method to process recommendations from JSON file
+  processRecommendations(content, recommendationsData) {
+    // Analyze content to determine emotion category
+    const contentLower = content.toLowerCase();
+    let detectedCategory = 'general';
+    let highestMatchCount = 0;
+
+    // Check each emotion category for keyword matches
+    for (const [category, keywords] of Object.entries(recommendationsData.emotion_keywords)) {
+      let matchCount = 0;
+      for (const keyword of keywords) {
+        if (contentLower.includes(keyword.toLowerCase())) {
+          matchCount++;
+        }
+      }
+
+      if (matchCount > highestMatchCount) {
+        highestMatchCount = matchCount;
+        detectedCategory = category;
+      }
+    }
+
+    // Get recommendations for detected category
+    const categoryRecommendations = recommendationsData.recommendations[detectedCategory] ||
+                                  recommendationsData.recommendations['general'];
+
+    if (!categoryRecommendations || categoryRecommendations.length === 0) {
+      return this.getFallbackRecommendation(content);
+    }
+
+    // Randomly select one recommendation from the category
+    const randomIndex = Math.floor(Math.random() * categoryRecommendations.length);
+    const selectedRecommendation = categoryRecommendations[randomIndex];
+
+    // Create empathetic response based on detected category
+    const empatheticResponses = {
+      bullying: `🌿 Aku dengar ceritamu tentang situasi bullying. Itu pasti sangat menyakitkan dan membuatmu merasa tidak aman. Kamu nggak pantas diperlakukan seperti itu, dan perasaanmu itu sangat valid.`,
+      stress: `🌿 Aku bisa merasakan kalau kamu sedang mengalami banyak tekanan dan stres. Itu wajar merasa overwhelmed, dan kamu sudah berusaha baik dengan menulis ini.`,
+      anxiety: `🌿 Kecemasan bisa terasa sangat berat dan menguras energi. Aku mengerti kalau saat ini terasa sulit, tapi kamu nggak sendirian dalam menghadapinya.`,
+      depression: `🌿 Perasaan sedih dan murung bisa terasa sangat berat. Kamu sudah berani mengakui perasaanmu, dan itu langkah yang sangat penting.`,
+      loneliness: `🌿 Kesepian bisa terasa sangat menyakitkan. Aku mengerti kalau kamu merasa terisolasi, dan perasaan itu valid serta manusiawi.`,
+      anger: `🌿 Kemarahan adalah emosi yang normal dan valid. Yang penting adalah bagaimana kita menanganinya dengan cara yang sehat.`,
+      general: `🌿 Terima kasih sudah berbagi perasaanmu. Aku mengerti kalau saat ini terasa berat, dan kamu sudah melakukan hal yang baik dengan mengekspresikannya.`
+    };
+
+    const empatheticResponse = empatheticResponses[detectedCategory] || empatheticResponses.general;
+
+    const fullResponse = `${empatheticResponse}
+
+**Rekomendasi untuk hari ini:**
+**${selectedRecommendation.title}** → ${selectedRecommendation.description}
+*${selectedRecommendation.reason}* ⏱️ ${selectedRecommendation.timeEstimate}
+
+Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut atau terasa sangat berat, pertimbangkan untuk berbicara dengan orang terpercaya atau profesional. 💙`;
+
+    return {
+      success: true,
+      recommendation: {
+        title: selectedRecommendation.title,
+        description: selectedRecommendation.description,
+        reason: selectedRecommendation.reason,
+        timeEstimate: selectedRecommendation.timeEstimate,
+        type: selectedRecommendation.type,
+        isCompleted: false,
+        generatedAt: new Date().toISOString()
+      },
+      empatheticResponse: fullResponse,
+      sentiment: detectedCategory,
+      analyzedAt: new Date().toISOString()
+    };
+  }
+
+  // Fallback method when JSON file is not available
+  getFallbackRecommendation(content) {
+    // Determine basic sentiment from content
+    const contentLower = content.toLowerCase();
+    let sentiment = 'general';
+
+    if (contentLower.includes('bully') || contentLower.includes('dibully')) {
+      sentiment = 'bullying';
+    } else if (contentLower.includes('stress') || contentLower.includes('tekanan')) {
+      sentiment = 'stress';
+    } else if (contentLower.includes('cemas') || contentLower.includes('anxious')) {
+      sentiment = 'anxiety';
+    } else if (contentLower.includes('sedih') || contentLower.includes('depresi')) {
+      sentiment = 'depression';
+    } else if (contentLower.includes('sendiri') || contentLower.includes('lonely')) {
+      sentiment = 'loneliness';
+    } else if (contentLower.includes('marah') || contentLower.includes('angry')) {
+      sentiment = 'anger';
+    }
+
+    // Provide appropriate fallback recommendation
+    const fallbackRecommendations = {
+      bullying: {
+        title: "Latihan Pernapasan 4-7-8",
+        description: "Tarik napas melalui hidung selama 4 detik, tahan 7 detik, hembuskan melalui mulut selama 8 detik. Lakukan 4 kali.",
+        reason: "Mengaktifkan sistem saraf parasimpatik untuk mengurangi stres dan kecemasan akibat bullying",
+        timeEstimate: "2 menit",
+        type: "breathing_exercise"
+      },
+      stress: {
+        title: "Grounding Exercise",
+        description: "Sebutkan 5 hal yang bisa kamu lihat, 4 yang bisa kamu sentuh, 3 yang bisa kamu dengar, 2 yang bisa kamu cium, 1 yang bisa kamu rasakan.",
+        reason: "Membantu mengembalikan fokus ke masa kini dan mengurangi pikiran negatif",
+        timeEstimate: "3 menit",
+        type: "grounding_technique"
+      },
+      anxiety: {
+        title: "Deep Breathing Exercise",
+        description: "Tarik napas dalam-dalam melalui hidung selama 4 detik, tahan 4 detik, hembuskan perlahan melalui mulut selama 6 detik.",
+        reason: "Pernapasan dalam membantu mengaktifkan sistem saraf parasimpatik untuk relaksasi",
+        timeEstimate: "3 menit",
+        type: "breathing_exercise"
+      },
+      depression: {
+        title: "Gratitude Practice",
+        description: "Tuliskan 3 hal yang kamu syukuri hari ini, meskipun terasa sulit.",
+        reason: "Praktik rasa syukur membantu menggeser fokus dari negatif ke positif",
+        timeEstimate: "5 menit",
+        type: "gratitude_practice"
+      },
+      loneliness: {
+        title: "Self-Compassion Statement",
+        description: "Katakan pada dirimu: 'Aku layak mendapatkan dukungan dan kasih sayang.'",
+        reason: "Self-compassion membantu mengurangi perasaan kesepian dengan memberikan dukungan internal",
+        timeEstimate: "3 menit",
+        type: "self_compassion"
+      },
+      anger: {
+        title: "Anger Pause Technique",
+        description: "Saat merasa marah, hentikan apa yang sedang dilakukan, hitung sampai 10.",
+        reason: "Memberikan jeda untuk mencegah reaksi impulsif dan memungkinkan respons yang lebih bijaksana",
+        timeEstimate: "1 menit",
+        type: "pause_technique"
+      },
+      general: {
+        title: "Mindfulness Moment",
+        description: "Fokus pada napas Anda selama 2 menit. Jika pikiran melayang, lembut kembalikan perhatian ke napas.",
+        reason: "Mindfulness membantu mengurangi stres dan meningkatkan kesadaran diri",
+        timeEstimate: "2 menit",
+        type: "mindfulness"
+      }
+    };
+
+    const recommendation = fallbackRecommendations[sentiment] || fallbackRecommendations.general;
+
+    const empatheticResponses = {
+      bullying: `🌿 Aku dengar ceritamu tentang situasi bullying. Itu pasti sangat menyakitkan dan membuatmu merasa tidak aman. Kamu nggak pantas diperlakukan seperti itu.`,
+      stress: `🌿 Aku bisa merasakan kalau kamu sedang mengalami banyak tekanan dan stres. Itu wajar merasa overwhelmed.`,
+      anxiety: `🌿 Kecemasan bisa terasa sangat berat dan menguras energi. Kamu nggak sendirian dalam menghadapinya.`,
+      depression: `🌿 Perasaan sedih dan murung bisa terasa sangat berat. Kamu sudah berani mengakui perasaanmu.`,
+      loneliness: `🌿 Kesepian bisa terasa sangat menyakitkan. Aku mengerti kalau kamu merasa terisolasi.`,
+      anger: `🌿 Kemarahan adalah emosi yang normal dan valid. Yang penting adalah bagaimana kita menanganinya.`,
+      general: `🌿 Terima kasih sudah berbagi perasaanmu. Aku mengerti kalau saat ini terasa berat.`
+    };
+
+    const empatheticResponse = empatheticResponses[sentiment] || empatheticResponses.general;
+
+    const fullResponse = `${empatheticResponse}
+
+**Rekomendasi untuk hari ini:**
+**${recommendation.title}** → ${recommendation.description}
+*${recommendation.reason}* ⏱️ ${recommendation.timeEstimate}
+
+Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut atau terasa sangat berat, pertimbangkan untuk berbicara dengan orang terpercaya atau profesional. 💙`;
+
+    return {
+      success: false,
+      error: "Menggunakan rekomendasi fallback",
+      recommendation: {
+        title: recommendation.title,
+        description: recommendation.description,
+        reason: recommendation.reason,
+        timeEstimate: recommendation.timeEstimate,
+        type: recommendation.type,
+        isCompleted: false,
+        generatedAt: new Date().toISOString()
+      },
+      empatheticResponse: fullResponse,
+      sentiment: sentiment,
+      analyzedAt: new Date().toISOString()
+    };
+  }
 }
 
-export default new QwenService();
+export default QwenService;
+
