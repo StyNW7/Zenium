@@ -614,6 +614,61 @@ export function ZeniumJournalingPage() {
     }
   }
 
+  // Simple PDF download function
+  async function downloadJournalAsPdf(entry: JournalEntry) {
+    try {
+      // Build PDF using jsPDF
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      let y = 15;
+
+      // Title
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.text(entry.title, 15, y);
+      y += 10;
+
+      // Metadata
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      const meta = `Date: ${formatDate(entry.createdAt)} | Mood: ${entry.mood} | Rating: ${entry.moodRating}/10`;
+      doc.text(meta, 15, y);
+      y += 8;
+
+      // Content
+      const contentLines = doc.splitTextToSize(entry.content, pageWidth - 30);
+      doc.text(contentLines, 15, y);
+
+      // Convert to Blob and download
+      const blob = doc.output('blob');
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${entry.title.replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40)}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // Also save to backend for PDF history
+      const form = new FormData();
+      form.append('title', entry.title);
+      form.append('file', blob, `${entry.title.replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40)}.pdf`);
+
+      await axios.post(`${apiUrl}/journal-pdf`, form, {
+        headers: { ...authHeaders, 'Content-Type': 'multipart/form-data' }
+      });
+
+      // Refresh PDF history
+      fetchPdfHistory();
+
+      await Swal.fire('Success', 'PDF downloaded and saved to history!', 'success');
+    } catch (e) {
+      console.error('PDF download failed', e);
+      Swal.fire('Error', 'Failed to download PDF.', 'error');
+    }
+  }
+
   
   // Voice to text
   function toggleRecording() {
@@ -973,6 +1028,15 @@ export function ZeniumJournalingPage() {
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button
+                      onClick={() => downloadJournalAsPdf(entry)}
+                      className="p-1.5 rounded-full bg-purple-500/10 hover:bg-purple-500/20 transition-colors duration-300"
+                      title="Download as PDF"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </button>
+                    <button
                       onClick={() => deleteEntry(entry.id)}
                       className="p-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 transition-colors duration-300"
                       title="Delete"
@@ -995,17 +1059,18 @@ export function ZeniumJournalingPage() {
                           type="checkbox"
                           id={`complete-journal-${entry.id}`}
                           checked={completedRecommendations.has(entry.id)}
-                          disabled={completedRecommendations.has(entry.id)}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
+                            const newCompleted = new Set(completedRecommendations);
                             if (isChecked) {
-                              const newCompleted = new Set(completedRecommendations);
                               newCompleted.add(entry.id);
-                              setCompletedRecommendations(newCompleted);
-                              saveCompletionStatus(newCompleted);
+                            } else {
+                              newCompleted.delete(entry.id);
                             }
+                            setCompletedRecommendations(newCompleted);
+                            saveCompletionStatus(newCompleted);
                           }}
-                          className="w-5 h-5 rounded border-2 border-blue-400 hover:border-blue-300 bg-gray-800/50 cursor-pointer transition-all duration-300 checked:bg-gradient-to-r checked:from-green-500 checked:to-emerald-500 checked:border-green-500 checked:shadow-lg checked:shadow-green-500/50 hover:scale-110 active:scale-95 checkbox-glow hover-lift disabled:opacity-75 disabled:cursor-not-allowed"
+                          className="w-5 h-5 rounded border-2 border-blue-400 hover:border-blue-300 bg-gray-800/50 cursor-pointer transition-all duration-300 checked:bg-gradient-to-r checked:from-green-500 checked:to-emerald-500 checked:border-green-500 checked:shadow-lg checked:shadow-green-500/50 hover:scale-110 active:scale-95 checkbox-glow hover-lift"
                         />
                       </div>
 
@@ -1171,17 +1236,18 @@ export function ZeniumJournalingPage() {
                           type="checkbox"
                           id={`complete-${rec._id}`}
                           checked={completedRecommendations.has(rec._id)}
-                          disabled={completedRecommendations.has(rec._id)}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
+                            const newCompleted = new Set(completedRecommendations);
                             if (isChecked) {
-                              const newCompleted = new Set(completedRecommendations);
                               newCompleted.add(rec._id);
-                              setCompletedRecommendations(newCompleted);
-                              saveCompletionStatus(newCompleted);
+                            } else {
+                              newCompleted.delete(rec._id);
                             }
+                            setCompletedRecommendations(newCompleted);
+                            saveCompletionStatus(newCompleted);
                           }}
-                          className="w-4 h-4 rounded border-2 border-yellow-400 hover:border-yellow-300 bg-gray-800/50 cursor-pointer transition-all duration-300 checked:bg-gradient-to-r checked:from-green-500 checked:to-emerald-500 checked:border-green-500 checked:shadow-lg checked:shadow-green-500/50 hover:scale-110 active:scale-95 checkbox-glow hover-lift disabled:opacity-75 disabled:cursor-not-allowed"
+                          className="w-4 h-4 rounded border-2 border-yellow-400 hover:border-yellow-300 bg-gray-800/50 cursor-pointer transition-all duration-300 checked:bg-gradient-to-r checked:from-green-500 checked:to-emerald-500 checked:border-green-500 checked:shadow-lg checked:shadow-green-500/50 hover:scale-110 active:scale-95 checkbox-glow hover-lift"
                         />
                       </div>
                     </div>
