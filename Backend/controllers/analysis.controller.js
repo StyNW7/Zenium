@@ -1,4 +1,4 @@
-import Analysis from "../models/analysis.model.js";
+import PeaceFinderAnalysis from "../models/analysis.model.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from 'url';
@@ -270,9 +270,21 @@ export const saveAnalysis = async (req, res) => {
     const analysisData = req.body;
     let userId = req.user?.userId;
 
-    // FIX: Handle MongoDB ObjectId properly
+  // FIX: Handle MongoDB ObjectId properly
     if (!userId && req.user) {
       userId = req.user.id || req.user._id;
+    }
+
+    // Additional userId extraction methods
+    if (!userId) {
+      const possibleIds = ['userId', 'id', '_id', 'user_id'];
+      for (const idField of possibleIds) {
+        if (req.user && req.user[idField]) {
+          userId = req.user[idField];
+          console.log(`👤 User ID found from field: ${idField}`);
+          break;
+        }
+      }
     }
 
     // If still no userId, check if backend authentication is working
@@ -344,11 +356,15 @@ export const saveAnalysis = async (req, res) => {
     }
 
     console.log("💾 Attempting to save to database...");
+    console.log("📊 Final analysis data to save:", JSON.stringify(analysisData, null, 2));
 
-    const newAnalysis = new Analysis(analysisData);
+    const newAnalysis = new PeaceFinderAnalysis(analysisData);
+    console.log("🔍 Model instance created");
+
     const savedAnalysis = await newAnalysis.save();
 
     console.log("✅ Analysis saved successfully:", savedAnalysis._id);
+    console.log("📋 Saved document:", JSON.stringify(savedAnalysis, null, 2));
 
     res.status(201).json({
       success: true,
@@ -398,12 +414,12 @@ export const getUserAnalyses = async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const sort = { [sortBy]: sortOrder === 'desc' ? -1 : 1 };
     
-    const analyses = await Analysis.find({ userId })
+    const analyses = await PeaceFinderAnalysis.find({ userId })
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit));
-    
-    const total = await Analysis.countDocuments({ userId });
+
+    const total = await PeaceFinderAnalysis.countDocuments({ userId });
     
     res.status(200).json({
       success: true,
@@ -429,7 +445,7 @@ export const getAnalysisById = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.userId;
     
-    const analysis = await Analysis.findOne({ _id: id, userId });
+    const analysis = await PeaceFinderAnalysis.findOne({ _id: id, userId });
     
     if (!analysis) {
       return res.status(404).json({ 
@@ -457,7 +473,7 @@ export const deleteAnalysis = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.userId;
     
-    const analysis = await Analysis.findOneAndDelete({ _id: id, userId });
+    const analysis = await PeaceFinderAnalysis.findOneAndDelete({ _id: id, userId });
     
     if (!analysis) {
       return res.status(404).json({ 
@@ -491,7 +507,7 @@ export const getNearbyAnalyses = async (req, res) => {
       });
     }
     
-    const analyses = await Analysis.find({
+    const analyses = await PeaceFinderAnalysis.find({
       location: {
         $near: {
           $geometry: {

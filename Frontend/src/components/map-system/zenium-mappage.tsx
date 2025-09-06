@@ -307,6 +307,8 @@ export function ZeniumMapPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      console.log('✅ Save response received:', JSON.stringify(res.data, null, 2));
+
       if (res.data?.success) {
         await notify('success', 'Saved', 'Analysis has been added to your history.');
         // reload history
@@ -321,7 +323,12 @@ export function ZeniumMapPage() {
     } catch (e: any) {
       console.error('❌ Save error - Full response:', e.response);
       console.error('❌ Save error - Request data:', e.config?.data);
+      console.error('❌ Save error - Status code:', e.response?.status);
+      console.error('❌ Save error - Response headers:', e.response?.headers);
+
       const errorMessage = e?.response?.data?.message || e?.response?.data?.error || e?.message || 'Please try again.';
+      console.error('❌ Final error message:', errorMessage);
+
       await notify('error', 'Failed to save analysis', errorMessage);
     } finally {
       setIsSaving(false);

@@ -97,6 +97,6 @@ const analysisSchema = new mongoose.Schema({
 analysisSchema.index({ location: "2dsphere" });
 analysisSchema.index({ userId: 1, createdAt: -1 });
 
-const Analysis = mongoose.model("Analysis", analysisSchema);
+const PeaceFinderAnalysis = mongoose.model("PeaceFinderAnalysis", analysisSchema, "locationanalyses");
 
-export default Analysis;
+export default PeaceFinderAnalysis;
