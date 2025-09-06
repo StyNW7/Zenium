@@ -1,6 +1,6 @@
 import QwenService from "../utils/qwen.js";
 import DailyQuote from "../models/dailyQuote.model.js";
-import Recommendation from "../models/recommendation.model.js";
+import MentalHealthRecommendation from "../models/mentalHealthRecommendation.model.js";
 import Journal from "../models/journal.model.js";
 
 class AIWorkflowService {
@@ -424,56 +424,56 @@ class AIWorkflowService {
     }
   }
 
-  // Save AI recommendations
+  // Save AI recommendations - Select from MentalHealthRecommendation based on analysis
   async saveRecommendations(recommendations, userId, journalId, analysis) {
     try {
-      const recommendationDocs = recommendations.map(rec => ({
-        userId,
-        journalId,
-        type: rec.type,
-        title: rec.title,
-        description: rec.description,
-        priority: rec.priority,
-        category: rec.category,
-        actionable: rec.actionable,
-        estimatedTime: rec.estimatedTime,
-        tags: rec.tags,
-        aiGenerated: true,
-        context: {
-          mood: analysis.moodInsights?.split(':')[1]?.trim() || 'unknown',
-          sentiment: analysis.sentiment,
-          keywords: analysis.keywords,
-          riskScore: analysis.riskScore
-        }
-      }));
+      // Get mood-based category mapping
+      const categoryMapping = {
+        'sad': ['depression', 'loneliness'],
+        'happy': ['gratitude'],
+        'anxious': ['anxiety'],
+        'angry': ['anger'],
+        'stressed': ['stress'],
+        'tired': ['sleep'],
+        'neutral': ['general', 'mindfulness'],
+        'excited': ['general']
+      };
 
-      const savedRecommendations = await Recommendation.insertMany(recommendationDocs);
-      console.log(`✅ ${savedRecommendations.length} recommendations saved`);
-      return savedRecommendations;
+      // Get relevant categories based on current mood
+      const moodFromAnalysis = analysis.moodInsights?.split(':')[1]?.trim() || 'neutral';
+      const relevantCategories = categoryMapping[moodFromAnalysis] || ['general'];
+
+      // Find suitable recommendations from the database
+      const availableRecommendations = await MentalHealthRecommendation.find({
+        category: { $in: relevantCategories },
+        isActive: true
+      }).limit(5);
+
+      console.log(`✅ Found ${availableRecommendations.length} suitable recommendations from database`);
+      return availableRecommendations;
     } catch (error) {
-      console.error('Error saving recommendations:', error);
+      console.error('Error fetching recommendations:', error);
       throw error;
     }
   }
 
-  // Get user's recommendations
-  async getUserRecommendations(userId, options = {}) {
+  // Get mental health recommendations based on criteria
+  async getMentalHealthRecommendations(options = {}) {
     try {
-      const { type, priority, completed, limit = 10, page = 1 } = options;
+      const { type, category, difficulty, limit = 10, page = 1 } = options;
       const skip = (page - 1) * limit;
 
-      let query = { userId };
+      let query = { isActive: true };
       if (type) query.type = type;
-      if (priority) query.priority = priority;
-      if (completed !== undefined) query.isCompleted = completed;
+      if (category) query.category = category;
+      if (difficulty) query.difficulty = difficulty;
 
-      const recommendations = await Recommendation.find(query)
+      const recommendations = await MentalHealthRecommendation.find(query)
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit)
-        .populate('journalId', 'title content mood');
+        .limit(limit);
 
-      const total = await Recommendation.countDocuments(query);
+      const total = await MentalHealthRecommendation.countDocuments(query);
 
       return {
         success: true,
@@ -486,34 +486,40 @@ class AIWorkflowService {
         }
       };
     } catch (error) {
-      console.error('Error getting user recommendations:', error);
+      console.error('Error getting mental health recommendations:', error);
       throw error;
     }
   }
 
-  // Mark recommendation as completed
-  async markRecommendationCompleted(recommendationId, userId, feedback = {}) {
+  // Get recommendations based on user mood and needs
+  async getPersonalizedRecommendations(mood, sentiment, options = {}) {
     try {
-      const update = {
-        isCompleted: true,
-        completedAt: new Date(),
-        userFeedback: feedback
+      const categoryMapping = {
+        'sad': ['depression', 'loneliness'],
+        'happy': ['gratitude'],
+        'anxious': ['anxiety'],
+        'angry': ['anger'],
+        'stressed': ['stress'],
+        'tired': ['sleep'],
+        'neutral': ['general', 'mindfulness'],
+        'excited': ['general']
       };
 
-      const recommendation = await Recommendation.findOneAndUpdate(
-        { _id: recommendationId, userId },
-        update,
-        { new: true }
-      );
+      const relevantCategories = categoryMapping[mood] || ['general'];
 
-      if (!recommendation) {
-        throw new Error('Recommendation not found');
-      }
+      const recommendations = await MentalHealthRecommendation.find({
+        category: { $in: relevantCategories },
+        isActive: true
+      }).limit(options.limit || 5);
 
-      console.log(`✅ Recommendation ${recommendationId} marked as completed`);
-      return recommendation;
+      return {
+        success: true,
+        data: recommendations,
+        mood,
+        categories: relevantCategories
+      };
     } catch (error) {
-      console.error('Error marking recommendation completed:', error);
+      console.error('Error getting personalized recommendations:', error);
       throw error;
     }
   }

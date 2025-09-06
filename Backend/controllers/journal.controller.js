@@ -1,6 +1,5 @@
 import Journal from "../models/journal.model.js";
 import QwenService from "../utils/qwen.js";
-import DailyQuote from "../models/dailyQuote.model.js";
 import AIWorkflowService from "../services/aiWorkflow.service.js";
 import MentalHealthRecommendation from "../models/mentalHealthRecommendation.model.js";
 
@@ -288,6 +287,7 @@ export const analyzeMyJournal = async (req, res) => {
     console.log('🔍 Starting new journal analysis flow...');
     console.log('📝 Content length:', content.length);
     console.log('😊 Mood:', mood, 'Rating:', moodRating);
+    console.log('🆔 Journal ID:', journalId);
 
     if (!content || content.trim().length === 0) {
       console.log('❌ No content provided');
@@ -314,12 +314,12 @@ export const analyzeMyJournal = async (req, res) => {
 
     // Define emotion keywords for analysis
     const emotionKeywords = {
-      bullying: ["bully", "dibully", "diperlakukan", "dihina", "diejek", "digejek", "dilecehkan", "intimidasi", "ancaman", "takut", "terancam"],
-      stress: ["stress", "tekanan", "overwhelmed", "kelelahan", "lelah", "capek", "beban", "berat", "sulit", "susah", "kewalahan"],
-      anxiety: ["cemas", "anxious", "khawatir", "takut", "panik", "gelisah", "grogi", "nervous", "kegelisahan", "kecemasan"],
-      depression: ["sedih", "depresi", "murung", "putus asa", "hopeless", "depressed", "down", "rendah", "kosong", "apatis"],
-      loneliness: ["sendiri", "lonely", "sepi", "terisolasi", "isolated", "kesepian", "kangen", "rindu", "miss"],
-      anger: ["marah", "angry", "kesal", "emosi", "frustrasi", "frustrated", "jengkel", "geram", "malas", "irritated"]
+      bullying: ["bully", "bullied", "treated badly", "mocked", "teased", "humiliated", "intimidated", "threatened", "scared", "threatened"],
+      stress: ["stress", "pressure", "overwhelmed", "exhausted", "tired", "burden", "heavy", "difficult", "hard", "overwhelmed"],
+      anxiety: ["anxious", "worried", "scared", "panic", "restless", "nervous", "nervousness", "anxiety"],
+      depression: ["sad", "depression", "gloomy", "hopeless", "depressed", "down", "low", "empty", "apathetic"],
+      loneliness: ["alone", "lonely", "quiet", "isolated", "loneliness", "miss", "longing", "miss"],
+      anger: ["angry", "upset", "emotional", "frustrated", "annoyed", "furious", "lazy", "irritated"]
     };
 
     // Analyze content for core words
@@ -339,21 +339,74 @@ export const analyzeMyJournal = async (req, res) => {
     // Step 4: Give the recommendation action from the json
     console.log('📊 Step 4: Selecting recommendation from JSON...');
 
-    // Import the recommendations JSON
-    const fs = await import('fs');
-    const path = await import('path');
-    const { fileURLToPath } = await import('url');
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+    // Fallback recommendations if file reading fails
+    const fallbackRecommendations = [
+      {
+        title: "Take a Deep Breath",
+        description: "Take 5 slow, deep breaths. Inhale for 4 seconds, hold for 4 seconds, exhale for 6 seconds.",
+        reason: "Deep breathing helps activate your body's relaxation response and reduces anxiety",
+        timeEstimate: "2 minutes",
+        type: "breathing_exercise"
+      },
+      {
+        title: "Mindful Walking",
+        description: "Take a gentle walk and focus on the sensation of your feet touching the ground.",
+        reason: "Physical movement combined with mindfulness helps reduce stress and improve mood",
+        timeEstimate: "15 minutes",
+        type: "physical_activity"
+      }
+    ];
 
-    const recommendationsPath = path.join(__dirname, '../utils/mentalHealthRecommendations.json');
-    const recommendationsData = JSON.parse(fs.readFileSync(recommendationsPath, 'utf8'));
+    let recommendationsData = fallbackRecommendations;
 
-    // Get recommendations for detected category
-    const categoryRecommendations = recommendationsData.recommendations[detectedCategory] || recommendationsData.recommendations.general;
+    try {
+      // Import the recommendations JSON - using correct path
+      const fs = await import('fs');
+      const path = await import('path');
+      const { fileURLToPath } = await import('url');
 
+      // Correct path to recommendations JSON - updated for ES modules
+      const currentDir = path.dirname(fileURLToPath(import.meta.url));
+      const recommendationsPath = path.join(currentDir, '..', 'seeders', 'mentalHealthRecommendations.json');
+
+      console.log('📂 Looking for recommendations file at:', recommendationsPath);
+
+      if (fs.existsSync(recommendationsPath)) {
+        console.log('✅ Recommendations file found');
+        recommendationsData = JSON.parse(fs.readFileSync(recommendationsPath, 'utf8'));
+      } else {
+        console.warn('⚠️ Recommendations file not found, using fallback');
+        console.log('📂 File path:', recommendationsPath);
+        try {
+          const seedersDir = path.join(currentDir, '..', 'seeders');
+          console.log('📂 Available files in seeders:', fs.readdirSync(seedersDir));
+        } catch (e) {
+          console.error('Error reading seeders directory:', e.message);
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error loading recommendations file:', error.message);
+      console.log('⚠️ Using fallback recommendations');
+    }
+
+    // Filter recommendations for detected category
+    let categoryRecommendations = recommendationsData.filter(rec =>
+      rec.category === detectedCategory
+    );
+
+    console.log('📊 Filtered recommendations for category:', detectedCategory, 'Count:', categoryRecommendations.length);
+
+    // If no specific category recommendations found, use general
     if (!categoryRecommendations || categoryRecommendations.length === 0) {
-      throw new Error('No recommendations available for detected category');
+      console.log('⚠️ No recommendations found for category, using general...');
+      categoryRecommendations = recommendationsData.filter(rec => rec.category === 'general');
+      console.log('✅ Using general recommendations, Count:', categoryRecommendations.length);
+
+      // Final fallback check
+      if (!categoryRecommendations || categoryRecommendations.length === 0) {
+        console.log('⚠️ No general recommendations either, using super fallback');
+        categoryRecommendations = [fallbackRecommendations[0]]; // Use first fallback
+      }
     }
 
     // Select random recommendation from the category
@@ -363,15 +416,15 @@ export const analyzeMyJournal = async (req, res) => {
     console.log('✅ Recommendation selected:', selectedRecommendation.title);
 
     // Create empathetic response based on category and safety
-    let empatheticResponse = "🌿 Aku mengerti perasaanmu saat ini. Mari kita lakukan sesuatu untuk membantu kamu merasa lebih baik.";
+    let empatheticResponse = "🌿 I understand how you're feeling right now. Let's do something to help you feel better.";
 
     const categoryResponses = {
-      bullying: "🌿 Aku dengar ceritamu tentang bullying. Itu pasti sangat menyakitkan dan membuatmu merasa tidak aman. Kamu nggak pantas diperlakukan seperti itu. ❤️",
-      anxiety: "🌿 Aku bisa merasakan kecemasan yang kamu rasakan. Mari kita lakukan sesuatu untuk membantu menenangkan pikiran. 💙",
-      stress: "🌿 Terasa overwhelmed ya? Mari kita lakukan sesuatu untuk mengurangi stres dan membuatmu lebih rileks. 🌸",
-      depression: "🌿 Aku di sini untuk mendukungmu. Mari kita lakukan sesuatu yang bisa membantu meningkatkan suasana hati. 💛",
-      loneliness: "🌿 Perasaan kesepian itu berat ya? Mari kita lakukan sesuatu untuk membantu kamu merasa lebih terhubung. 🤗",
-      anger: "🌿 Aku bisa merasakan emosi yang kuat yang kamu rasakan. Mari kita lakukan sesuatu untuk membantu mengelola energi ini. 🔥"
+      bullying: "🌿 I hear your story about bullying. It must be very painful and make you feel unsafe. You don't deserve to be treated like that. ❤️",
+      anxiety: "🌿 I can feel the anxiety you're experiencing. Let's do something to help calm your mind. 💙",
+      stress: "🌿 Feeling overwhelmed? Let's do something to reduce stress and help you relax more. 🌸",
+      depression: "🌿 I'm here to support you. Let's do something that can help improve your mood. 💛",
+      loneliness: "🌿 Loneliness is heavy, isn't it? Let's do something to help you feel more connected. 🤗",
+      anger: "🌿 I can feel the strong emotions you're experiencing. Let's do something to help manage this energy. 🔥"
     };
 
     if (categoryResponses[detectedCategory]) {
@@ -380,7 +433,7 @@ export const analyzeMyJournal = async (req, res) => {
 
     // Add safety concern if rating is low
     if (!isSafe) {
-      empatheticResponse += " Mengingat rating suasana hatimu cukup rendah, pertimbangkan untuk berbicara dengan orang terpercaya atau profesional jika perasaan ini berlanjut. 💙";
+      empatheticResponse += " Given your mood rating is quite low, consider talking to someone you trust or a professional if these feelings continue. 💙";
     }
 
     const recommendationData = {
@@ -502,7 +555,7 @@ export const getMentalHealthSupport = async (req, res) => {
         success: true,
         data: {
           recommendation: null,
-          empatheticResponse: "🌿 Jurnal kosong belum bisa dianalisis. Tulis sesuatu dulu ya! 💙",
+          empatheticResponse: "🌿 Empty journal cannot be analyzed yet. Write something first! 💙",
           sentiment: 'neutral',
           metadata: {
             mood,
@@ -517,21 +570,21 @@ export const getMentalHealthSupport = async (req, res) => {
     const contentLower = content.toLowerCase();
     let category = 'general';
 
-    if (contentLower.includes('bully') || contentLower.includes('dibully') || contentLower.includes('intimidasi')) {
+    if (contentLower.includes('bully') || contentLower.includes('bullied') || contentLower.includes('intimidation')) {
       category = 'bullying';
-    } else if (contentLower.includes('stress') || contentLower.includes('tekanan') || contentLower.includes('overwhelm')) {
+    } else if (contentLower.includes('stress') || contentLower.includes('pressure') || contentLower.includes('overwhelm')) {
       category = 'stress';
-    } else if (contentLower.includes('anxious') || contentLower.includes('cemas') || contentLower.includes('khawatir')) {
+    } else if (contentLower.includes('anxious') || contentLower.includes('anxious') || contentLower.includes('worried')) {
       category = 'anxiety';
-    } else if (contentLower.includes('sad') || contentLower.includes('sedih') || contentLower.includes('depresi')) {
+    } else if (contentLower.includes('sad') || contentLower.includes('sad') || contentLower.includes('depression')) {
       category = 'depression';
-    } else if (contentLower.includes('lonely') || contentLower.includes('kesepian') || contentLower.includes('sendiri')) {
+    } else if (contentLower.includes('lonely') || contentLower.includes('loneliness') || contentLower.includes('alone')) {
       category = 'loneliness';
-    } else if (contentLower.includes('angry') || contentLower.includes('marah') || contentLower.includes('emosi')) {
+    } else if (contentLower.includes('angry') || contentLower.includes('angry') || contentLower.includes('emotional')) {
       category = 'anger';
-    } else if (contentLower.includes('tidur') || contentLower.includes('sleep') || contentLower.includes('insomnia')) {
+    } else if (contentLower.includes('sleep') || contentLower.includes('sleep') || contentLower.includes('insomnia')) {
       category = 'sleep';
-    } else if (contentLower.includes('percaya diri') || contentLower.includes('self esteem') || contentLower.includes('confidence')) {
+    } else if (contentLower.includes('confidence') || contentLower.includes('self esteem') || contentLower.includes('confidence')) {
       category = 'self_esteem';
     }
 
@@ -568,23 +621,23 @@ export const getMentalHealthSupport = async (req, res) => {
     }
 
     // Create empathetic response based on category
-    let empatheticResponse = "🌿 Aku mengerti perasaanmu saat ini. Mari kita lakukan sesuatu untuk membantu kamu merasa lebih baik.";
+    let empatheticResponse = "🌿 I understand how you're feeling right now. Let's do something to help you feel better.";
 
     switch (category) {
       case 'bullying':
-        empatheticResponse = "🌿 Aku dengar ceritamu tentang bullying. Itu pasti sangat menyakitkan dan membuatmu merasa tidak aman. Kamu nggak pantas diperlakukan seperti itu. ❤️";
+        empatheticResponse = "🌿 I hear your story about bullying. It must be very painful and make you feel unsafe. You don't deserve to be treated like that. ❤️";
         break;
       case 'anxiety':
-        empatheticResponse = "🌿 Aku bisa merasakan kecemasan yang kamu rasakan. Mari kita lakukan sesuatu untuk membantu menenangkan pikiran. 💙";
+        empatheticResponse = "🌿 I can feel the anxiety you're experiencing. Let's do something to help calm your mind. 💙";
         break;
       case 'stress':
-        empatheticResponse = "🌿 Terasa overwhelmed ya? Mari kita lakukan sesuatu untuk mengurangi stres dan membuatmu lebih rileks. 🌸";
+        empatheticResponse = "🌿 Feeling overwhelmed? Let's do something to reduce stress and help you relax more. 🌸";
         break;
       case 'depression':
-        empatheticResponse = "🌿 Aku di sini untuk mendukungmu. Mari kita lakukan sesuatu yang bisa membantu meningkatkan suasana hati. 💛";
+        empatheticResponse = "🌿 I'm here to support you. Let's do something that can help improve your mood. 💛";
         break;
       case 'loneliness':
-        empatheticResponse = "🌿 Perasaan kesepian itu berat ya? Mari kita lakukan sesuatu untuk membantu kamu merasa lebih terhubung. 🤗";
+        empatheticResponse = "🌿 Loneliness is heavy, isn't it? Let's do something to help you feel more connected. 🤗";
         break;
     }
 

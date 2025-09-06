@@ -2,1385 +2,277 @@
   "recommendations": {
     "bullying": [
       {
-        "title": "Latihan Pernapasan 4-7-8",
-        "description": "Tarik napas melalui hidung selama 4 detik, tahan 7 detik, hembuskan melalui mulut selama 8 detik. Lakukan 4 kali.",
-        "reason": "Mengaktifkan sistem saraf parasimpatik untuk mengurangi stres dan kecemasan akibat bullying",
-        "timeEstimate": "2 menit",
+        "title": "4-7-8 Breathing Exercise",
+        "description": "Inhale through your nose for 4 seconds, hold for 7 seconds, exhale through your mouth for 8 seconds. Repeat 4 times.",
+        "reason": "Activates the parasympathetic nervous system to reduce stress and anxiety caused by bullying",
+        "timeEstimate": "2 minutes",
         "type": "breathing_exercise",
         "difficulty": "easy"
       },
       {
         "title": "Grounding Exercise",
-        "description": "Sebutkan 5 hal yang bisa kamu lihat, 4 yang bisa kamu sentuh, 3 yang bisa kamu dengar, 2 yang bisa kamu cium, 1 yang bisa kamu rasakan.",
-        "reason": "Membantu mengembalikan fokus ke masa kini dan mengurangi pikiran negatif dari bullying",
-        "timeEstimate": "3 menit",
+        "description": "Name 5 things you can see, 4 things you can touch, 3 things you can hear, 2 things you can smell, 1 thing you can taste.",
+        "reason": "Helps return focus to the present moment and reduce negative thoughts from bullying",
+        "timeEstimate": "3 minutes",
         "type": "grounding_technique",
         "difficulty": "easy"
       },
       {
         "title": "Self-Compassion Statement",
-        "description": "Tuliskan atau katakan pada dirimu: 'Aku layak diperlakukan dengan baik. Perasaan sakit ini valid, dan aku akan melewatinya.'",
-        "reason": "Membangun empati diri yang penting untuk resiliensi menghadapi bullying",
-        "timeEstimate": "5 menit",
+        "description": "Write or say to yourself: 'I deserve to be treated kindly. This painful feeling is valid, and I will get through it.'",
+        "reason": "Builds self-empathy that is crucial for resilience when dealing with bullying",
+        "timeEstimate": "5 minutes",
         "type": "self_compassion",
         "difficulty": "medium"
       },
       {
         "title": "Safety Plan Creation",
-        "description": "Buat daftar orang terpercaya yang bisa dihubungi saat merasa tidak aman. Sertakan nomor telepon dan waktu terbaik untuk menghubungi.",
-        "reason": "Memberikan rasa kontrol dan dukungan saat menghadapi situasi bullying",
-        "timeEstimate": "10 menit",
+        "description": "Create a list of trusted people you can contact when feeling unsafe. Include phone numbers and best times to reach them.",
+        "reason": "Provides a sense of control and support when dealing with bullying situations",
+        "timeEstimate": "10 minutes",
         "type": "safety_planning",
         "difficulty": "medium"
       },
       {
         "title": "Positive Affirmation Practice",
-        "description": "Pilih 3 afirmasi positif seperti 'Aku kuat', 'Aku pantas bahagia', 'Aku berharga'. Ulangi masing-masing 5x sambil melihat diri di cermin.",
-        "reason": "Melawan pikiran negatif dari bullying dengan afirmasi positif yang membangun kepercayaan diri",
-        "timeEstimate": "5 menit",
+        "description": "Choose 3 positive affirmations like 'I am strong', 'I deserve happiness', 'I am worthy'. Repeat each 5 times while looking in the mirror.",
+        "reason": "Combats negative thoughts from bullying with positive affirmations that build self-confidence",
+        "timeEstimate": "5 minutes",
         "type": "affirmation",
         "difficulty": "easy"
       },
       {
         "title": "Journaling About Strengths",
-        "description": "Tuliskan 5 kekuatan atau pencapaianmu yang membuatmu bangga. Fokus pada hal-hal positif yang telah kamu lakukan.",
-        "reason": "Membantu menggeser fokus dari kata-kata negatif bully ke pencapaian dan kekuatan pribadi",
-        "timeEstimate": "8 menit",
+        "description": "Write down 5 strengths or achievements that make you proud. Focus on positive things you've done.",
+        "reason": "Helps shift focus from negative bully words to achievements and personal strengths",
+        "timeEstimate": "8 minutes",
         "type": "journaling",
         "difficulty": "easy"
       },
       {
         "title": "Support Network Mapping",
-        "description": "Buat peta jaringan dukunganmu: keluarga, teman, guru, konselor. Identifikasi siapa yang bisa dihubungi untuk berbagai jenis dukungan.",
-        "reason": "Membantu menyadari bahwa kamu tidak sendirian dan memiliki sistem dukungan yang kuat",
-        "timeEstimate": "12 menit",
+        "description": "Create a map of your support network: family, friends, teachers, counselors. Identify who you can contact for various types of support.",
+        "reason": "Helps realize that you are not alone and have a strong support system",
+        "timeEstimate": "12 minutes",
         "type": "social_support",
         "difficulty": "medium"
       },
       {
         "title": "Boundary Setting Practice",
-        "description": "Latihan mengatakan 'tidak' dengan tegas: 'Aku tidak suka diperlakukan seperti itu, dan aku memilih untuk pergi.' Berlatih di depan cermin.",
-        "reason": "Membantu membangun kepercayaan diri untuk menetapkan batasan yang sehat dengan orang lain",
-        "timeEstimate": "6 menit",
+        "description": "Practice saying 'no' firmly: 'I don't like being treated that way, and I choose to leave.' Practice in front of a mirror.",
+        "reason": "Helps build self-confidence for setting healthy boundaries with others",
+        "timeEstimate": "6 minutes",
         "type": "communication_skills",
         "difficulty": "medium"
       },
       {
         "title": "Gratitude for Positive Relationships",
-        "description": "Tuliskan 3 orang dalam hidupmu yang selalu mendukungmu dan bagaimana dukungan mereka membuat perbedaan.",
-        "reason": "Membantu mengingatkan bahwa ada orang baik di sekitarmu meskipun ada pengalaman buruk dengan bully",
-        "timeEstimate": "7 menit",
+        "description": "Write down 3 people in your life who always support you and how their support makes a difference.",
+        "reason": "Helps remind you that there are good people around you despite bad experiences with bullies",
+        "timeEstimate": "7 minutes",
         "type": "gratitude_practice",
         "difficulty": "easy"
       },
       {
         "title": "Creative Expression",
-        "description": "Ekspresikan perasaanmu melalui gambar, musik, atau tulisan kreatif. Biarkan emosi keluar melalui saluran yang positif.",
-        "reason": "Memberikan outlet yang sehat untuk memproses emosi yang kuat tanpa menyakiti diri sendiri",
-        "timeEstimate": "15 menit",
+        "description": "Express your feelings through images, music, or creative writing. Let emotions out through positive channels.",
+        "reason": "Provides a healthy outlet for processing strong emotions without harming yourself",
+        "timeEstimate": "15 minutes",
         "type": "creative_expression",
         "difficulty": "easy"
       },
       {
         "title": "Mindful Self-Defense",
-        "description": "Pelajari teknik self-defense mental: abaikan komentar negatif, fokus pada tujuanmu, bangun kepercayaan diri melalui pencapaian kecil.",
-        "reason": "Membantu mengembangkan ketahanan mental terhadap kata-kata dan perilaku negatif orang lain",
-        "timeEstimate": "10 menit",
+        "description": "Learn mental self-defense techniques: ignore negative comments, focus on your goals, build self-confidence through small achievements.",
+        "reason": "Helps develop mental resilience against negative words and behaviors from others",
+        "timeEstimate": "10 minutes",
         "type": "mental_resilience",
         "difficulty": "medium"
       },
       {
         "title": "Positive Role Model Visualization",
-        "description": "Bayangkan dirimu sebagai orang yang kuat dan percaya diri. Apa yang akan dikatakan atau dilakukan orang itu dalam situasi bullying?",
-        "reason": "Membantu membangun citra diri positif dan memberikan inspirasi untuk menangani situasi sulit",
-        "timeEstimate": "5 menit",
+        "description": "Imagine yourself as a strong and confident person. What would that person say or do in a bullying situation?",
+        "reason": "Helps build a positive self-image and provide inspiration for handling difficult situations",
+        "timeEstimate": "5 minutes",
         "type": "visualization",
         "difficulty": "easy"
       },
       {
         "title": "Digital Detox from Social Media",
-        "description": "Matikan notifikasi media sosial selama 2 jam. Fokus pada aktivitas offline yang membuatmu bahagia.",
-        "reason": "Mengurangi paparan terhadap komentar negatif online yang dapat memperburuk pengalaman bullying",
-        "timeEstimate": "2 jam",
+        "description": "Turn off social media notifications for 2 hours. Focus on offline activities that make you happy.",
+        "reason": "Reduces exposure to negative comments online that can worsen bullying experiences",
+        "timeEstimate": "2 hours",
         "type": "digital_wellness",
         "difficulty": "easy"
       },
       {
         "title": "Physical Activity Release",
-        "description": "Lakukan olahraga fisik seperti lari, dansa, atau olahraga tim untuk melepaskan energi negatif dan meningkatkan endorfin.",
-        "reason": "Aktivitas fisik membantu mengurangi stres dan meningkatkan suasana hati secara alami",
-        "timeEstimate": "20 menit",
+        "description": "Do physical activity like running, dancing, or team sports to release negative energy and increase endorphins.",
+        "reason": "Physical activity helps reduce stress and improve mood naturally",
+        "timeEstimate": "20 minutes",
         "type": "physical_activity",
         "difficulty": "easy"
       },
       {
         "title": "Professional Help Assessment",
-        "description": "Evaluasi apakah kamu perlu bantuan profesional. Cari tahu tentang layanan konseling sekolah atau dukungan kesehatan mental.",
-        "reason": "Kadang-kadang bantuan profesional diperlukan untuk mengatasi dampak bullying yang mendalam",
-        "timeEstimate": "15 menit",
+        "description": "Evaluate whether you need professional help. Find out about school counseling services or mental health support.",
+        "reason": "Sometimes professional help is needed to address bullying trauma deeply",
+        "timeEstimate": "15 minutes",
         "type": "professional_support",
         "difficulty": "medium"
       },
       {
         "title": "Hobby Re-engagement",
-        "description": "Kembali ke hobi yang kamu sukai sebelum mengalami bullying. Dedikasikan waktu untuk melakukan sesuatu yang membuatmu bahagia.",
-        "reason": "Membantu mengembalikan kegembiraan dan rasa kontrol atas hidupmu",
-        "timeEstimate": "30 menit",
+        "description": "Return to hobbies you enjoyed before experiencing bullying. Dedicate time to do something that makes you happy.",
+        "reason": "Helps restore joy and a sense of control over your life",
+        "timeEstimate": "30 minutes",
         "type": "hobby_engagement",
         "difficulty": "easy"
       },
       {
         "title": "Sleep Hygiene Improvement",
-        "description": "Buat rutinitas tidur yang baik: matikan gadget 1 jam sebelum tidur, buat kamar gelap dan sejuk, hindari kafein sore hari.",
-        "reason": "Tidur yang cukup membantu meningkatkan ketahanan emosional dan kemampuan mengatasi stres",
-        "timeEstimate": "rutin harian",
+        "description": "Create a good sleep routine: turn off gadgets 1 hour before bed, make the room dark and cool, avoid caffeine in the afternoon.",
+        "reason": "Adequate sleep helps increase emotional resilience and ability to cope with stress",
+        "timeEstimate": "routine daily",
         "type": "sleep_hygiene",
         "difficulty": "medium"
       },
       {
         "title": "Nutrition Awareness",
-        "description": "Perhatikan pola makammu. Pastikan makan makanan bergizi yang mendukung kesehatan otak dan suasana hati.",
-        "reason": "Nutrisi yang baik mempengaruhi suasana hati dan kemampuan mengatasi stres",
-        "timeEstimate": "rutin harian",
+        "description": "Pay attention to your diet. Make sure to eat nutritious foods that support brain health and mood.",
+        "reason": "Good nutrition affects mood and ability to cope with stress",
+        "timeEstimate": "routine daily",
         "type": "nutrition_awareness",
         "difficulty": "easy"
       },
       {
         "title": "Nature Connection",
-        "description": "Habiskan waktu di alam: jalan-jalan di taman, duduk di bawah pohon, atau lihat langit. Biarkan ketenangan alam menenangkan pikiranmu.",
-        "reason": "Koneksi dengan alam membantu mengurangi stres dan memberikan perspektif yang lebih luas",
-        "timeEstimate": "20 menit",
+        "description": "Spend time in nature: walk in the park, sit under a tree, or look at the sky. Let nature's calmness soothe your mind.",
+        "reason": "Connection with nature helps reduce stress and provide a wider perspective",
+        "timeEstimate": "20 minutes",
         "type": "nature_connection",
         "difficulty": "easy"
       },
       {
         "title": "Art Therapy Exploration",
-        "description": "Coba terapi seni: gambar perasaanmu, buat kolase dari kata-kata positif, atau buat musik yang mengungkapkan emosimu.",
-        "reason": "Seni memberikan cara yang aman dan kreatif untuk memproses trauma dan emosi yang sulit",
-        "timeEstimate": "25 menit",
+        "description": "Try art therapy: draw your feelings, make collages from positive words, or create music that expresses your emotions.",
+        "reason": "Art provides a safe and creative way to process trauma and difficult emotions",
+        "timeEstimate": "25 minutes",
         "type": "art_therapy",
         "difficulty": "easy"
       },
       {
         "title": "Peer Support Seeking",
-        "description": "Cari kelompok dukungan sebaya atau forum online di mana orang lain berbagi pengalaman serupa dengan bullying.",
-        "reason": "Mendengar bahwa orang lain mengalami hal serupa dapat mengurangi rasa isolasi",
-        "timeEstimate": "sesi mingguan",
+        "description": "Find peer support groups or online forums where others share similar experiences with bullying.",
+        "reason": "Hearing that others experience similar things can reduce the feeling of isolation",
+        "timeEstimate": "weekly sessions",
         "type": "peer_support",
         "difficulty": "medium"
       },
       {
         "title": "Goal Setting Small Wins",
-        "description": "Tetapkan tujuan kecil yang bisa dicapai dalam seminggu, seperti 'belajar sesuatu yang baru' atau 'membantu seseorang'.",
-        "reason": "Pencapaian kecil membantu membangun kepercayaan diri yang rusak akibat bullying",
-        "timeEstimate": "10 menit",
+        "description": "Set small goals you can achieve in a week, like 'learn something new' or 'help someone'.",
+        "reason": "Small achievements help build self-confidence damaged by bullying",
+        "timeEstimate": "10 minutes",
         "type": "goal_setting",
         "difficulty": "easy"
       },
       {
         "title": "Forgiveness Practice",
-        "description": "Latihan memaafkan bukan untuk bully, tapi untuk dirimu sendiri. Tuliskan bagaimana memaafkan bisa membebaskanmu dari beban emosi.",
-        "reason": "Memaafkan membantu melepaskan energi negatif dan fokus pada penyembuhan diri",
-        "timeEstimate": "15 menit",
+        "description": "Forgiveness practice not for the bully, but for yourself. Write how forgiveness can free you from emotional burden.",
+        "reason": "Forgiveness helps release negative energy and focus on self-healing",
+        "timeEstimate": "15 minutes",
         "type": "forgiveness_practice",
         "difficulty": "hard"
       },
       {
         "title": "Confidence Building Activities",
-        "description": "Coba aktivitas baru yang membuatmu merasa kompeten: kursus online, olahraga baru, atau proyek kreatif.",
-        "reason": "Membangun kepercayaan diri melalui pencapaian membantu melawan dampak negatif bullying",
-        "timeEstimate": "sesi mingguan",
+        "description": "Try new activities that make you feel competent: online courses, new sports, or creative projects.",
+        "reason": "Building confidence through achievements helps counter negative effects of bullying",
+        "timeEstimate": "weekly sessions",
         "type": "confidence_building",
         "difficulty": "medium"
       },
       {
         "title": "Mindful Eating Practice",
-        "description": "Makan dengan penuh kesadaran: perhatikan rasa, tekstur, dan aroma makananmu. Hindari makan di depan layar.",
-        "reason": "Mindful eating membantu mengembangkan kesadaran diri dan mengurangi makan emosional",
-        "timeEstimate": "makan utama",
+        "description": "Eat with full awareness: notice taste, texture, and aroma of your food. Avoid eating in front of screens.",
+        "reason": "Mindful eating helps develop self-awareness and reduce emotional eating",
+        "timeEstimate": "main meals",
         "type": "mindful_eating",
         "difficulty": "easy"
       },
       {
         "title": "Digital Boundary Setting",
-        "description": "Tetapkan aturan untuk penggunaan media sosial: blokir akun yang membuatmu tidak nyaman, batasi waktu layar, fokus pada interaksi positif.",
-        "reason": "Mencegah cyberbullying dan membangun lingkungan digital yang lebih sehat",
-        "timeEstimate": "rutin harian",
+        "description": "Set rules for social media use: block uncomfortable accounts, limit screen time, focus on positive interactions.",
+        "reason": "Prevents cyberbullying and builds a healthier digital environment",
+        "timeEstimate": "routine daily",
         "type": "digital_boundaries",
         "difficulty": "medium"
       },
       {
         "title": "Volunteer or Helping Others",
-        "description": "Cari kesempatan untuk membantu orang lain, seperti menjadi tutor, membantu di panti asuhan, atau kegiatan sosial.",
-        "reason": "Membantu orang lain membantu kita merasa berharga dan menggeser fokus dari masalah pribadi",
-        "timeEstimate": "sesi mingguan",
+        "description": "Find opportunities to help others, such as tutoring, helping at shelters, or social activities.",
+        "reason": "Helping others helps us feel worthy and shifts focus from personal problems",
+        "timeEstimate": "weekly sessions",
         "type": "volunteer_work",
         "difficulty": "medium"
       },
       {
         "title": "Music Therapy",
-        "description": "Buat playlist musik yang membuatmu merasa kuat dan positif. Nyanyikan lagu-lagu itu keras-keras saat sendirian.",
-        "reason": "Musik memiliki kekuatan untuk mengubah suasana hati dan memberikan kekuatan emosional",
-        "timeEstimate": "20 menit",
+        "description": "Create a playlist of music that makes you feel strong and positive. Sing loudly when alone.",
+        "reason": "Music has the power to change mood and provide emotional energy",
+        "timeEstimate": "20 minutes",
         "type": "music_therapy",
         "difficulty": "easy"
       },
       {
         "title": "Pet Therapy Consideration",
-        "description": "Jika memungkinkan, habiskan waktu dengan hewan peliharaan atau kunjungi tempat penampungan hewan untuk interaksi positif.",
-        "reason": "Interaksi dengan hewan dapat memberikan dukungan emosional yang tidak bersyarat",
-        "timeEstimate": "30 menit",
+        "description": "If possible, spend time with pets or visit animal shelters for positive interactions.",
+        "reason": "Animal interactions provide unconditional emotional support",
+        "timeEstimate": "30 minutes",
         "type": "pet_therapy",
         "difficulty": "easy"
       },
       {
         "title": "Spiritual or Religious Practice",
-        "description": "Jika kamu memiliki keyakinan spiritual, habiskan waktu untuk berdoa, meditasi, atau praktik keagamaan yang membuatmu tenang.",
-        "reason": "Praktik spiritual dapat memberikan rasa tujuan dan dukungan emosional",
-        "timeEstimate": "15 menit",
+        "description": "If you have spiritual beliefs, spend time praying, meditating, or practicing religious activities that calm you.",
+        "reason": "Spiritual practices can provide a sense of purpose and emotional support",
+        "timeEstimate": "15 minutes",
         "type": "spiritual_practice",
         "difficulty": "easy"
       },
       {
         "title": "Professional Counseling Research",
-        "description": "Cari informasi tentang konselor atau terapis yang berspesialisasi dalam trauma bullying dan dukungan remaja.",
-        "reason": "Kadang-kadang bantuan profesional sangat penting untuk pemulihan yang menyeluruh",
-        "timeEstimate": "20 menit",
+        "description": "Find information about counselors or therapists specialized in bullying trauma and youth support.",
+        "reason": "Sometimes professional help is needed for comprehensive recovery",
+        "timeEstimate": "20 minutes",
         "type": "counseling_research",
         "difficulty": "medium"
       },
       {
         "title": "Future Self Visualization",
-        "description": "Bayangkan dirimu 1 tahun dari sekarang: lebih kuat, lebih percaya diri, dan telah melampaui pengalaman bullying ini.",
-        "reason": "Visualisasi membantu membangun harapan dan motivasi untuk terus maju",
-        "timeEstimate": "8 menit",
+        "description": "Imagine yourself 1 year from now: stronger, more confident, having overcome the bullying experience.",
+        "reason": "Visualization helps build hope and motivation to move forward",
+        "timeEstimate": "8 minutes",
         "type": "future_visualization",
         "difficulty": "easy"
       },
       {
         "title": "Letter Writing Therapy",
-        "description": "Tuliskan surat untuk bully (yang tidak akan dikirim) untuk mengungkapkan perasaanmu, lalu tuliskan surat untuk dirimu sendiri yang penuh dukungan.",
-        "reason": "Menulis membantu memproses emosi dan memberikan perspektif yang lebih seimbang",
-        "timeEstimate": "20 menit",
+        "description": "Write a letter to the bully (that won't be sent) to express your feelings, then write a supportive letter to yourself.",
+        "reason": "Writing helps process emotions and provide a more balanced perspective",
+        "timeEstimate": "20 minutes",
         "type": "letter_writing",
         "difficulty": "medium"
-      }
-    ],
-    "stress": [
-      {
-        "title": "Progressive Muscle Relaxation",
-        "description": "Mulai dari jari kaki, tegangkan otot selama 5 detik lalu rileks. Lakukan secara bertahap ke seluruh tubuh.",
-        "reason": "Mengurangi ketegangan fisik yang disebabkan oleh stres kronis",
-        "timeEstimate": "10 menit",
-        "type": "relaxation",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Mindful Walking",
-        "description": "Jalan-jalan di luar ruangan sambil fokus pada sensasi kaki menyentuh tanah dan napas Anda.",
-        "reason": "Menggabungkan olahraga ringan dengan mindfulness untuk mengurangi stres",
-        "timeEstimate": "15 menit",
-        "type": "mindfulness",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Stress Journaling",
-        "description": "Tuliskan 3 hal yang membuat Anda stres saat ini, lalu tuliskan 1 langkah kecil yang bisa Anda lakukan untuk masing-masing.",
-        "reason": "Membantu mengorganisir pikiran stres dan menciptakan rencana aksi",
-        "timeEstimate": "10 menit",
-        "type": "journaling",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Body Scan Meditation",
-        "description": "Berbaring tenang dan fokus perhatian pada setiap bagian tubuh mulai dari jari kaki hingga kepala.",
-        "reason": "Membantu mengidentifikasi dan melepaskan ketegangan yang tertahan dalam tubuh",
-        "timeEstimate": "15 menit",
-        "type": "meditation",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Quick Stress Buster",
-        "description": "Lakukan 10 squat, 10 push-up, atau tarian energik selama 2 menit untuk melepaskan endorfin.",
-        "reason": "Olahraga singkat dapat segera mengurangi hormon stres dan meningkatkan mood",
-        "timeEstimate": "2 menit",
-        "type": "exercise",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Autogenic Training",
-        "description": "Ulangi frase relaksasi: 'Tangan saya berat dan hangat', 'Lengan saya rileks', dll. Lakukan selama 10 menit.",
-        "reason": "Teknik relaksasi otomatis yang membantu tubuh memasuki keadaan relaksasi mendalam",
-        "timeEstimate": "10 menit",
-        "type": "autogenic_training",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Stress Ball Squeeze",
-        "description": "Genggam bola stres atau buat kepalan tangan keras selama 5 detik, lalu lepaskan. Lakukan 10 kali bergantian.",
-        "reason": "Memberikan outlet fisik untuk melepaskan ketegangan dan stres yang terakumulasi",
-        "timeEstimate": "3 menit",
-        "type": "physical_release",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Aromatherapy Session",
-        "description": "Gunakan minyak esensial lavender atau chamomile. Hirup aroma dalam-dalam atau oleskan di titik denyut nadi.",
-        "reason": "Aroma tertentu memiliki efek menenangkan pada sistem saraf dan dapat mengurangi stres",
-        "timeEstimate": "5 menit",
-        "type": "aromatherapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Time Management Audit",
-        "description": "Buat daftar semua tugasmu dalam seminggu, identifikasi mana yang benar-benar penting, delegasikan atau hapus yang tidak perlu.",
-        "reason": "Stres sering disebabkan oleh overload tugas, audit waktu membantu mengidentifikasi dan mengatasi akar masalah",
-        "timeEstimate": "20 menit",
-        "type": "time_management",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Laughter Exercise",
-        "description": "Tonton video lucu atau lakukan latihan tertawa: mulai dengan senyum lalu tingkatkan menjadi tawa lepas selama 2 menit.",
-        "reason": "Tertawa mengurangi hormon stres dan meningkatkan endorfin serta oksitosin",
-        "timeEstimate": "5 menit",
-        "type": "laughter_therapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Worry Containment Box",
-        "description": "Buat 'kotak khawatir' fisik atau mental. Tuliskan semua kekhawatiranmu di kertas dan 'simpan' di kotak untuk dihadapi nanti.",
-        "reason": "Mencegah pikiran khawatir mengganggu aktivitas sehari-hari dengan membatasinya pada waktu tertentu",
-        "timeEstimate": "5 menit",
-        "type": "worry_containment",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Stress-Free Zone Creation",
-        "description": "Buat zona bebas stres di rumahmu: kursi favorit, pencahayaan lembut, musik menenangkan, dan aturan 'tidak ada pekerjaan'.",
-        "reason": "Memiliki tempat aman untuk recharge membantu mencegah burnout dan mengelola stres jangka panjang",
-        "timeEstimate": "15 menit setup",
-        "type": "safe_space_creation",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Cognitive Reframing Practice",
-        "description": "Ambil 1 situasi stres dan tuliskan 3 cara berbeda untuk melihatnya dari perspektif yang lebih positif atau realistis.",
-        "reason": "Mengubah pola pikir negatif tentang situasi stres membantu mengurangi intensitas emosi",
-        "timeEstimate": "10 menit",
-        "type": "cognitive_reframing",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Digital Detox Challenge",
-        "description": "Matikan semua notifikasi ponsel selama 1 jam. Lakukan aktivitas offline yang menyenangkan seperti membaca atau memasak.",
-        "reason": "Overload informasi digital dapat meningkatkan stres, detox membantu otak beristirahat",
-        "timeEstimate": "1 jam",
-        "type": "digital_detox",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Gratitude Stress Buster",
-        "description": "Saat merasa stres, hentikan sejenak dan sebutkan 3 hal yang kamu syukuri dalam hidupmu saat ini.",
-        "reason": "Praktik rasa syukur menggeser fokus dari masalah ke aspek positif, mengurangi intensitas stres",
-        "timeEstimate": "2 menit",
-        "type": "gratitude_practice",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Stress Response Awareness",
-        "description": "Pelajari respons stres tubuhmu: perhatikan gejala fisik (detak jantung cepat, napas pendek) dan gunakan sebagai sinyal untuk relaksasi.",
-        "reason": "Kesadaran terhadap respons stres membantu intervensi dini sebelum stres menjadi overwhelming",
-        "timeEstimate": "5 menit",
-        "type": "stress_awareness",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Social Support Activation",
-        "description": "Hubungi 1 orang terpercaya dan bagikan apa yang membuatmu stres. Minta dukungan atau saran sederhana.",
-        "reason": "Berbagi beban dengan orang lain mengurangi intensitas stres dan memberikan perspektif baru",
-        "timeEstimate": "10 menit",
-        "type": "social_support",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Mini-Vacation Planning",
-        "description": "Rencanakan liburan kecil dalam 2 minggu ke depan: bisa berupa piknik di taman atau acara rumah yang menyenangkan.",
-        "reason": "Memiliki sesuatu untuk dinantikan membantu mengurangi stres saat ini dengan harapan positif",
-        "timeEstimate": "10 menit",
-        "type": "future_planning",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Stress-Reducing Nutrition",
-        "description": "Siapkan camilan sehat anti-stres: coklat hitam, kacang almond, atau smoothie dengan bahan yang menenangkan.",
-        "reason": "Nutrisi tertentu dapat membantu mengatur hormon stres dan meningkatkan ketahanan terhadap stres",
-        "timeEstimate": "10 menit",
-        "type": "stress_nutrition",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Environmental Stress Reduction",
-        "description": "Buat lingkunganmu lebih tenang: kurangi clutter, tambahkan tanaman, gunakan pencahayaan lembut, mainkan musik klasik.",
-        "reason": "Lingkungan fisik yang tenang membantu mengurangi stimulasi yang dapat meningkatkan stres",
-        "timeEstimate": "30 menit",
-        "type": "environment_optimization",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Stress Pattern Recognition",
-        "description": "Catat pola stresmu selama seminggu: kapan muncul, apa pemicunya, bagaimana responsmu. Cari pola yang bisa diubah.",
-        "reason": "Mengidentifikasi pola stres membantu mengembangkan strategi pencegahan yang lebih efektif",
-        "timeEstimate": "15 menit",
-        "type": "pattern_recognition",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Creative Stress Outlet",
-        "description": "Gunakan kreativitas untuk mengungkapkan stres: gambar abstrak, main musik keras, atau tulis puisi bebas.",
-        "reason": "Ekspresi kreatif memberikan outlet yang sehat untuk emosi stres tanpa menyakiti diri sendiri atau orang lain",
-        "timeEstimate": "20 menit",
-        "type": "creative_outlet",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Boundary Setting Practice",
-        "description": "Identifikasi 1 batasan yang perlu kamu tetapkan dalam hidupmu dan latihan mengkomunikasikannya dengan tegas tapi sopan.",
-        "reason": "Batasan yang sehat mencegah overload yang menyebabkan stres kronis",
-        "timeEstimate": "10 menit",
-        "type": "boundary_setting",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Stress Forgiveness Ritual",
-        "description": "Tuliskan situasi yang membuatmu stres, lalu tuliskan pernyataan maaf untuk dirimu sendiri karena telah membiarkan stres menguasaimu.",
-        "reason": "Self-compassion dalam situasi stres membantu mengurangi self-judgment yang memperburuk stres",
-        "timeEstimate": "8 menit",
-        "type": "self_forgiveness",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Power Nap Technique",
-        "description": "Lakukan power nap 10-20 menit di siang hari saat merasa stres. Pastikan posisi nyaman dan gelap.",
-        "reason": "Tidur siang singkat membantu mereset otak dan mengurangi akumulasi stres",
-        "timeEstimate": "20 menit",
-        "type": "power_nap",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Stress Ball Art Creation",
-        "description": "Buat bola stres sendiri dari kaus kaki dan beras, atau gunakan tanah liat untuk membuat objek yang bisa diremas.",
-        "reason": "Membuat alat relaksasi sendiri memberikan rasa kontrol dan kreativitas dalam mengelola stres",
-        "timeEstimate": "15 menit",
-        "type": "crafting_relief",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Guided Imagery Journey",
-        "description": "Ikuti guided imagery: bayangkan dirimu di pantai tenang, rasakan pasir, dengar ombak, hirup udara segar laut.",
-        "reason": "Imajinasi terpandu membantu otak memasuki keadaan relaksasi dan mengurangi respons stres",
-        "timeEstimate": "10 menit",
-        "type": "guided_imagery",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Stress-Proof Routine Building",
-        "description": "Buat rutinitas harian yang melawan stres: olahraga pagi, meditasi, makan teratur, tidur cukup, waktu untuk hobi.",
-        "reason": "Rutinitas yang konsisten membangun ketahanan terhadap stres dan mencegah akumulasi stres kronis",
-        "timeEstimate": "rutin harian",
-        "type": "routine_building",
-        "difficulty": "hard"
-      },
-      {
-        "title": "Emergency Stress Kit",
-        "description": "Buat kit darurat stres: camilan sehat, musik favorit, buku inspirasi, nomor dukungan, afirmasi tertulis.",
-        "reason": "Memiliki alat-alat siap pakai membantu mengatasi serangan stres secara efektif dan cepat",
-        "timeEstimate": "20 menit setup",
-        "type": "emergency_kit",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Stress Humor Therapy",
-        "description": "Cari humor dalam situasi stres: bagikan lelucon dengan teman atau tonton komedi stand-up selama 10 menit.",
-        "reason": "Humor mengaktifkan sistem reward otak dan mengurangi dampak fisiologis stres",
-        "timeEstimate": "10 menit",
-        "type": "humor_therapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Nature Stress Therapy",
-        "description": "Habiskan waktu di alam: jalan di hutan, duduk di taman, atau bahkan lihat gambar alam sambil bernapas dalam.",
-        "reason": "Koneksi dengan alam mengaktifkan respons relaksasi alami dan mengurangi hormon stres",
-        "timeEstimate": "20 menit",
-        "type": "nature_therapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Stress Journal Prompts",
-        "description": "Gunakan prompt jurnal spesifik untuk stres: 'Apa yang bisa aku kontrol?', 'Apa yang bisa aku lepaskan?', 'Siapa yang bisa membantuku?'.",
-        "reason": "Prompt terstruktur membantu mengorganisir pikiran stres dan menemukan solusi yang actionable",
-        "timeEstimate": "12 menit",
-        "type": "journaling_prompts",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Professional Help Assessment",
-        "description": "Evaluasi apakah stresmu sudah mempengaruhi kehidupan sehari-hari. Cari tahu tentang layanan konsultasi stres profesional.",
-        "reason": "Kadang-kadang bantuan profesional diperlukan untuk mengatasi stres kronis yang tidak merespons intervensi self-help",
-        "timeEstimate": "15 menit",
-        "type": "professional_assessment",
-        "difficulty": "medium"
-      }
-    ],
-    "anxiety": [
-      {
-        "title": "4-7-8 Breathing Technique",
-        "description": "Tarik napas melalui hidung selama 4 detik, tahan 7 detik, hembuskan melalui mulut selama 8 detik. Ulangi 4 kali.",
-        "reason": "Teknik pernapasan terbukti secara ilmiah mengurangi gejala kecemasan dengan mengaktifkan respons relaksasi",
-        "timeEstimate": "2 menit",
-        "type": "breathing",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Worry Time Containment",
-        "description": "Tetapkan 15 menit khusus di hari Anda untuk 'khawatir'. Saat pikiran cemas muncul di luar waktu itu, catat dan simpan untuk nanti.",
-        "reason": "Mencegah pikiran cemas menguasai seluruh hari Anda dengan membatasinya pada waktu tertentu",
-        "timeEstimate": "5 menit setup",
-        "type": "cognitive_technique",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Anxiety Exposure Ladder",
-        "description": "Buat daftar situasi yang membuat cemas dari yang paling ringan hingga berat. Mulai hadapi yang paling ringan terlebih dahulu.",
-        "reason": "Teknik desensitisasi sistematis yang membantu mengurangi sensitivitas terhadap pemicu kecemasan",
-        "timeEstimate": "15 menit",
-        "type": "exposure_therapy",
-        "difficulty": "hard"
-      },
-      {
-        "title": "Grounding 5-4-3-2-1",
-        "description": "Sebutkan 5 hal yang Anda lihat, 4 yang bisa disentuh, 3 yang bisa didengar, 2 yang bisa dicium, 1 yang bisa dirasakan.",
-        "reason": "Membawa kesadaran kembali ke masa kini dan mengurangi gejala panik atau kecemasan akut",
-        "timeEstimate": "3 menit",
-        "type": "grounding",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Anxiety Calming Visualization",
-        "description": "Tutup mata dan bayangkan tempat yang paling tenang dan aman bagi Anda. Fokus pada detail sensoriknya.",
-        "reason": "Teknik visualisasi membantu mengaktifkan respons relaksasi dan mengurangi gejala kecemasan",
-        "timeEstimate": "5 menit",
-        "type": "visualization",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Thought Defusion Technique",
-        "description": "Saat pikiran cemas muncul, katakan pada diri sendiri: 'Aku melihat pikiran bahwa...' daripada 'Aku takut bahwa...'.",
-        "reason": "Membantu menciptakan jarak dari pikiran cemas sehingga tidak terasa begitu mengancam",
-        "timeEstimate": "5 menit",
-        "type": "cognitive_defusion",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Anxiety Mapping Exercise",
-        "description": "Buat peta kecemasanmu: identifikasi pemicu, gejala fisik, pikiran otomatis, dan perilaku yang biasa dilakukan.",
-        "reason": "Memahami pola kecemasan membantu mengembangkan strategi yang lebih efektif untuk mengatasinya",
-        "timeEstimate": "20 menit",
-        "type": "anxiety_mapping",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Safe Place Creation",
-        "description": "Buat 'tempat aman' imajiner atau fisik yang bisa kamu kunjungi saat merasa cemas. Detailkan semua aspek sensoriknya.",
-        "reason": "Memiliki tempat aman memberikan rasa kontrol dan cara cepat untuk mengurangi intensitas kecemasan",
-        "timeEstimate": "10 menit",
-        "type": "safe_place",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Anxiety Symptom Tracker",
-        "description": "Catat gejala kecemasanmu selama seminggu: intensitas, durasi, pemicu, dan apa yang membantu menguranginya.",
-        "reason": "Melacak pola membantu mengidentifikasi pemicu dan strategi yang paling efektif",
-        "timeEstimate": "rutin harian",
-        "type": "symptom_tracking",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Opposite Action Technique",
-        "description": "Saat impuls kecemasan mendorongmu menghindari sesuatu, lakukan sebaliknya: hadapi situasi yang membuat cemas.",
-        "reason": "Teknik ini membantu memutus siklus penghindaran yang memperkuat kecemasan",
-        "timeEstimate": "sesi situasional",
-        "type": "opposite_action",
-        "difficulty": "hard"
-      },
-      {
-        "title": "Anxiety-Friendly Nutrition",
-        "description": "Konsumsi makanan yang mendukung kesehatan otak: ikan berlemak, sayuran hijau, kacang-kacangan, dan hindari kafein berlebih.",
-        "reason": "Nutrisi yang tepat membantu mengatur neurotransmitter yang mempengaruhi kecemasan",
-        "timeEstimate": "rutin harian",
-        "type": "nutrition_support",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Gradual Exposure Practice",
-        "description": "Mulai dengan situasi yang membuat sedikit cemas, hadapi selama beberapa menit, lalu tingkatkan secara bertahap.",
-        "reason": "Eksposur bertahap membantu otak belajar bahwa situasi yang ditakuti sebenarnya tidak berbahaya",
-        "timeEstimate": "sesi mingguan",
-        "type": "gradual_exposure",
-        "difficulty": "hard"
-      },
-      {
-        "title": "Anxiety Compassion Practice",
-        "description": "Tuliskan surat untuk dirimu sendiri yang penuh pengertian: 'Aku mengerti mengapa kamu merasa cemas, itu normal...'.",
-        "reason": "Self-compassion mengurangi self-judgment yang sering memperburuk kecemasan",
-        "timeEstimate": "10 menit",
-        "type": "self_compassion",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Physical Anxiety Release",
-        "description": "Lakukan aktivitas fisik intens: lari cepat, dansa energik, atau latihan kekuatan selama 10 menit.",
-        "reason": "Olahraga mengurangi hormon stres dan meningkatkan endorfin yang melawan kecemasan",
-        "timeEstimate": "10 menit",
-        "type": "physical_activity",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Anxiety Alternative Thoughts",
-        "description": "Untuk setiap pikiran cemas, buat 3 alternatif yang lebih seimbang: 'Mungkin saja, tapi juga mungkin...'.",
-        "reason": "Melatih otak untuk mempertimbangkan perspektif alternatif mengurangi intensitas kecemasan",
-        "timeEstimate": "8 menit",
-        "type": "alternative_thinking",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Sleep Anxiety Management",
-        "description": "Buat rutinitas pra-tidur anti-kecemasan: hindari layar 1 jam sebelum tidur, baca buku, lakukan relaksasi.",
-        "reason": "Kecemasan sering memburuk di malam hari, rutinitas yang baik membantu tidur lebih nyenyak",
-        "timeEstimate": "rutin malam",
-        "type": "sleep_hygiene",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Social Anxiety Exposure",
-        "description": "Mulai interaksi sosial kecil: senyum pada orang asing, tanya waktu, atau mulai percakapan singkat.",
-        "reason": "Eksposur bertahap pada situasi sosial membantu mengurangi sensitivitas terhadap penilaian sosial",
-        "timeEstimate": "sesi harian",
-        "type": "social_exposure",
-        "difficulty": "hard"
-      },
-      {
-        "title": "Anxiety Grounding Objects",
-        "description": "Buat koleksi objek grounding: batu halus, mainan stress ball, foto orang tercinta, afirmasi tertulis.",
-        "reason": "Objek fisik memberikan cara cepat untuk kembali ke masa kini saat kecemasan muncul",
-        "timeEstimate": "15 menit setup",
-        "type": "grounding_objects",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Worry Journal with Solutions",
-        "description": "Untuk setiap kekhawatiran, tuliskan: masalah, probabilitas terburuk, solusi terbaik, dan langkah aksi.",
-        "reason": "Membuat rencana konkret mengurangi intensitas kecemasan dengan memberikan rasa kontrol",
-        "timeEstimate": "15 menit",
-        "type": "worry_journaling",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Anxiety Success Log",
-        "description": "Catat setiap kali berhasil mengatasi situasi cemas: apa yang dilakukan, bagaimana perasaan setelahnya.",
-        "reason": "Mengingat kesuksesan masa lalu membangun kepercayaan diri untuk menghadapi kecemasan",
-        "timeEstimate": "5 menit",
-        "type": "success_log",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Mindful Anxiety Observation",
-        "description": "Saat merasa cemas, amati sensasi tanpa menghakimi: 'Aku merasakan ketegangan di dada, itu normal untuk kecemasan'.",
-        "reason": "Observasi tanpa judgment membantu mengurangi intensitas emosi dengan menciptakan jarak",
-        "timeEstimate": "5 menit",
-        "type": "mindful_observation",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Anxiety Trigger Identification",
-        "description": "Identifikasi pemicu kecemasan spesifik: kafein, kurang tidur, konflik, dll. Buat rencana untuk masing-masing.",
-        "reason": "Mengetahui pemicu spesifik memungkinkan pencegahan dini dan intervensi yang tepat sasaran",
-        "timeEstimate": "20 menit",
-        "type": "trigger_identification",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Calming Music Playlist",
-        "description": "Buat playlist musik yang menenangkan: musik klasik, suara alam, atau lagu dengan lirik positif. Dengarkan saat cemas.",
-        "reason": "Musik memiliki efek fisiologis yang menenangkan pada sistem saraf dan mengurangi detak jantung",
-        "timeEstimate": "20 menit",
-        "type": "music_therapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Anxiety-Friendly Exercise",
-        "description": "Lakukan yoga atau tai chi yang fokus pada gerakan lambat dan pernapasan terkoordinasi.",
-        "reason": "Olahraga yang menenangkan membantu mengurangi kecemasan tanpa stimulasi berlebih",
-        "timeEstimate": "20 menit",
-        "type": "gentle_exercise",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Cognitive Behavioral Techniques",
-        "description": "Pelajari teknik CBT dasar: tantang pikiran otomatis, cari bukti yang mendukung dan menentang.",
-        "reason": "CBT adalah pendekatan terbukti untuk mengelola kecemasan dengan mengubah pola pikir yang tidak membantu",
-        "timeEstimate": "sesi mingguan",
-        "type": "cbt_techniques",
-        "difficulty": "hard"
-      },
-      {
-        "title": "Anxiety Support Network",
-        "description": "Bangun jaringan dukungan: keluarga, teman, grup online, atau profesional yang memahami kecemasanmu.",
-        "reason": "Dukungan sosial yang kuat adalah faktor pelindung terkuat terhadap kecemasan kronis",
-        "timeEstimate": "sesi mingguan",
-        "type": "support_network",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Emergency Anxiety Plan",
-        "description": "Buat rencana darurat: langkah-langkah spesifik saat kecemasan parah, nomor untuk menghubungi bantuan.",
-        "reason": "Memiliki rencana darurat memberikan rasa aman dan mengurangi kecemasan tentang 'bagaimana jika'",
-        "timeEstimate": "15 menit",
-        "type": "emergency_plan",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Anxiety Education Reading",
-        "description": "Baca buku atau artikel tentang kecemasan untuk memahami bahwa gejala yang dirasakan adalah normal dan dapat dikelola.",
-        "reason": "Pengetahuan tentang kecemasan mengurangi misteri dan ketakutan yang memperburuk gejala",
-        "timeEstimate": "30 menit",
-        "type": "education_reading",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Professional Therapy Exploration",
-        "description": "Jelajahi opsi terapi profesional: CBT, terapi perilaku dialektikal, atau konseling untuk kecemasan spesifik.",
-        "reason": "Kadang-kadang bantuan profesional diperlukan untuk mengatasi kecemasan yang tidak merespons intervensi self-help",
-        "timeEstimate": "20 menit",
-        "type": "therapy_exploration",
-        "difficulty": "medium"
-      }
-    ],
-    "depression": [
-      {
-        "title": "Behavioral Activation",
-        "description": "Pilih 1 aktivitas kecil yang Anda sukai (seperti mendengarkan musik) dan lakukan selama 10 menit, bahkan jika Anda tidak ingin melakukannya.",
-        "reason": "Depresi sering membuat kita kehilangan motivasi, aktivitas ini membantu memutus siklus inaktivitas",
-        "timeEstimate": "10 menit",
-        "type": "behavioral_activation",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Gratitude Practice",
-        "description": "Tuliskan 3 hal yang Anda syukuri hari ini, meskipun terasa sulit. Mulai dari hal-hal kecil seperti 'udara yang bisa dihirup'.",
-        "reason": "Praktik rasa syukur membantu menggeser fokus dari pikiran negatif ke aspek positif dalam hidup",
-        "timeEstimate": "5 menit",
-        "type": "gratitude",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Self-Compassion Break",
-        "description": "Letakkan tangan di dada dan katakan pada diri sendiri: 'Ini saat yang sulit. Aku layak mendapatkan kebaikan. Aku akan baik-baik saja.'",
-        "reason": "Self-compassion membantu mengurangi self-judgment yang sering menyertai depresi",
-        "timeEstimate": "3 menit",
-        "type": "self_compassion",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Pleasure Prediction",
-        "description": "Buat daftar 5 aktivitas yang biasanya Anda nikmati. Berikan rating kenikmatan dari 1-10 untuk masing-masing sebelum melakukannya.",
-        "reason": "Depresi dapat membuat kita lupa kenikmatan, latihan ini membantu mengingatkan kembali",
-        "timeEstimate": "10 menit",
-        "type": "cognitive_exercise",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Morning Light Exposure",
-        "description": "Habiskan 10-15 menit di pagi hari di dekat jendela terang atau di luar ruangan untuk mendapatkan cahaya alami.",
-        "reason": "Paparan cahaya pagi membantu mengatur ritme sirkadian dan meningkatkan produksi serotonin",
-        "timeEstimate": "15 menit",
-        "type": "light_therapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Opposite Action Technique",
-        "description": "Saat depresi mendorongmu untuk menghindari aktivitas, lakukan sebaliknya: paksa diri untuk terlibat meskipun sedikit.",
-        "reason": "Teknik ini membantu memutus siklus penghindaran yang memperburuk depresi",
-        "timeEstimate": "sesi harian",
-        "type": "behavioral_activation",
-        "difficulty": "hard"
-      },
-      {
-        "title": "Depression-Friendly Nutrition",
-        "description": "Fokus pada makanan yang mendukung suasana hati: omega-3, vitamin D, magnesium, dan hindari gula berlebih.",
-        "reason": "Nutrisi yang tepat dapat membantu mengatur neurotransmitter yang mempengaruhi depresi",
-        "timeEstimate": "rutin harian",
-        "type": "nutrition_support",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Sleep Hygiene for Depression",
-        "description": "Buat rutinitas tidur yang konsisten: waktu tidur dan bangun yang sama, hindari kafein sore hari, buat kamar gelap.",
-        "reason": "Tidur yang cukup sangat penting untuk mengelola gejala depresi dan meningkatkan energi",
-        "timeEstimate": "rutin harian",
-        "type": "sleep_hygiene",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Social Connection Small Steps",
-        "description": "Mulai dengan interaksi sosial kecil: kirim pesan ke teman lama, atau senyum dan sapa tetangga.",
-        "reason": "Depresi sering membuat kita menarik diri, koneksi sosial kecil membantu membangun kembali jaringan dukungan",
-        "timeEstimate": "5 menit",
-        "type": "social_connection",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Achievement Celebration",
-        "description": "Rayakan pencapaian kecil: selesai mandi, membuat kopi, atau menyelesaikan 1 tugas kecil.",
-        "reason": "Merayakan pencapaian membantu membangun momentum positif dan melawan perasaan tidak berharga",
-        "timeEstimate": "2 menit",
-        "type": "achievement_celebration",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Depression Journal Prompts",
-        "description": "Jawab prompt jurnal spesifik untuk depresi: 'Apa yang akan aku katakan pada teman yang mengalami hal serupa?'",
-        "reason": "Prompt terstruktur membantu memproses emosi depresi dan menemukan perspektif yang lebih seimbang",
-        "timeEstimate": "15 menit",
-        "type": "journaling_prompts",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Physical Activity Gentle Start",
-        "description": "Mulai dengan aktivitas fisik sangat ringan: jalan 5 menit di sekitar rumah atau peregangan sederhana.",
-        "reason": "Olahraga ringan dapat meningkatkan endorfin dan membantu mengatasi gejala depresi fisik",
-        "timeEstimate": "5 menit",
-        "type": "gentle_exercise",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Positive Memory Recall",
-        "description": "Ingat dan tuliskan detail dari 1 kenangan positif di masa lalu yang membuatmu bahagia.",
-        "reason": "Mengakses kenangan positif membantu mengingatkan bahwa kita mampu merasakan kebahagiaan",
-        "timeEstimate": "8 menit",
-        "type": "memory_recall",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Depression Education Reading",
-        "description": "Baca artikel atau buku tentang depresi untuk memahami bahwa gejala yang dirasakan adalah penyakit, bukan kelemahan pribadi.",
-        "reason": "Pengetahuan tentang depresi membantu mengurangi stigma diri dan meningkatkan empati terhadap diri sendiri",
-        "timeEstimate": "20 menit",
-        "type": "education_reading",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Creative Expression Outlet",
-        "description": "Gunakan kreativitas untuk mengungkapkan perasaan: gambar abstrak, musik, atau menulis puisi bebas.",
-        "reason": "Ekspresi kreatif memberikan outlet yang sehat untuk emosi yang terpendam dan membantu pemrosesan",
-        "timeEstimate": "25 menit",
-        "type": "creative_expression",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Routine Building Small Steps",
-        "description": "Buat rutinitas harian kecil: bangun pada waktu yang sama, makan teratur, mandi setiap hari.",
-        "reason": "Rutinitas memberikan struktur yang hilang akibat depresi dan membantu membangun kembali rasa kontrol",
-        "timeEstimate": "rutin harian",
-        "type": "routine_building",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Self-Kindness Practice",
-        "description": "Tuliskan 5 hal baik yang telah kamu lakukan untuk diri sendiri minggu ini, meskipun terasa kecil.",
-        "reason": "Depresi sering membuat kita fokus pada kesalahan, latihan ini membantu melihat aspek positif dari tindakan kita",
-        "timeEstimate": "10 menit",
-        "type": "self_kindness",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Nature Exposure Therapy",
-        "description": "Habiskan waktu di luar ruangan: duduk di taman, lihat langit, atau jalan-jalan di sekitar rumah.",
-        "reason": "Koneksi dengan alam dapat meningkatkan suasana hati dan mengurangi gejala depresi ringan",
-        "timeEstimate": "15 menit",
-        "type": "nature_therapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Depression Support Group Exploration",
-        "description": "Cari dan ikuti grup dukungan online atau offline untuk orang dengan depresi atau kondisi kesehatan mental.",
-        "reason": "Mendengar pengalaman orang lain membantu mengurangi rasa isolasi dan memberikan harapan",
-        "timeEstimate": "sesi mingguan",
-        "type": "support_groups",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Goal Setting Micro-Steps",
-        "description": "Tetapkan tujuan sangat kecil yang bisa dicapai hari ini: 'minum segelas air' atau 'senyum 1 kali'.",
-        "reason": "Pencapaian kecil membantu membangun momentum dan melawan perasaan tidak mampu yang menyertai depresi",
-        "timeEstimate": "5 menit",
-        "type": "goal_setting",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Music Mood Enhancement",
-        "description": "Buat playlist musik yang energik dan positif. Nyanyikan keras-keras saat sedang sendiri.",
-        "reason": "Musik dapat secara langsung mempengaruhi suasana hati dan memberikan energi emosional",
-        "timeEstimate": "20 menit",
-        "type": "music_therapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Depression Symptom Tracking",
-        "description": "Catat gejala depresimu selama seminggu: intensitas, pemicu, dan apa yang membantu menguranginya.",
-        "reason": "Melacak pola membantu mengidentifikasi faktor pemicu dan strategi yang paling efektif",
-        "timeEstimate": "rutin harian",
-        "type": "symptom_tracking",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Professional Help Assessment",
-        "description": "Evaluasi gejala depresimu dan pertimbangkan untuk berkonsultasi dengan profesional kesehatan mental.",
-        "reason": "Kadang-kadang bantuan profesional diperlukan untuk mengatasi depresi yang tidak merespons intervensi self-help",
-        "timeEstimate": "15 menit",
-        "type": "professional_assessment",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Humor Therapy Light",
-        "description": "Tonton video komedi ringan atau baca lelucon sederhana. Biarkan diri tersenyum meskipun terasa dipaksakan.",
-        "reason": "Tertawa dapat memutus pola pikir negatif dan memberikan istirahat dari gejala depresi",
-        "timeEstimate": "10 menit",
-        "type": "humor_therapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Mindful Breathing for Depression",
-        "description": "Fokus pada napas selama 5 menit: rasakan udara masuk dan keluar, tanpa mencoba mengubahnya.",
-        "reason": "Mindfulness membantu mengurangi ruminasi dan membawa kesadaran ke masa kini",
-        "timeEstimate": "5 menit",
-        "type": "mindful_breathing",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Depression-Friendly Social Media",
-        "description": "Ikuti akun media sosial yang positif: kutipan motivasi, meme lucu, atau komunitas dukungan.",
-        "reason": "Konten positif dapat memberikan dorongan harian dan mengingatkan bahwa kita tidak sendirian",
-        "timeEstimate": "10 menit",
-        "type": "positive_social_media",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Self-Care Ritual Creation",
-        "description": "Buat ritual perawatan diri harian: mandi hangat, minum teh herbal, atau membaca buku inspirasi.",
-        "reason": "Ritual yang konsisten membantu membangun rutinitas positif dan meningkatkan perawatan diri",
-        "timeEstimate": "20 menit",
-        "type": "self_care_ritual",
-        "difficulty": "easy"
-      }
-    ],
-    "loneliness": [
-      {
-        "title": "Connection Inventory",
-        "description": "Buat daftar orang-orang dalam hidup Anda yang peduli pada Anda. Sertakan cara menghubungi mereka dan kapan terakhir berkomunikasi.",
-        "reason": "Membantu mengingat bahwa kita tidak sepenuhnya sendirian dan memiliki jaringan dukungan",
-        "timeEstimate": "10 menit",
-        "type": "social_connection",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Self-Connection Practice",
-        "description": "Habiskan waktu 15 menit melakukan aktivitas yang membuat Anda merasa terhubung dengan diri sendiri, seperti membaca atau berjalan.",
-        "reason": "Membantu membangun hubungan yang lebih baik dengan diri sendiri sebagai dasar untuk hubungan dengan orang lain",
-        "timeEstimate": "15 menit",
-        "type": "self_connection",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Reach Out Plan",
-        "description": "Pilih 1 orang dari daftar kontak Anda dan buat rencana sederhana untuk menghubungi mereka dalam 24 jam ke depan.",
-        "reason": "Memiliki rencana konkret mengurangi kecemasan sosial dan membuat tindakan terasa lebih mudah",
-        "timeEstimate": "5 menit",
-        "type": "social_planning",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Shared Interest Exploration",
-        "description": "Cari komunitas online atau offline yang memiliki minat sama dengan Anda (hobi, olahraga, dll.) dan catat 2-3 yang ingin Anda jelajahi.",
-        "reason": "Bergabung dengan komunitas berdasarkan minat bersama membuat koneksi terasa lebih alami",
-        "timeEstimate": "10 menit",
-        "type": "community_exploration",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Gratitude for Past Connections",
-        "description": "Tuliskan 3 kenangan positif tentang hubungan dengan orang lain di masa lalu yang membuat Anda merasa dicintai.",
-        "reason": "Menggunakan kenangan positif untuk mengingatkan bahwa kita mampu membentuk hubungan bermakna",
-        "timeEstimate": "8 menit",
-        "type": "gratitude_reflection",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Random Acts of Kindness",
-        "description": "Lakukan kebaikan kecil untuk orang lain: tahan pintu untuk seseorang, beri senyum, atau tinggalkan catatan positif.",
-        "reason": "Membantu orang lain dapat menciptakan koneksi dan mengurangi perasaan kesepian dengan memberikan tujuan",
-        "timeEstimate": "5 menit",
-        "type": "kindness_acts",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Pet or Animal Connection",
-        "description": "Jika memungkinkan, habiskan waktu dengan hewan peliharaan atau kunjungi tempat penampungan hewan untuk interaksi positif.",
-        "reason": "Interaksi dengan hewan memberikan dukungan emosional tanpa judgment dan mengurangi kesepian",
-        "timeEstimate": "20 menit",
-        "type": "pet_therapy",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Online Community Joining",
-        "description": "Bergabung dengan forum online atau grup media sosial yang sesuai dengan minat Anda dan mulai berpartisipasi secara bertahap.",
-        "reason": "Komunitas online dapat memberikan rasa koneksi dan dukungan dari orang-orang dengan minat serupa",
-        "timeEstimate": "sesi harian",
-        "type": "online_community",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Loneliness Journaling",
-        "description": "Tuliskan tentang kesepian Anda: kapan muncul, apa pemicunya, dan apa yang membantu menguranginya di masa lalu.",
-        "reason": "Menulis membantu memproses emosi kesepian dan mengidentifikasi pola serta solusi",
-        "timeEstimate": "15 menit",
-        "type": "emotional_processing",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Public Space Engagement",
-        "description": "Kunjungi tempat umum seperti kafe, taman, atau perpustakaan dan amati interaksi sosial di sekitar Anda.",
-        "reason": "Melihat interaksi sosial orang lain dapat mengingatkan bahwa koneksi adalah hal yang normal dan mungkin",
-        "timeEstimate": "20 menit",
-        "type": "social_observation",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Skill-Building Classes",
-        "description": "Daftar kelas online atau offline untuk belajar keterampilan baru yang Anda minati (memasak, bahasa, seni).",
-        "reason": "Kelas menyediakan lingkungan sosial terstruktur di mana Anda dapat bertemu orang-orang dengan minat serupa",
-        "timeEstimate": "sesi mingguan",
-        "type": "skill_building",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Volunteer Opportunities",
-        "description": "Cari kesempatan volunteer di komunitas Anda: membantu di panti asuhan, membersihkan lingkungan, atau mengajar.",
-        "reason": "Volunteering memberikan tujuan sosial dan kesempatan untuk terhubung dengan orang lain yang peduli",
-        "timeEstimate": "sesi mingguan",
-        "type": "volunteer_work",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Loneliness Support Groups",
-        "description": "Cari dan ikuti grup dukungan untuk kesepian, baik online maupun offline, di mana orang lain berbagi pengalaman serupa.",
-        "reason": "Mendengar bahwa orang lain mengalami kesepian membantu mengurangi stigma dan memberikan dukungan",
-        "timeEstimate": "sesi mingguan",
-        "type": "support_groups",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Digital Detox Social",
-        "description": "Matikan notifikasi media sosial selama beberapa jam dan fokus pada aktivitas offline yang menyenangkan.",
-        "reason": "Media sosial dapat memperburuk kesepian, detox membantu fokus pada koneksi dunia nyata",
-        "timeEstimate": "2 jam",
-        "type": "digital_detox",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Neighbor Connection",
-        "description": "Mulai interaksi kecil dengan tetangga: sapa saat bertemu, tawar bantuan, atau ajak ngobrol singkat.",
-        "reason": "Membangun koneksi lokal memberikan dukungan praktis dan mengurangi isolasi geografis",
-        "timeEstimate": "5 menit",
-        "type": "neighborhood_connection",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Hobby-Based Socializing",
-        "description": "Cari kelompok atau klub yang berbasis hobi Anda: klub membaca, kelas memasak, atau grup hiking.",
-        "reason": "Berbagi hobi dengan orang lain menciptakan koneksi yang lebih dalam dan bermakna",
-        "timeEstimate": "sesi mingguan",
-        "type": "hobby_socializing",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Professional Networking",
-        "description": "Bergabung dengan jaringan profesional atau grup industri yang sesuai dengan pekerjaan atau minat karir Anda.",
-        "reason": "Koneksi profesional dapat memberikan dukungan dan kesempatan sosial di lingkungan dewasa",
-        "timeEstimate": "sesi bulanan",
-        "type": "professional_networking",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Family History Exploration",
-        "description": "Hubungi anggota keluarga yang jauh atau jelajahi sejarah keluarga untuk menciptakan koneksi dengan akar Anda.",
-        "reason": "Koneksi keluarga memberikan rasa identitas dan dukungan yang mendalam",
-        "timeEstimate": "sesi mingguan",
-        "type": "family_connection",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Mentorship Seeking",
-        "description": "Cari mentor atau menjadi mentor untuk orang lain dalam bidang yang Anda kuasai atau ingin pelajari.",
-        "reason": "Mentorship menciptakan hubungan yang bermakna dan saling menguntungkan",
-        "timeEstimate": "sesi bulanan",
-        "type": "mentorship",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Cultural or Religious Community",
-        "description": "Bergabung dengan komunitas budaya atau keagamaan yang sesuai dengan latar belakang atau keyakinan Anda.",
-        "reason": "Komunitas budaya/keagamaan memberikan rasa belonging dan dukungan spiritual",
-        "timeEstimate": "sesi mingguan",
-        "type": "cultural_community",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Loneliness Education",
-        "description": "Baca buku atau artikel tentang kesepian untuk memahami bahwa ini adalah pengalaman manusia universal.",
-        "reason": "Pengetahuan tentang kesepian membantu mengurangi stigma dan memberikan strategi untuk mengatasinya",
-        "timeEstimate": "20 menit",
-        "type": "education_reading",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Therapy or Counseling",
-        "description": "Pertimbangkan untuk berkonsultasi dengan terapis yang berspesialisasi dalam kesepian atau isolasi sosial.",
-        "reason": "Kadang-kadang bantuan profesional diperlukan untuk mengatasi kesepian kronis dan pola isolasi",
-        "timeEstimate": "sesi mingguan",
-        "type": "professional_help",
-        "difficulty": "hard"
-      }
-    ],
-    "anger": [
-      {
-        "title": "Anger Pause Technique",
-        "description": "Saat merasa marah, hentikan apa yang sedang dilakukan, hitung sampai 10, lalu tanyakan pada diri sendiri: 'Apa yang sebenarnya terjadi?'",
-        "reason": "Memberikan jeda untuk mencegah reaksi impulsif dan memungkinkan respons yang lebih bijaksana",
-        "timeEstimate": "1 menit",
-        "type": "pause_technique",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Physical Anger Release",
-        "description": "Lakukan aktivitas fisik seperti push-up, punching bag (imajiner), atau berjalan cepat selama 5 menit untuk melepaskan energi marah.",
-        "reason": "Aktivitas fisik membantu melepaskan hormon stres dan mengurangi intensitas emosi marah",
-        "timeEstimate": "5 menit",
-        "type": "physical_release",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Cognitive Reframing",
-        "description": "Tuliskan situasi yang membuat marah, lalu tuliskan 3 cara berbeda untuk melihat situasi tersebut dari perspektif yang lebih netral.",
-        "reason": "Membantu mengubah pola pikir yang memperkuat kemarahan menjadi yang lebih seimbang",
-        "timeEstimate": "10 menit",
-        "type": "cognitive_reframing",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Assertive Communication Practice",
-        "description": "Latihan berkomunikasi asertif: 'Saya merasa [emosi] ketika [situasi]. Saya ingin [permintaan].' Berlatih di depan cermin.",
-        "reason": "Komunikasi asertif membantu menyampaikan kebutuhan tanpa kemarahan yang destruktif",
-        "timeEstimate": "8 menit",
-        "type": "communication_practice",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Anger Journaling",
-        "description": "Tuliskan apa yang membuat marah, bagaimana tubuh bereaksi, dan apa yang bisa dipelajari dari situasi tersebut.",
-        "reason": "Menulis membantu memproses emosi marah dan mengidentifikasi pola yang bisa diubah",
-        "timeEstimate": "12 menit",
-        "type": "emotional_processing",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Deep Breathing for Anger",
-        "description": "Tarik napas dalam melalui hidung selama 4 detik, tahan 4 detik, hembuskan perlahan melalui mulut selama 6 detik. Lakukan 5 kali.",
-        "reason": "Pernapasan dalam membantu mengaktifkan sistem saraf parasimpatik dan menenangkan respons fight-or-flight",
-        "timeEstimate": "3 menit",
-        "type": "breathing_exercise",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Anger Warning Signs Recognition",
-        "description": "Identifikasi tanda-tanda awal kemarahan Anda: ketegangan rahang, tinju mengepal, napas cepat. Gunakan sebagai sinyal untuk intervensi.",
-        "reason": "Kesadaran terhadap tanda-tanda awal memungkinkan intervensi dini sebelum kemarahan menjadi tidak terkendali",
-        "timeEstimate": "5 menit",
-        "type": "self_awareness",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Time-Out Technique",
-        "description": "Saat merasa marah, katakan 'Saya butuh time-out' dan tinggalkan situasi selama 10-15 menit untuk menenangkan diri.",
-        "reason": "Time-out mencegah kata-kata atau tindakan impulsif yang mungkin disesali nanti",
-        "timeEstimate": "15 menit",
-        "type": "time_out",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Anger Replacement Thoughts",
-        "description": "Ganti pikiran marah dengan alternatif yang lebih konstruktif: dari 'Ini tidak adil!' menjadi 'Ini menantang, tapi saya bisa mengatasinya.'",
-        "reason": "Mengganti pola pikir yang memperkuat kemarahan dengan yang lebih adaptif dan solutif",
-        "timeEstimate": "5 menit",
-        "type": "thought_replacement",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Progressive Muscle Relaxation",
-        "description": "Mulai dari jari kaki, tegangkan otot selama 5 detik lalu rileks. Lakukan secara bertahap ke seluruh tubuh untuk melepaskan ketegangan.",
-        "reason": "Relaksasi otot membantu melepaskan ketegangan fisik yang menyertai kemarahan",
-        "timeEstimate": "10 menit",
-        "type": "muscle_relaxation",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Anger Expression in Writing",
-        "description": "Tuliskan kemarahan Anda di kertas tanpa filter, lalu robek atau bakar kertas tersebut sebagai simbol pelepasan.",
-        "reason": "Menulis memungkinkan ekspresi emosi yang aman tanpa melukai orang lain",
-        "timeEstimate": "10 menit",
-        "type": "anger_expression",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Forgiveness Practice",
-        "description": "Tuliskan situasi yang membuat marah dan orang yang terlibat, lalu tuliskan pernyataan maaf untuk melepaskan beban emosi.",
-        "reason": "Pengampunan bukan berarti melupakan, tapi melepaskan energi negatif yang menghabiskan energi Anda",
-        "timeEstimate": "15 menit",
-        "type": "forgiveness_work",
-        "difficulty": "hard"
-      },
-      {
-        "title": "Anger Management Apps",
-        "description": "Unduh aplikasi manajemen kemarahan yang menyediakan teknik relaksasi, pelacakan suasana hati, dan latihan mindfulness.",
-        "reason": "Teknologi dapat memberikan dukungan 24/7 dan mengingatkan untuk menggunakan teknik manajemen kemarahan",
-        "timeEstimate": "sesi harian",
-        "type": "app_support",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Physical Exercise Routine",
-        "description": "Buat rutinitas olahraga teratur: jalan kaki, lari, atau olahraga kekuatan 3-4 kali seminggu.",
-        "reason": "Olahraga teratur membantu mengatur hormon stres dan meningkatkan toleransi terhadap frustrasi",
-        "timeEstimate": "30 menit",
-        "type": "exercise_routine",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Anger Trigger Journal",
-        "description": "Catat situasi pemicu kemarahan selama seminggu: apa yang terjadi, bagaimana respons Anda, dan apa yang bisa dilakukan berbeda.",
-        "reason": "Melacak pola membantu mengidentifikasi pemicu dan mengembangkan strategi pencegahan",
-        "timeEstimate": "rutin harian",
-        "type": "trigger_tracking",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Humor as Anger Diffuser",
-        "description": "Saat merasa marah, coba lihat situasi dari perspektif lucu atau gunakan humor untuk melepaskan ketegangan.",
-        "reason": "Humor dapat memutus siklus kemarahan dan memberikan perspektif yang lebih ringan",
-        "timeEstimate": "5 menit",
-        "type": "humor_technique",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Anger Communication Skills",
-        "description": "Pelajari dan latihan 'I-statements': 'Saya merasa marah ketika...' daripada 'Kamu membuat saya marah karena...'.",
-        "reason": "Komunikasi yang efektif mengurangi kemungkinan konflik dan membantu menyelesaikan masalah",
-        "timeEstimate": "sesi mingguan",
-        "type": "communication_training",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Mindfulness for Anger",
-        "description": "Latihan mindfulness: fokus pada sensasi saat ini tanpa menghakimi, amati kemarahan seperti awan yang lewat.",
-        "reason": "Mindfulness membantu menciptakan jarak dari emosi dan mencegah reaksi impulsif",
-        "timeEstimate": "10 menit",
-        "type": "mindfulness_practice",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Anger Support Groups",
-        "description": "Bergabung dengan grup dukungan untuk manajemen kemarahan, baik online maupun offline.",
-        "reason": "Berbagi pengalaman dengan orang lain membantu mengurangi isolasi dan belajar dari strategi orang lain",
-        "timeEstimate": "sesi mingguan",
-        "type": "support_groups",
-        "difficulty": "medium"
-      },
-      {
-        "title": "Stress-Reducing Hobbies",
-        "description": "Kembangkan hobi yang menenangkan: meditasi, yoga, membaca, atau aktivitas kreatif yang Anda nikmati.",
-        "reason": "Hobi yang menenangkan memberikan outlet yang sehat untuk energi dan mengurangi akumulasi stres",
-        "timeEstimate": "sesi harian",
-        "type": "stress_hobbies",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Professional Anger Management",
-        "description": "Konsultasikan dengan terapis atau konselor yang berspesialisasi dalam manajemen kemarahan dan terapi kognitif perilaku.",
-        "reason": "Kadang-kadang bantuan profesional diperlukan untuk mengembangkan strategi yang lebih efektif dan mendalam",
-        "timeEstimate": "sesi mingguan",
-        "type": "professional_therapy",
-        "difficulty": "hard"
-      }
-    ],
-    "general": [
-      {
-        "title": "Deep Breathing Exercise",
-        "description": "Tarik napas dalam-dalam melalui hidung selama 4 detik, tahan 4 detik, hembuskan perlahan melalui mulut selama 6 detik.",
-        "reason": "Pernapasan dalam membantu mengaktifkan sistem saraf parasimpatik untuk relaksasi",
-        "timeEstimate": "3 menit",
-        "type": "breathing",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Mindfulness Moment",
-        "description": "Fokus pada napas Anda selama 2 menit. Jika pikiran melayang, lembut kembalikan perhatian ke napas.",
-        "reason": "Mindfulness membantu mengurangi stres dan meningkatkan kesadaran diri",
-        "timeEstimate": "2 menit",
-        "type": "mindfulness",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Gratitude Note",
-        "description": "Tuliskan 1 hal yang Anda syukuri hari ini, meskipun terasa kecil atau sepele.",
-        "reason": "Praktik rasa syukur membantu menggeser fokus dari negatif ke positif",
-        "timeEstimate": "2 menit",
-        "type": "gratitude",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Self-Care Action",
-        "description": "Lakukan 1 hal kecil untuk merawat diri sendiri, seperti minum segelas air atau meregangkan tubuh.",
-        "reason": "Self-care rutin membantu menjaga keseimbangan emosional dan fisik",
-        "timeEstimate": "5 menit",
-        "type": "self_care",
-        "difficulty": "easy"
-      },
-      {
-        "title": "Positive Affirmation",
-        "description": "Katakan pada diri sendiri: 'Aku mampu menghadapi tantangan ini. Aku layak mendapatkan kebahagiaan.'",
-        "reason": "Afirmasi positif membantu membangun kepercayaan diri dan mengurangi pikiran negatif",
-        "timeEstimate": "3 menit",
-        "type": "affirmation",
-        "difficulty": "easy"
       }
     ]
   },
   "emotion_keywords": {
-    "bullying": ["bully", "dibully", "diperlakukan", "dihina", "diejek", "digejek", "dilecehkan", "intimidasi", "ancaman", "takut", "terancam"],
-    "stress": ["stress", "tekanan", "overwhelmed", "kelelahan", "lelah", "capek", "beban", "berat", "sulit", "susah", "kewalahan"],
-    "anxiety": ["cemas", "anxious", "khawatir", "takut", "panik", "gelisah", "grogi", "nervous", "kegelisahan", "kecemasan"],
-    "depression": ["sedih", "depresi", "murung", "putus asa", "hopeless", "depressed", "down", "rendah", "kosong", "apatis"],
-    "loneliness": ["sendiri", "lonely", "sepi", "terisolasi", "isolated", "kesepian", "kangen", "rindu", "miss"],
-    "anger": ["marah", "angry", "kesal", "emosi", "frustrasi", "frustrated", "jengkel", "geram", "malas", "irritated"]
+    "bullying": ["bully", "bullied", "treated badly", "mocked", "teased", "humiliated", "intimidated", "threatened", "scared", "threatened"],
+    "stress": ["stress", "pressure", "overwhelmed", "exhausted", "tired", "burden", "heavy", "difficult", "hard", "overwhelmed"],
+    "anxiety": ["anxious", "worried", "scared", "panic", "restless", "nervous", "nervousness", "anxiety"],
+    "depression": ["sad", "depression", "gloomy", "hopeless", "depressed", "down", "low", "empty", "apathetic"],
+    "loneliness": ["alone", "lonely", "quiet", "isolated", "loneliness", "miss", "longing", "miss"],
+    "anger": ["angry", "upset", "emotional", "frustrated", "annoyed", "furious", "lazy", "irritated"]
   }
 }

@@ -67,8 +67,7 @@ const journalSchema = new mongoose.Schema({
   },
   mentalHealthClassification: {
     type: String,
-    enum: ["safe", "needs_attention", "high_risk"],
-    default: "safe",
+    default: null,
     index: true
   },
   riskScore: {

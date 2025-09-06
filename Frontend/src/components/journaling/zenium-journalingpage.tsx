@@ -16,7 +16,6 @@ import {
   Frown,
   Mic,
   MicOff,
-  Sparkles,
   Brain
 } from 'lucide-react';
 import axios from 'axios';
@@ -72,39 +71,7 @@ interface JournalEntry {
   updatedAt: string;
 }
 
-interface Recommendation {
-  _id: string;
-  type: 'activity' | 'mindfulness' | 'social' | 'professional' | 'health' | 'general';
-  title: string;
-  description: string;
-  priority: 'low' | 'medium' | 'high';
-  category: 'immediate' | 'short_term' | 'long_term';
-  actionable: boolean;
-  estimatedTime: number;
-  tags: string[];
-  aiGenerated: boolean;
-  isCompleted: boolean;
-  completedAt?: string;
-  userFeedback?: {
-    helpful?: boolean;
-    implemented?: boolean;
-    notes?: string;
-  };
-  context: {
-    mood: string;
-    sentiment: string;
-    keywords: string[];
-    riskScore: number;
-  };
-  createdAt: string;
-  journalId?: {
-    _id: string;
-    title: string;
-    content: string;
-    mood: string;
-    createdAt: string;
-  };
-}
+
 
 export function ZeniumJournalingPage() {
   const navigate = useNavigate();
@@ -119,24 +86,8 @@ export function ZeniumJournalingPage() {
         70% { transform: scale(0.9); }
         100% { transform: scale(1); opacity: 1; }
       }
-      @keyframes pulse-glow {
-        0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
-        50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.8); }
-      }
       .animate-bounce-in {
         animation: bounce-in 0.6s ease-out;
-      }
-      .checkbox-glow {
-        transition: all 0.3s ease;
-      }
-      .checkbox-glow:checked {
-        animation: pulse-glow 2s infinite;
-      }
-      .hover-lift {
-        transition: transform 0.2s ease;
-      }
-      .hover-lift:hover {
-        transform: translateY(-2px);
       }
     </style>
   `;
@@ -150,8 +101,6 @@ export function ZeniumJournalingPage() {
   const [guidedQuestions, setGuidedQuestions] = useState<GuidedQA[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
 
   // New entry state
   const [title, setTitle] = useState('');
@@ -160,20 +109,11 @@ export function ZeniumJournalingPage() {
   const [moodRating, setMoodRating] = useState<number>(5);
   const [voiceTranscript, setVoiceTranscript] = useState('');
 
-  // PDF integration state
-  const [pdfHistory, setPdfHistory] = useState<any[]>([]);
-  const [pdfLoading, setPdfLoading] = useState(false);
+
 
   // AI analysis state
   const [analysisLoading, setAnalysisLoading] = useState(false);
-  const [analysis, setAnalysis] = useState<{
-    aiInsights: AIInsights;
-    mentalHealthClassification: 'safe' | 'needs_attention' | 'high_risk';
-    riskScore: number;
-  } | null>(null);
-
-  // Completion status state
-  const [completedRecommendations, setCompletedRecommendations] = useState<Set<string>>(new Set());
+  const [analyzingJournalId, setAnalyzingJournalId] = useState<string | null>(null);
 
   // Voice recognition
   const [recording, setRecording] = useState(false);
@@ -183,41 +123,12 @@ export function ZeniumJournalingPage() {
 
   const authHeaders = useMemo(() => (token ? { Authorization: `Bearer ${token}` } : {}), [token]);
 
-  // Load completion status from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('completedRecommendations');
-    if (saved) {
-      try {
-        const completedIds = JSON.parse(saved);
-        setCompletedRecommendations(new Set(completedIds));
-      } catch (e) {
-        console.error('Error loading completion status:', e);
-      }
-    }
-  }, []);
-
-  // Save completion status to localStorage
-  const saveCompletionStatus = (completedSet: Set<string>) => {
-    try {
-      localStorage.setItem('completedRecommendations', JSON.stringify(Array.from(completedSet)));
-    } catch (e) {
-      console.error('Error saving completion status:', e);
-    }
-  };
-
-  // Fetch entries and recommendations on mount
+  // Fetch entries on mount
   useEffect(() => {
     fetchEntries();
-    fetchPdfHistory();
-    fetchRecommendations();
   }, [authHeaders]);
 
-  // Priority colors for recommendations
-  const priorityColors = {
-    high: 'text-red-400 border-red-500/20 bg-red-500/10',
-    medium: 'text-yellow-400 border-yellow-500/20 bg-yellow-500/10',
-    low: 'text-green-400 border-green-500/20 bg-green-500/10'
-  };
+
 
   const moodOptions: { key: Mood; icon: JSX.Element; color: string }[] = [
     { key: 'happy', icon: <Smile className="w-5 h-5" />, color: 'text-green-400' },
@@ -267,68 +178,9 @@ export function ZeniumJournalingPage() {
     }
   }
 
-  async function fetchPdfHistory() {
-    try {
-      if (!token) return;
-      setPdfLoading(true);
-      const res = await axios.get(`${apiUrl}/journal-pdf`, { headers: authHeaders });
-      setPdfHistory(res.data?.data || []);
-    } catch (e) {
-      console.error('Fetch PDF history failed', e);
-    } finally {
-      setPdfLoading(false);
-    }
-  }
 
-  async function fetchRecommendations() {
-    try {
-      if (!token) return;
-      setRecommendationsLoading(true);
 
-      // Get all journals that have AI recommendations
-      const journalsRes = await axios.get(`${apiUrl}/journals`, { headers: authHeaders });
-      const journals = journalsRes.data?.data || [];
 
-      // Filter journals that have AI recommendations and extract them
-      const aiRecommendations = journals
-        .filter((journal: any) => journal.aiRecommendation)
-        .map((journal: any) => ({
-          _id: journal._id, // Use journal ID as recommendation ID
-          title: journal.aiRecommendation.title,
-          description: journal.aiRecommendation.description,
-          reason: journal.aiRecommendation.reason,
-          timeEstimate: journal.aiRecommendation.timeEstimate,
-          type: journal.aiRecommendation.type,
-          isCompleted: journal.aiRecommendation.isCompleted,
-          generatedAt: journal.aiRecommendation.generatedAt,
-          priority: 'medium', // Default priority
-          category: 'short_term', // Default category
-          tags: ['personalized', 'ai-generated'],
-          aiGenerated: true,
-          journalId: {
-            _id: journal._id,
-            title: journal.title,
-            content: journal.content.substring(0, 100) + '...', // Truncate content
-            mood: journal.mood,
-            createdAt: journal.createdAt
-          },
-          context: {
-            mood: journal.mood,
-            sentiment: journal.mentalHealthClassification || 'neutral',
-            keywords: [],
-            riskScore: journal.riskScore || 0
-          },
-          createdAt: journal.aiRecommendation.generatedAt
-        }))
-        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Sort by newest first
-
-      setRecommendations(aiRecommendations);
-    } catch (e) {
-      console.error('Fetch recommendations failed', e);
-    } finally {
-      setRecommendationsLoading(false);
-    }
-  }
 
 
 
@@ -357,7 +209,6 @@ export function ZeniumJournalingPage() {
     setMoodRating(5);
     setVoiceTranscript('');
     setGuidedQuestions([]);
-    setAnalysis(null);
   }
 
   // Create entry
@@ -391,23 +242,7 @@ export function ZeniumJournalingPage() {
       };
       setEntries(prev => [created, ...prev]);
 
-      // Analyze and attach (no quote generation for journal saves)
-      try {
-        await axios.post(`${apiUrl}/journals/${j._id}/analyze-attach`, {}, { headers: authHeaders });
-        await fetchEntries();
-        await fetchRecommendations();
-      } catch (error) {
-        console.error('Post-save analyze failed', error);
-      }
 
-      await Swal.fire({
-        title: 'Journal saved successfully',
-        text: 'Your journal has been analyzed and personalized recommendations have been generated.',
-        icon: 'success',
-        confirmButtonText: 'Great!',
-        timer: 2000,
-        timerProgressBar: true
-      });
       resetForm();
       setIsCreating(false);
     } catch (e) {
@@ -430,14 +265,7 @@ export function ZeniumJournalingPage() {
         privacy: 'private'
       };
       await axios.put(`${apiUrl}/journals/${currentEntry.id}`, body, { headers: authHeaders });
-      // Analyze and attach (no quote generation for journal updates)
-      try {
-        await axios.post(`${apiUrl}/journals/${currentEntry.id}/analyze-attach`, {}, { headers: authHeaders });
-        await fetchEntries();
-        await fetchRecommendations();
-      } catch (error) {
-        console.error('Post-update analyze failed', error);
-      }
+
       setIsEditing(false);
       setCurrentEntry(null);
       await Swal.fire({
@@ -476,26 +304,7 @@ export function ZeniumJournalingPage() {
     }
   }
 
-  async function deletePdf(id: string) {
-    const res = await Swal.fire({
-      title: 'Delete this PDF?',
-      text: 'This action cannot be undone.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#ef4444'
-    });
-    if (!res.isConfirmed) return;
-    try {
-      await axios.delete(`${apiUrl}/journal-pdf/${id}`, { headers: authHeaders });
-      setPdfHistory(prev => prev.filter((it: any) => it._id !== id));
-      await Swal.fire('Deleted', 'PDF has been deleted.', 'success');
-    } catch (e) {
-      console.error('Delete PDF failed', e);
-      Swal.fire('Error', 'Failed to delete PDF.', 'error');
-    }
-  }
+
 
   // Analyze (AI): process with backend (Qwen) and generate a personalized quote
   async function analyzeCurrent(contentText: string, moodVal: Mood, moodRatingVal: number, journalId?: string) {
@@ -514,28 +323,24 @@ export function ZeniumJournalingPage() {
         return;
       }
 
-      // 1) Analyze with backend (uses Qwen under the hood)
-      const res = await axios.post(`${apiUrl}/journals/analyze-my-journal`, {
+      // Analyze with backend (uses Qwen under the hood)
+      await axios.post(`${apiUrl}/journals/analyze-my-journal`, {
         content: contentText,
         mood: moodVal,
         moodRating: moodRatingVal,
         journalId: journalId || (isEditing ? currentEntry?.id : null)
       }, { headers: { Authorization: `Bearer ${t}` } });
-      const data = res.data?.data || null;
-      setAnalysis(data);
 
-      // 2) Trigger personalized quote generation based on this analysis session
+      // Trigger personalized quote generation
       try {
         await axios.get(`${apiUrl}/daily-quote`, {
           headers: { Authorization: `Bearer ${t}` },
           params: { forceNew: true, mood: moodVal }
         });
       } catch (qe) {
-        // non-blocking if quote generation fails
-        console.warn('Quote generation after analyze failed', qe);
+        // Quote generation failure is non-blocking
+        console.warn('Quote generation failed:', qe);
       }
-
-      // 3) Simply notify that analysis is complete (no quote generation) and recommendations are ready
       await Swal.fire({
         title: 'Analysis complete',
         text: 'AI analysis finished and personalized recommendations have been generated.',
@@ -546,8 +351,7 @@ export function ZeniumJournalingPage() {
       });
 
       // Refresh both journal entries and recommendations to show newly generated ones
-      await fetchEntries();
-      await fetchRecommendations();
+                                    await fetchEntries();
     } catch (e: any) {
       if (e?.response?.status === 401) {
         localStorage.removeItem('authToken');
@@ -560,11 +364,12 @@ export function ZeniumJournalingPage() {
       Swal.fire('Error', 'Failed to analyze content.', 'error');
     } finally {
       setAnalysisLoading(false);
+      setAnalyzingJournalId(null);
     }
   }
 
-  // Export to PDF and analyze via backend
-  async function exportToPdfAndAnalyze() {
+  // Export to PDF (download directly)
+  function exportToPdf() {
     try {
       const t = isEditing ? (currentEntry?.title ?? '') : title;
       const c = isEditing ? (currentEntry?.content ?? '') : content;
@@ -587,30 +392,13 @@ export function ZeniumJournalingPage() {
       const contentLines = doc.splitTextToSize(c, pageWidth - 30);
       doc.text(contentLines, 15, y);
 
-      // Convert to Blob
-      const blob = doc.output('blob');
+      // Download directly
+      doc.save(`${t.replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40)}.pdf`);
 
-      // Upload to backend
-      const form = new FormData();
-      form.append('title', t);
-      form.append('file', blob, `${t.replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40)}.pdf`);
-
-      const uploadRes = await axios.post(`${apiUrl}/journal-pdf`, form, {
-        headers: { ...authHeaders, 'Content-Type': 'multipart/form-data' }
-      });
-
-      const pdfId = uploadRes.data?.data?._id;
-      if (!pdfId) throw new Error('Upload did not return id');
-
-      // Trigger analyze + quote generation
-      await axios.post(`${apiUrl}/journal-pdf/${pdfId}/analyze-quote`, {}, { headers: authHeaders });
-
-      // Refresh history
-      fetchPdfHistory();
-      await Swal.fire('Success', 'PDF created, analyzed, and personalized quote generated. Check Quote page.', 'success');
+      Swal.fire('Success', 'PDF downloaded successfully!', 'success');
     } catch (e) {
-      console.error('Export PDF & Analyze failed', e);
-      Swal.fire('Error', 'Failed to export and analyze.', 'error');
+      console.error('Export PDF failed', e);
+      Swal.fire('Error', 'Failed to export PDF.', 'error');
     }
   }
 
@@ -634,14 +422,11 @@ export function ZeniumJournalingPage() {
     recognition.continuous = true;
 
     recognition.onresult = (event: any) => {
-      let interim = '';
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         const transcript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
           setVoiceTranscript(prev => `${prev} ${transcript}`.trim());
           setContent(prev => `${prev}\n${transcript}`.trim());
-        } else {
-          interim += transcript;
         }
       }
     };
@@ -664,6 +449,39 @@ export function ZeniumJournalingPage() {
     const label = c === 'safe' ? 'Safe' : c === 'needs_attention' ? 'Needs Attention' : 'High Risk';
     const cls = c === 'safe' ? 'bg-green-500/20 text-green-300' : c === 'needs_attention' ? 'bg-yellow-500/20 text-yellow-300' : 'bg-red-500/20 text-red-300';
     return <span className={`text-xs px-2 py-1 rounded-full ${cls}`}>{label}</span>;
+  }
+
+  // Pre-analysis badge for journals that haven't been analyzed yet
+  function preAnalysisBadge(entry: JournalEntry) {
+    if (entry.mentalHealthClassification) return null; // Already analyzed
+
+    const moodRating = entry.moodRating;
+    const content = entry.content.toLowerCase();
+    const title = entry.title.toLowerCase();
+
+    // Check for negative indicators
+    const negativeKeywords = ['sad', 'depressed', 'anxious', 'worried', 'stress', 'alone', 'lonely', 'angry', 'frustrated', 'overwhelmed', 'tired', 'exhausted', 'pain', 'hurt', 'difficult', 'hard'];
+    const negativeWords = negativeKeywords.filter(keyword => content.includes(keyword) || title.includes(keyword)).length;
+
+    let preLabel = '';
+    let cls = '';
+
+    // Logic for pre-analysis
+    if (moodRating <= 4) {
+      preLabel = 'May Need Attention';
+      cls = 'bg-orange-500/20 text-orange-300';
+    } else if (moodRating <= 6 && negativeWords > 2) {
+      preLabel = 'Might Need Attention';
+      cls = 'bg-yellow-500/20 text-yellow-300';
+    } else if (moodRating >= 8) {
+      preLabel = 'Looks Good';
+      cls = 'bg-green-500/20 text-green-300';
+    } else {
+      preLabel = 'Neutral Mood';
+      cls = 'bg-blue-500/20 text-blue-300';
+    }
+
+    return <span className={`text-xs px-2 py-1 rounded-full ${cls}`}>{preLabel}</span>;
   }
 
   return (
@@ -748,9 +566,9 @@ export function ZeniumJournalingPage() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              {/* Left: editor */}
-              <div className="lg:col-span-2 space-y-4">
+            <div className="space-y-6">
+              {/* Form editor */}
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
                   <input
@@ -824,27 +642,9 @@ export function ZeniumJournalingPage() {
                 {/* Actions */}
                 <div className="flex flex-wrap gap-2 justify-end">
                   <button
-                    onClick={() => analyzeCurrent(isEditing ? (currentEntry?.content ?? '') : content, isEditing ? (currentEntry?.mood ?? 'neutral') : mood, isEditing ? (currentEntry?.moodRating ?? 5) : moodRating, isEditing ? currentEntry?.id : undefined)}
-                    disabled={analysisLoading || !(isEditing ? currentEntry?.content : content)}
-                    className="px-6 py-3 bg-gradient-to-r from-blue-600/30 to-purple-600/30 hover:from-blue-600/40 hover:to-purple-600/40 border border-blue-500/30 rounded-lg transition-all duration-300 disabled:opacity-50 hover:shadow-lg hover:shadow-blue-500/20 disabled:hover:shadow-none"
-                  >
-                    {analysisLoading ? (
-                      <span className="inline-flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-                        Analyzing...
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-2 font-medium">
-                        <Brain className="w-5 h-5" />
-                        AI Analyze Journal
-                      </span>
-                    )}
-                  </button>
-
-                  <button
-                    onClick={exportToPdfAndAnalyze}
+                    onClick={exportToPdf}
                     disabled={isEditing ? !(currentEntry?.title && currentEntry?.content) : !(title && content)}
-                    className="px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/20 rounded-lg transition-colors duration-300"
+                    className="px-4 py-2 bg-yellow-600/20 hover:bg-yellow-600/30 border border-yellow-500/20 rounded-lg transition-colors duration-300 text-yellow-100"
                   >
                     Export as PDF
                   </button>
@@ -858,74 +658,7 @@ export function ZeniumJournalingPage() {
                   </button>
                 </div>
 
-                {/* AI Workflow Status */}
-                {analysis && (
-                  <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Brain className="w-4 h-4 text-blue-400" />
-                      <span className="text-sm font-medium text-blue-300">AI Workflow Status</span>
-                    </div>
-                    <div className="text-xs text-blue-200">
-                      ✓ Journal analyzed • ✓ Recommendations created
-                    </div>
-                    <div className="mt-2 flex gap-2">
-                      <button
-                        onClick={() => navigate('/quote')}
-                        className="px-3 py-1 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/20 rounded-lg text-xs text-blue-300 transition-colors duration-300"
-                      >
-                        View Quote
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Right: Analysis panel */}
-              <div className="lg:col-span-1">
-                <div className="p-4 bg-gray-900 rounded-lg border border-yellow-500/20">
-                  <h3 className="text-sm font-medium text-yellow-400 mb-2">AI Insights</h3>
-                  {!analysis ? (
-                    <p className="text-xs text-gray-500">No analysis yet. Click the AI Analysis button.</p>
-                  ) : (
-                    <div className="space-y-3 text-sm">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Classification</span>
-                        {classificationBadge(analysis.mentalHealthClassification)}
-                      </div>
-                      <div>
-                        <div className="text-gray-400 mb-1">Sentiment</div>
-                        <div className="text-gray-200">{analysis.aiInsights.sentiment}</div>
-                      </div>
-                      {analysis.aiInsights.summary && (
-                        <div>
-                          <div className="text-gray-400 mb-1">Summary</div>
-                          <div className="text-gray-200 whitespace-pre-line">{analysis.aiInsights.summary}</div>
-                        </div>
-                      )}
-                      {!!(analysis.aiInsights.keywords?.length) && (
-                        <div>
-                          <div className="text-gray-400 mb-1">Keywords</div>
-                          <div className="flex flex-wrap gap-1">
-                            {analysis.aiInsights.keywords!.map((k, i) => (
-                              <span key={i} className="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full">{k}</span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {!!(analysis.aiInsights.recommendations?.length) && (
-                        <div>
-                          <div className="text-gray-400 mb-1">Recommendations</div>
-                          <ul className="list-disc list-inside text-gray-200 space-y-1">
-                            {analysis.aiInsights.recommendations!.map((r, i) => (
-                              <li key={i}>{r}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      <div className="text-xs text-gray-400">Risk Score: {(analysis.riskScore * 100).toFixed(0)}%</div>
-                    </div>
-                  )}
-                </div>
+                {/* AI Workflow Status - REMOVED as requested */}
               </div>
             </div>
           </div>
@@ -944,7 +677,7 @@ export function ZeniumJournalingPage() {
                   <div>
                     <h3 className="text-lg font-medium text-white flex items-center gap-2">
                       {entry.title}
-                      {classificationBadge(entry.mentalHealthClassification)}
+                      {classificationBadge(entry.mentalHealthClassification) || preAnalysisBadge(entry)}
                     </h3>
                     <div className="flex items-center mt-1 text-sm text-gray-400">
                       <Calendar className="w-4 h-4 mr-1" />
@@ -957,16 +690,45 @@ export function ZeniumJournalingPage() {
                     </div>
                   </div>
                   <div className="flex space-x-1">
+          <button
+            onClick={() => {
+              console.log('🔍 Starting analysis for journal:', entry.id);
+              console.log('📝 Content:', entry.content.substring(0, 50) + '...');
+              setAnalyzingJournalId(entry.id);
+              analyzeCurrent(entry.content, entry.mood, entry.moodRating, entry.id)
+                .then(result => {
+                  console.log('✅ Analysis completed:', result);
+                  console.log('🔄 Refreshing data...');
+                  fetchEntries();
+                })
+                .catch(error => {
+                  console.error('❌ Analysis failed:', error);
+                  console.log('🔍 Response error:', error.response?.data);
+                  console.error('❌ Error details:', error.response?.data || error.message);
+                })
+                .finally(() => {
+                  console.log('🔄 Analysis finished, resetting state');
+                  setAnalyzingJournalId(null);
+                });
+            }}
+            disabled={analysisLoading || entry.mentalHealthClassification !== null}
+            className={`p-1.5 rounded-full transition-colors duration-300 ${
+              entry.mentalHealthClassification
+                ? 'bg-gray-500/20 cursor-not-allowed'
+                : 'bg-blue-500/10 hover:bg-blue-500/20'
+            }`}
+            title={entry.mentalHealthClassification ? 'Already Analyzed' : 'AI Analyze'}
+          >
+        {analyzingJournalId === entry.id && analysisLoading ? (
+          <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+        ) : entry.mentalHealthClassification ? (
+          <Brain className="w-4 h-4 text-gray-400" />
+        ) : (
+          <Brain className="w-4 h-4" />
+        )}
+      </button>
                     <button
-                      onClick={() => analyzeCurrent(entry.content, entry.mood, entry.moodRating, entry.id)}
-                      className="p-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 transition-colors duration-300"
-                      title="AI Analyze"
-                      disabled={analysisLoading}
-                    >
-                      <Brain className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => { setIsEditing(true); setCurrentEntry(entry); setAnalysis(null); setGuidedQuestions(entry.guidedQuestions || []); setVoiceTranscript(entry.voiceTranscript || ''); }}
+                      onClick={() => { setIsEditing(true); setCurrentEntry(entry); setGuidedQuestions(entry.guidedQuestions || []); setVoiceTranscript(entry.voiceTranscript || ''); }}
                       className="p-1.5 rounded-full bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors duration-300"
                       title="Edit"
                     >
@@ -985,67 +747,36 @@ export function ZeniumJournalingPage() {
                   <p className="text-gray-300 whitespace-pre-line">{entry.content}</p>
                 </div>
 
-                {/* AI Recommendation - Actionable List Item */}
+                {/* AI Recommendation */}
                 {entry.aiRecommendation && (
                   <div className="mt-3 bg-blue-500/10 border border-blue-500/20 rounded-lg overflow-hidden">
                     <div className="flex items-start gap-3 p-3">
-                      {/* Checkbox */}
-                      <div className="flex-shrink-0 mt-0.5">
-                        <input
-                          type="checkbox"
-                          id={`complete-journal-${entry.id}`}
-                          checked={completedRecommendations.has(entry.id)}
-                          disabled={completedRecommendations.has(entry.id)}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            if (isChecked) {
-                              const newCompleted = new Set(completedRecommendations);
-                              newCompleted.add(entry.id);
-                              setCompletedRecommendations(newCompleted);
-                              saveCompletionStatus(newCompleted);
-                            }
-                          }}
-                          className="w-5 h-5 rounded border-2 border-blue-400 hover:border-blue-300 bg-gray-800/50 cursor-pointer transition-all duration-300 checked:bg-gradient-to-r checked:from-green-500 checked:to-emerald-500 checked:border-green-500 checked:shadow-lg checked:shadow-green-500/50 hover:scale-110 active:scale-95 checkbox-glow hover-lift disabled:opacity-75 disabled:cursor-not-allowed"
-                        />
-                      </div>
-
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <Brain className="w-4 h-4 text-blue-400 flex-shrink-0" />
                           <span className="text-xs font-medium text-blue-300">AI Recommendation</span>
-                          {entry.aiRecommendation.isCompleted && (
-                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-0.5 rounded-full border border-green-500/30">
-                              ✅ Completed
-                            </span>
-                          )}
                         </div>
 
-                        <h4 className={`text-sm font-semibold mb-1 ${
-                          entry.aiRecommendation.isCompleted
-                            ? 'text-green-300 line-through opacity-75'
-                            : 'text-white'
-                        }`}>
+                        <h4 className="text-sm font-semibold mb-1 text-white">
                           {entry.aiRecommendation.title}
                         </h4>
 
-                        <p className={`text-xs leading-relaxed ${
-                          entry.aiRecommendation.isCompleted
-                            ? 'text-gray-400 line-through opacity-75'
-                            : 'text-gray-300'
-                        }`}>
+                        <p className="text-xs leading-relaxed text-gray-300">
                           {entry.aiRecommendation.description}
                         </p>
 
-                        <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
-                          <span className="flex items-center gap-1">
-                            <span className="text-gray-500">Type:</span>
-                            <span className="text-blue-300">{entry.aiRecommendation.type}</span>
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <span className="text-gray-500">Duration:</span>
-                            <span className="text-blue-300">{entry.aiRecommendation.timeEstimate}</span>
-                          </span>
+                        <div className="flex items-center mt-2">
+                          <div className="flex items-center gap-3 text-xs text-gray-400">
+                            <span className="flex items-center gap-1">
+                              <span className="text-gray-500">Type:</span>
+                              <span className="text-blue-300">{entry.aiRecommendation.type}</span>
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <span className="text-gray-500">Duration:</span>
+                              <span className="text-blue-300">{entry.aiRecommendation.timeEstimate}</span>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1057,151 +788,6 @@ export function ZeniumJournalingPage() {
           </div>
         )}
       </div>
-
-      {/* PDF History - Moved between journals and AI recommendations */}
-      <div className="px-4 pb-6">
-        <div className="bg-gray-900/50 rounded-lg border border-yellow-500/20 p-4">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-medium text-yellow-400">PDF History</h2>
-            <div className="flex gap-2">
-              <button onClick={() => navigate('/quote')} className="px-3 py-1 rounded-md bg-yellow-500/10 hover:bg-yellow-500/20">Go to Quotes</button>
-              <button onClick={fetchPdfHistory} className="px-3 py-1 rounded-md bg-gray-800 hover:bg-gray-700">Refresh</button>
-            </div>
-          </div>
-          {pdfLoading ? (
-            <div className="text-gray-400 text-sm">Loading...</div>
-          ) : (pdfHistory.length === 0 ? (
-            <div className="text-gray-500 text-sm">No PDF history.</div>
-          ) : (
-            <div className="space-y-2">
-              {pdfHistory.map((it: any) => (
-                <div key={it._id} className="flex items-center justify-between bg-gray-800/50 rounded-md p-2">
-                  <div>
-                    <div className="text-white text-sm">{it.title}</div>
-                    <div className="text-xs text-gray-400">{new Date(it.createdAt).toLocaleString()} • {it.analyzed ? 'Analyzed' : 'Pending'}</div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => deletePdf(it._id)} className="px-2 py-1 text-xs rounded-md bg-red-500/20 hover:bg-red-500/30 border border-red-500/30">Delete</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* AI Recommendations */}
-      <div className="px-4 pb-6">
-        <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 rounded-lg border border-yellow-500/30 p-6 shadow-lg">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-yellow-400 flex items-center gap-3">
-              <div className="p-2 bg-yellow-500/20 rounded-full">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              AI Recommendations
-              {recommendations.length > 0 && (
-                <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">
-                  {recommendations.length} available
-                </span>
-              )}
-            </h2>
-            <button
-              onClick={fetchRecommendations}
-              className="px-4 py-2 rounded-lg bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 text-sm transition-all duration-300 hover:shadow-md"
-            >
-              🔄 Refresh
-            </button>
-          </div>
-
-          {recommendationsLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="flex flex-col items-center">
-                <div className="w-8 h-8 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="mt-4 text-gray-400">Loading recommendations...</p>
-              </div>
-            </div>
-          ) : recommendations.length === 0 ? (
-            <div className="text-center py-8">
-              <Sparkles className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-medium text-gray-400 mb-2">No recommendations yet</h3>
-              <p className="text-gray-500">Write a journal entry and analyze it to generate personalized recommendations.</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {recommendations.map((rec) => (
-                <div
-                  key={rec._id}
-                  className={`p-4 bg-gray-900/50 rounded-lg border ${priorityColors[rec.priority]} hover:bg-gray-900/70 transition-colors duration-300`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg font-medium text-white">{rec.title}</h3>
-                        <span className={`text-xs px-2 py-1 rounded-full ${rec.category === 'immediate' ? 'bg-red-500/20 text-red-300' :
-                          rec.category === 'short_term' ? 'bg-yellow-500/20 text-yellow-300' : 'bg-green-500/20 text-green-300'}`}>
-                          {rec.category.replace('_', ' ')}
-                        </span>
-                      </div>
-                      <p className="text-gray-300 mb-3">{rec.description}</p>
-
-                      <div className="flex flex-wrap items-center gap-2 mb-3">
-                        <span className="text-xs bg-gray-800/50 text-gray-400 px-2 py-1 rounded-full">
-                          {rec.type}
-                        </span>
-                        <span className="text-xs bg-gray-800/50 text-gray-400 px-2 py-1 rounded-full">
-                          ⏱️ {rec.estimatedTime} mins
-                        </span>
-                        {rec.tags.map((tag, i) => (
-                          <span key={i} className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full">
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      {rec.journalId && (
-                        <div className="text-xs text-gray-400 mb-3">
-                          Based on journal: {rec.journalId.title}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col gap-2 ml-4">
-                      <div className="relative">
-                        <input
-                          type="checkbox"
-                          id={`complete-${rec._id}`}
-                          checked={completedRecommendations.has(rec._id)}
-                          disabled={completedRecommendations.has(rec._id)}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            if (isChecked) {
-                              const newCompleted = new Set(completedRecommendations);
-                              newCompleted.add(rec._id);
-                              setCompletedRecommendations(newCompleted);
-                              saveCompletionStatus(newCompleted);
-                            }
-                          }}
-                          className="w-4 h-4 rounded border-2 border-yellow-400 hover:border-yellow-300 bg-gray-800/50 cursor-pointer transition-all duration-300 checked:bg-gradient-to-r checked:from-green-500 checked:to-emerald-500 checked:border-green-500 checked:shadow-lg checked:shadow-green-500/50 hover:scale-110 active:scale-95 checkbox-glow hover-lift disabled:opacity-75 disabled:cursor-not-allowed"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {rec.isCompleted && rec.completedAt && (
-                    <div className="mt-3 pt-3 border-t border-gray-700/50 text-xs text-gray-400">
-                      Completed on {new Date(rec.completedAt).toLocaleDateString()}
-                      {rec.userFeedback?.notes && (
-                        <p className="mt-1 text-gray-300">{rec.userFeedback.notes}</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
     </div>
   </>
 );

@@ -42,7 +42,6 @@ import {
   getMentalHealthSupport,
   getJournalWithRecommendation,
   analyzeMyJournal,
-  markRecommendationCompleted,
 } from "../controllers/journal.controller.js";
 
 import {
@@ -62,6 +61,7 @@ import {
   triggerAIWorkflow,
   getRecommendationsByType,
   getHighPriorityRecommendations,
+  markRecommendationCompleted,
 } from "../controllers/recommendation.controller.js";
 
 import { authenticate } from "../middleware/authMiddleware.js";

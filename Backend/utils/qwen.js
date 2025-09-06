@@ -1,6 +1,6 @@
 class QwenService {
   constructor() {
-    this.apiKey = process.env.OPENROUTER_API_KEY || "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";
+    this.apiKey = process.env.OPENROUTER_API_KEY || "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";
     this.baseUrl = "https://openrouter.ai/api/v1/chat/completions";
     this.model = "qwen/qwen2.5-vl-72b-instruct:free";
     this.siteUrl = "http://localhost:3000";
@@ -360,24 +360,24 @@ class QwenService {
 
       // Create empathetic response based on detected category
       const empatheticResponses = {
-        bullying: `🌿 Aku dengar ceritamu tentang situasi bullying. Itu pasti sangat menyakitkan dan membuatmu merasa tidak aman. Kamu nggak pantas diperlakukan seperti itu, dan perasaanmu itu sangat valid.`,
-        stress: `🌿 Aku bisa merasakan kalau kamu sedang mengalami banyak tekanan dan stres. Itu wajar merasa overwhelmed, dan kamu sudah berusaha baik dengan menulis ini.`,
-        anxiety: `🌿 Kecemasan bisa terasa sangat berat dan menguras energi. Aku mengerti kalau saat ini terasa sulit, tapi kamu nggak sendirian dalam menghadapinya.`,
-        depression: `🌿 Perasaan sedih dan murung bisa terasa sangat berat. Kamu sudah berani mengakui perasaanmu, dan itu langkah yang sangat penting.`,
-        loneliness: `🌿 Kesepian bisa terasa sangat menyakitkan. Aku mengerti kalau kamu merasa terisolasi, dan perasaan itu valid serta manusiawi.`,
-        anger: `🌿 Kemarahan adalah emosi yang normal dan valid. Yang penting adalah bagaimana kita menanganinya dengan cara yang sehat.`,
-        general: `🌿 Terima kasih sudah berbagi perasaanmu. Aku mengerti kalau saat ini terasa berat, dan kamu sudah melakukan hal yang baik dengan mengekspresikannya.`
+        bullying: `🌿 I hear your story about the bullying situation. That must be very painful and make you feel unsafe. You don't deserve to be treated like that, and your feelings are completely valid.`,
+        stress: `🌿 I can sense that you're experiencing a lot of pressure and stress. It's natural to feel overwhelmed, and you've done something good by writing this down.`,
+        anxiety: `🌿 Anxiety can feel very heavy and draining. I understand that things feel difficult right now, but you're not alone in facing this.`,
+        depression: `🌿 Feelings of sadness and melancholy can feel very heavy. You've been brave to acknowledge your feelings, and that's a very important step.`,
+        loneliness: `🌿 Loneliness can be very painful. I understand that you feel isolated, and those feelings are valid and human.`,
+        anger: `🌿 Anger is a normal and valid emotion. What matters is how we handle it in healthy ways.`,
+        general: `🌿 Thank you for sharing your feelings. I understand that things feel heavy right now, and you've done something good by expressing them.`
       };
 
       const empatheticResponse = empatheticResponses[detectedCategory] || empatheticResponses.general;
 
       const fullResponse = `${empatheticResponse}
 
-**Rekomendasi untuk hari ini:**
+**Today's Recommendation:**
 **${selectedRecommendation.title}** → ${selectedRecommendation.description}
 *${selectedRecommendation.reason}* ⏱️ ${selectedRecommendation.timeEstimate}
 
-Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut atau terasa sangat berat, pertimbangkan untuk berbicara dengan orang terpercaya atau profesional. 💙`;
+You're not alone in this journey. If these feelings continue or feel very overwhelming, consider talking to someone you trust or a professional. 💙`;
 
       return {
         success: true,
@@ -437,24 +437,24 @@ Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut ata
 
     // Create empathetic response based on detected category
     const empatheticResponses = {
-      bullying: `🌿 Aku dengar ceritamu tentang situasi bullying. Itu pasti sangat menyakitkan dan membuatmu merasa tidak aman. Kamu nggak pantas diperlakukan seperti itu, dan perasaanmu itu sangat valid.`,
-      stress: `🌿 Aku bisa merasakan kalau kamu sedang mengalami banyak tekanan dan stres. Itu wajar merasa overwhelmed, dan kamu sudah berusaha baik dengan menulis ini.`,
-      anxiety: `🌿 Kecemasan bisa terasa sangat berat dan menguras energi. Aku mengerti kalau saat ini terasa sulit, tapi kamu nggak sendirian dalam menghadapinya.`,
-      depression: `🌿 Perasaan sedih dan murung bisa terasa sangat berat. Kamu sudah berani mengakui perasaanmu, dan itu langkah yang sangat penting.`,
-      loneliness: `🌿 Kesepian bisa terasa sangat menyakitkan. Aku mengerti kalau kamu merasa terisolasi, dan perasaan itu valid serta manusiawi.`,
-      anger: `🌿 Kemarahan adalah emosi yang normal dan valid. Yang penting adalah bagaimana kita menanganinya dengan cara yang sehat.`,
-      general: `🌿 Terima kasih sudah berbagi perasaanmu. Aku mengerti kalau saat ini terasa berat, dan kamu sudah melakukan hal yang baik dengan mengekspresikannya.`
+      bullying: `🌿 I hear your story about the bullying situation. That must be very painful and make you feel unsafe. You don't deserve to be treated like that, and your feelings are completely valid.`,
+      stress: `🌿 I can sense that you're experiencing a lot of pressure and stress. It's natural to feel overwhelmed, and you've done something good by writing this down.`,
+      anxiety: `🌿 Anxiety can feel very heavy and draining. I understand that things feel difficult right now, but you're not alone in facing this.`,
+      depression: `🌿 Feelings of sadness and melancholy can feel very heavy. You've been brave to acknowledge your feelings, and that's a very important step.`,
+      loneliness: `🌿 Loneliness can be very painful. I understand that you feel isolated, and those feelings are valid and human.`,
+      anger: `🌿 Anger is a normal and valid emotion. What matters is how we handle it in healthy ways.`,
+      general: `🌿 Thank you for sharing your feelings. I understand that things feel heavy right now, and you've done something good by expressing them.`
     };
 
     const empatheticResponse = empatheticResponses[detectedCategory] || empatheticResponses.general;
 
     const fullResponse = `${empatheticResponse}
 
-**Rekomendasi untuk hari ini:**
+**Today's Recommendation:**
 **${selectedRecommendation.title}** → ${selectedRecommendation.description}
 *${selectedRecommendation.reason}* ⏱️ ${selectedRecommendation.timeEstimate}
 
-Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut atau terasa sangat berat, pertimbangkan untuk berbicara dengan orang terpercaya atau profesional. 💙`;
+You're not alone in this journey. If these feelings continue or feel very overwhelming, consider talking to someone you trust or a professional. 💙`;
 
     return {
       success: true,
@@ -479,69 +479,69 @@ Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut ata
     const contentLower = content.toLowerCase();
     let sentiment = 'general';
 
-    if (contentLower.includes('bully') || contentLower.includes('dibully')) {
+    if (contentLower.includes('bully') || contentLower.includes('bullied')) {
       sentiment = 'bullying';
-    } else if (contentLower.includes('stress') || contentLower.includes('tekanan')) {
+    } else if (contentLower.includes('stress') || contentLower.includes('pressure')) {
       sentiment = 'stress';
-    } else if (contentLower.includes('cemas') || contentLower.includes('anxious')) {
+    } else if (contentLower.includes('anxious') || contentLower.includes('worried')) {
       sentiment = 'anxiety';
-    } else if (contentLower.includes('sedih') || contentLower.includes('depresi')) {
+    } else if (contentLower.includes('sad') || contentLower.includes('depression')) {
       sentiment = 'depression';
-    } else if (contentLower.includes('sendiri') || contentLower.includes('lonely')) {
+    } else if (contentLower.includes('alone') || contentLower.includes('lonely')) {
       sentiment = 'loneliness';
-    } else if (contentLower.includes('marah') || contentLower.includes('angry')) {
+    } else if (contentLower.includes('angry') || contentLower.includes('mad')) {
       sentiment = 'anger';
     }
 
     // Provide appropriate fallback recommendation
     const fallbackRecommendations = {
       bullying: {
-        title: "Latihan Pernapasan 4-7-8",
-        description: "Tarik napas melalui hidung selama 4 detik, tahan 7 detik, hembuskan melalui mulut selama 8 detik. Lakukan 4 kali.",
-        reason: "Mengaktifkan sistem saraf parasimpatik untuk mengurangi stres dan kecemasan akibat bullying",
-        timeEstimate: "2 menit",
+        title: "4-7-8 Breathing Exercise",
+        description: "Breathe in through your nose for 4 seconds, hold for 7 seconds, exhale through your mouth for 8 seconds. Repeat 4 times.",
+        reason: "Activates the parasympathetic nervous system to reduce stress and anxiety from bullying",
+        timeEstimate: "2 minutes",
         type: "breathing_exercise"
       },
       stress: {
         title: "Grounding Exercise",
-        description: "Sebutkan 5 hal yang bisa kamu lihat, 4 yang bisa kamu sentuh, 3 yang bisa kamu dengar, 2 yang bisa kamu cium, 1 yang bisa kamu rasakan.",
-        reason: "Membantu mengembalikan fokus ke masa kini dan mengurangi pikiran negatif",
-        timeEstimate: "3 menit",
+        description: "Name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste.",
+        reason: "Helps bring focus back to the present moment and reduces negative thoughts",
+        timeEstimate: "3 minutes",
         type: "grounding_technique"
       },
       anxiety: {
         title: "Deep Breathing Exercise",
-        description: "Tarik napas dalam-dalam melalui hidung selama 4 detik, tahan 4 detik, hembuskan perlahan melalui mulut selama 6 detik.",
-        reason: "Pernapasan dalam membantu mengaktifkan sistem saraf parasimpatik untuk relaksasi",
-        timeEstimate: "3 menit",
+        description: "Take a deep breath in through your nose for 4 seconds, hold for 4 seconds, slowly exhale through your mouth for 6 seconds.",
+        reason: "Deep breathing helps activate the parasympathetic nervous system for relaxation",
+        timeEstimate: "3 minutes",
         type: "breathing_exercise"
       },
       depression: {
         title: "Gratitude Practice",
-        description: "Tuliskan 3 hal yang kamu syukuri hari ini, meskipun terasa sulit.",
-        reason: "Praktik rasa syukur membantu menggeser fokus dari negatif ke positif",
-        timeEstimate: "5 menit",
+        description: "Write down 3 things you're grateful for today, even if it feels difficult.",
+        reason: "Gratitude practice helps shift focus from negative to positive",
+        timeEstimate: "5 minutes",
         type: "gratitude_practice"
       },
       loneliness: {
         title: "Self-Compassion Statement",
-        description: "Katakan pada dirimu: 'Aku layak mendapatkan dukungan dan kasih sayang.'",
-        reason: "Self-compassion membantu mengurangi perasaan kesepian dengan memberikan dukungan internal",
-        timeEstimate: "3 menit",
+        description: "Say to yourself: 'I deserve support and kindness.'",
+        reason: "Self-compassion helps reduce feelings of loneliness by providing internal support",
+        timeEstimate: "3 minutes",
         type: "self_compassion"
       },
       anger: {
         title: "Anger Pause Technique",
-        description: "Saat merasa marah, hentikan apa yang sedang dilakukan, hitung sampai 10.",
-        reason: "Memberikan jeda untuk mencegah reaksi impulsif dan memungkinkan respons yang lebih bijaksana",
-        timeEstimate: "1 menit",
+        description: "When feeling angry, stop what you're doing and count to 10.",
+        reason: "Provides a pause to prevent impulsive reactions and allows for wiser responses",
+        timeEstimate: "1 minute",
         type: "pause_technique"
       },
       general: {
         title: "Mindfulness Moment",
-        description: "Fokus pada napas Anda selama 2 menit. Jika pikiran melayang, lembut kembalikan perhatian ke napas.",
-        reason: "Mindfulness membantu mengurangi stres dan meningkatkan kesadaran diri",
-        timeEstimate: "2 menit",
+        description: "Focus on your breath for 2 minutes. If your mind wanders, gently return attention to your breath.",
+        reason: "Mindfulness helps reduce stress and increase self-awareness",
+        timeEstimate: "2 minutes",
         type: "mindfulness"
       }
     };
@@ -549,28 +549,28 @@ Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut ata
     const recommendation = fallbackRecommendations[sentiment] || fallbackRecommendations.general;
 
     const empatheticResponses = {
-      bullying: `🌿 Aku dengar ceritamu tentang situasi bullying. Itu pasti sangat menyakitkan dan membuatmu merasa tidak aman. Kamu nggak pantas diperlakukan seperti itu.`,
-      stress: `🌿 Aku bisa merasakan kalau kamu sedang mengalami banyak tekanan dan stres. Itu wajar merasa overwhelmed.`,
-      anxiety: `🌿 Kecemasan bisa terasa sangat berat dan menguras energi. Kamu nggak sendirian dalam menghadapinya.`,
-      depression: `🌿 Perasaan sedih dan murung bisa terasa sangat berat. Kamu sudah berani mengakui perasaanmu.`,
-      loneliness: `🌿 Kesepian bisa terasa sangat menyakitkan. Aku mengerti kalau kamu merasa terisolasi.`,
-      anger: `🌿 Kemarahan adalah emosi yang normal dan valid. Yang penting adalah bagaimana kita menanganinya.`,
-      general: `🌿 Terima kasih sudah berbagi perasaanmu. Aku mengerti kalau saat ini terasa berat.`
+      bullying: `🌿 I hear your story about the bullying situation. That must be very painful and make you feel unsafe. You don't deserve to be treated like that.`,
+      stress: `🌿 I can sense that you're experiencing a lot of pressure and stress. It's natural to feel overwhelmed.`,
+      anxiety: `🌿 Anxiety can feel very heavy and draining. You're not alone in facing this.`,
+      depression: `🌿 Feelings of sadness and melancholy can feel very heavy. You've been brave to acknowledge your feelings.`,
+      loneliness: `🌿 Loneliness can be very painful. I understand that you feel isolated.`,
+      anger: `🌿 Anger is a normal and valid emotion. What matters is how we handle it.`,
+      general: `🌿 Thank you for sharing your feelings. I understand that things feel heavy right now.`
     };
 
     const empatheticResponse = empatheticResponses[sentiment] || empatheticResponses.general;
 
     const fullResponse = `${empatheticResponse}
 
-**Rekomendasi untuk hari ini:**
+**Today's Recommendation:**
 **${recommendation.title}** → ${recommendation.description}
 *${recommendation.reason}* ⏱️ ${recommendation.timeEstimate}
 
-Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut atau terasa sangat berat, pertimbangkan untuk berbicara dengan orang terpercaya atau profesional. 💙`;
+You're not alone in this journey. If these feelings continue or feel very overwhelming, consider talking to someone you trust or a professional. 💙`;
 
     return {
       success: false,
-      error: "Menggunakan rekomendasi fallback",
+      error: "Using fallback recommendation",
       recommendation: {
         title: recommendation.title,
         description: recommendation.description,
@@ -588,4 +588,3 @@ Kamu nggak sendirian dalam perjalanan ini. Jika perasaan ini terus berlanjut ata
 }
 
 export default QwenService;
-
