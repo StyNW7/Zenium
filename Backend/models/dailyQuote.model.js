@@ -27,18 +27,6 @@ const dailyQuoteSchema = new mongoose.Schema({
     default: "motivation",
     index: true
   },
-  isAiGenerated: {
-    type: Boolean,
-    default: true
-  },
-  isFavorite: {
-    type: Boolean,
-    default: false
-  },
-  moodContext: {
-    type: String,
-    default: ""
-  },
   activityContext: {
     type: String,
     default: ""
@@ -47,14 +35,6 @@ const dailyQuoteSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
     index: true,
-  },
-  likes: {
-    type: Number,
-    default: 0,
-  },
-  shares: {
-    type: Number,
-    default: 0,
   },
 }, {
   timestamps: true,

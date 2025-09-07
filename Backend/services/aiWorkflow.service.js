@@ -1,6 +1,5 @@
 import QwenService from "../utils/qwen.js";
 import DailyQuote from "../models/dailyQuote.model.js";
-import MentalHealthRecommendation from "../models/mentalHealthRecommendation.model.js";
 import Journal from "../models/journal.model.js";
 
 class AIWorkflowService {

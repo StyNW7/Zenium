@@ -388,14 +388,10 @@ export function ZeniumJournalingPage() {
       const meta = `Mood: ${isEditing ? (currentEntry?.mood ?? mood) : mood}  |  Rating: ${isEditing ? (currentEntry?.moodRating ?? moodRating) : moodRating}/10`;
       doc.text(meta, 15, y);
       y += 8;
-
       const contentLines = doc.splitTextToSize(c, pageWidth - 30);
       doc.text(contentLines, 15, y);
-
       // Download directly
       doc.save(`${t.replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40)}.pdf`);
-
-      Swal.fire('Success', 'PDF downloaded successfully!', 'success');
     } catch (e) {
       console.error('Export PDF failed', e);
       Swal.fire('Error', 'Failed to export PDF.', 'error');

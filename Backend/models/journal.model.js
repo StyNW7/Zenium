@@ -27,18 +27,6 @@ const journalSchema = new mongoose.Schema({
     max: 10,
     required: true,
   },
-
-  location: {
-    type: {
-      type: String,
-      enum: ["Point"],
-      default: "Point",
-    },
-    coordinates: {
-      type: [Number],
-    },
-    address: String,
-  },
   privacy: {
     type: String,
     enum: ["public", "private", "friends"],
@@ -47,15 +35,6 @@ const journalSchema = new mongoose.Schema({
   isAIAnalyzed: {
     type: Boolean,
     default: false,
-  },
-  aiInsights: {
-    sentiment: {
-      type: String,
-      enum: ["positive", "negative", "neutral"],
-    },
-    keywords: [String],
-    recommendations: [String],
-    summary: { type: String },
   },
   guidedQuestions: [{
     question: { type: String },
