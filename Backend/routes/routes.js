@@ -74,7 +74,6 @@ router.delete("/journals/:id", authenticate, deleteJournal);
 
 /* ===================== ANALYSIS ROUTES ===================== */
 router.post("/analysis/analyze", analyzeLocation);
-router.post("/analysis/upload", authenticate, upload.single("mapImage"), analyzeLocation);
 router.post("/analysis/save", authenticate, saveAnalysis);
 router.get("/analysis", authenticate, getUserAnalyses);
 router.get("/analysis/nearby", getNearbyAnalyses);
